@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import './App.css';
-import Navbar from './navbar/navbar';
-import ComplexList from './List/List';
-import { EntityFilterProvider } from './List/EntityFilter/FilterContext';
-import { TagSection } from './List/TagFilter/TagSection';
-import { TagFilterProvider} from './List/TagFilter/TagContext';
+import Navbar from './Main/navbar/navbar';
+import ComplexList from './Main/List/List';
+import { EntityFilterProvider } from './Main/List/EntityFilter/FilterContext';
+import { TagSection } from './Main/TagFilter/TagSection';
+import { Sidebar } from './Sidebar/Siderbar';
+import { TagFilterProvider} from './Main/TagFilter/TagContext';
+import { Main } from './Main/Main'
 
 function App() {
   return (
     <EntityFilterProvider>
     <TagFilterProvider>
-
-      <div className="App w-full h-full">
-
+      <div className="App w-full h-screen flex flex-no-wrap">
+        <Sidebar/>
+        <Main/>
       </div>
 {/*         
         <Navbar/>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react"
 import { TagBox } from "./TagBox"
 import { TagFilterContext } from "./TagContext"
-import { entities, topics, ilities, needs, categories, subcategories } from '../options'
+import { entities, topics, ilities, needs, categories, subcategories } from '../List/options'
 
 export const TagSection = ()=>{
     const { tagFilterStore, setTagFilterStore } = useContext(TagFilterContext)
@@ -13,7 +13,7 @@ export const TagSection = ()=>{
     // useEffect(() => console.log(tagFilterStore), [tagFilterStore]);
  
     return (
-        <div className="flex overflow-scroll">
+        <div className="flex h-full">
             <div className="flex-col">
                 <TagBox
                     options={topics}
@@ -27,9 +27,32 @@ export const TagSection = ()=>{
                     set="ilities"
                     value={tagFilterStore.ilities}
                     setValue={setTagFilterStore}
-                    className="mb-5"
+                    className="mb-5 overflow-y-scroll h-full"
+                />
+                <TagBox
+                    options={needs}
+                    set="needs"
+                    value={tagFilterStore.needs}
+                    setValue={setTagFilterStore}
                 />
             </div>
+            <div className="flex-col">
+                <TagBox
+                    options={categories}
+                    set="categories"
+                    value={tagFilterStore.categories}
+                    setValue={setTagFilterStore}
+                />
+            </div>
+            <div className="flex-col">
+                <TagBox
+                    options={subcategories}
+                    set="subcategories"
+                    value={tagFilterStore.subcategories}
+                    setValue={setTagFilterStore}
+                />
+            </div>
+
         {/*
         <TagBox
             options={needs}

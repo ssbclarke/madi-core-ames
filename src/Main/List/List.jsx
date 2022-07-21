@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from "react";
 import { CheckboxGroup } from './EntityFilter/EntityCheckboxes';
 import { generateList } from './generate-list';
 import { EntityFilterContext } from "./EntityFilter/FilterContext";
-import { TagFilterContext } from "./TagFilter/TagContext";
+import { TagFilterContext } from "../TagFilter/TagContext";
 
 const list = generateList(2000)
 
