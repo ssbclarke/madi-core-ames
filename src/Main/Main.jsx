@@ -17,9 +17,9 @@ export const Main = ({ children }) => {
           id="tag-filter-toggle"
           className="drawer-toggle"
         />
-        <div className="drawer-content w-full">
+        <div className="drawer-content w-full bg-slate-100 p-5">
           <label for="tag-filter-toggle" class="btn btn-primary drawer-button">
-            Open drawer
+            Search Filters
           </label>
           <ComplexList />
         </div>

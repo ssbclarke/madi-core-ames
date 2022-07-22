@@ -4,7 +4,7 @@ import Navbar from './Main/navbar/navbar';
 import ComplexList from './Main/List/List';
 import { EntityFilterProvider } from './Main/List/EntityFilter/FilterContext';
 import { TagSection } from './Main/TagFilter/TagSection';
-import { Sidebar } from './Sidebar/Siderbar';
+import { Sidebar } from './Sidebar/Sidebar';
 import { TagFilterProvider} from './Main/TagFilter/TagContext';
 import { Main } from './Main/Main'
 

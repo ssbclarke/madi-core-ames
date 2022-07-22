@@ -5,8 +5,8 @@ export const Sidebar = () => {
     <div
       style={{ minHeight: 716 }}
       className="w-64 absolute sm:relative bg-gray-800 shadow md:h-full flex-col justify-between hidden sm:flex h-full ">
-      <div className="flex-1 max-h-16">
-        <h2 className="text-center text-3xl font-black">
+      <div className="flex-1 max-h-16 self-center">
+        <h2 className="text-center text-3xl font-black text-neutral-content inline-flex items-center h-full">
           <span className="text-primary">Ma</span>DI
         </h2>
       </div>
