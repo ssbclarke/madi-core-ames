@@ -3,10 +3,8 @@ import { useState } from 'react';
 
 function Navbar() {
   return (
-        <div className="navbar bg-base-100">
-            <div className="flex-1">
-                <h2 className="text-center ml-10 text-3xl font-black"><span className="text-primary">Ma</span>DI</h2>
-            </div>
+        <div className="navbar bg-base-100 max-h-16">
+
             <div className="flex-none gap-2">
                 <div className="form-control">
                 <input type="text" placeholder="Search" className="input input-bordered" />

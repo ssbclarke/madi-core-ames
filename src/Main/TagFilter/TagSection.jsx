@@ -13,69 +13,68 @@ export const TagSection = ()=>{
     // useEffect(() => console.log(tagFilterStore), [tagFilterStore]);
  
     return (
-        <div className="flex h-full">
-            <div className="flex-col">
-                <TagBox
-                    options={topics}
-                    value={tagFilterStore.topics}
-                    set="topics"
-                    setValue={handleChange}
-                    className="mb-5"
-                />
-                <TagBox
-                    options={ilities}
-                    set="ilities"
-                    value={tagFilterStore.ilities}
-                    setValue={setTagFilterStore}
-                    className="mb-5 overflow-y-scroll h-full"
-                />
-                <TagBox
-                    options={needs}
-                    set="needs"
-                    value={tagFilterStore.needs}
-                    setValue={setTagFilterStore}
-                />
-            </div>
-            <div className="flex-col">
-                <TagBox
-                    options={categories}
-                    set="categories"
-                    value={tagFilterStore.categories}
-                    setValue={setTagFilterStore}
-                />
-            </div>
-            <div className="flex-col">
-                <TagBox
-                    options={subcategories}
-                    set="subcategories"
-                    value={tagFilterStore.subcategories}
-                    setValue={setTagFilterStore}
-                />
-            </div>
+            <div className="flex h-full flex-col w-2/3 w-min overflow-hidden">  
+                <div className="h-14 bg-secondary shrink-0">
+                    Settings
+                    <button>
 
-        {/*
-        <TagBox
-            options={needs}
-            set="needs"
-            value={tagFilterStore.needs}
-            setValue={setTagFilterStore}
-        /> */}
-        {/* <TagBox
-            options={categories}
-            value={tagFilterStore.categories}
-            setValue={setTagFilterStore}
-        />
-        <TagBox
-            options={needs}
-            value={tagFilterStore.needs}
-            setValue={setTagFilterStore}
-        />
-        <TagBox
-            options={subcategories}
-            value={value2}
-            setValue={setValue2}
-        /> */}
-        </div>
+                    </button>
+                </div>
+                <div style={{height:"calc(100% - 14rem)"}} // minus height of the settings above
+                    className="flex flex-1 bg-accent h-full">
+                    <div className="flex-col h-full flex ml-5">
+                        <TagBox
+                            options={topics}
+                            value={tagFilterStore.topics}
+                            set="topics"
+                            setValue={handleChange}
+                            className="my-5 overflow-y-scroll shrink-0 max-h-32"
+                        />
+                        <TagBox
+                            options={ilities}
+                            set="ilities"
+                            value={tagFilterStore.ilities}
+                            setValue={setTagFilterStore}
+                            className="mb-5 overflow-y-scroll shrink-0 max-h-44"
+                        />
+                        <div className="mb-5 flex-1 overflow-hidden">
+                            <TagBox
+                                options={needs}
+                                set="needs"
+                                value={tagFilterStore.needs}
+                                setValue={setTagFilterStore}
+                                className="overflow-y-scroll h-full"
+                            />
+                        </div>
+                        
+                    </div>
+                    <div className="flex-col h-full flex ml-5">
+                        <TagBox
+                            options={categories}
+                            set="categories"
+                            value={tagFilterStore.categories}
+                            setValue={setTagFilterStore}
+                            className="my-5 overflow-y-scroll"
+                        />
+
+                    </div>
+                    <div className="flex-col h-full flex ml-5">
+                    <TagBox
+                            options={subcategories}
+                            set="subcategories"
+                            value={tagFilterStore.subcategories}
+                            setValue={setTagFilterStore}
+                            className="my-5 overflow-y-scroll"
+
+                        />
+
+                    </div>
+   
+                    <div className="flex-col w-5 bg-primary"></div>
+
+                </div>
+           
+            </div>
        
     )
 }

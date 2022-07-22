@@ -23,7 +23,7 @@ export const TagBox = ({options, className, value, setValue})=>{
     };
 
     let classes = cx(
-      "bg-white rounded-lg border w-72 text-gray-900 mx-5",
+      "bg-white rounded-lg border w-72 text-gray-900",
       className
     )
     return (
@@ -32,7 +32,7 @@ export const TagBox = ({options, className, value, setValue})=>{
         items={buildItems(options)}
         multiple={true}
         onChange={handleChange}
-        itemClassName="px-4 py-1 border-b border-gray-200 w-full cursor-pointer"
+        itemClassName="px-2 py-1 border-b border-gray-200 w-full cursor-pointer"
         focusedClassName="hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-0 focus:bg-gray-200 focus:text-gray-600"
         selectedClassName="bg-blue-600 text-gray-50 hover:text-gray-50 hover:bg-blue-600"
         disabledClassName="text-gray-900"
