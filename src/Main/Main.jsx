@@ -18,13 +18,13 @@ export const Main = ({ children }) => {
           className="drawer-toggle"
         />
         <div className="drawer-content w-full bg-slate-100 p-5">
-          <label for="tag-filter-toggle" class="btn btn-primary drawer-button">
+          <label htmlFor="tag-filter-toggle" className="btn btn-primary drawer-button">
             Search Filters
           </label>
           <ComplexList />
         </div>
         <div className="drawer-side">
-          <label for="tag-filter-toggle" class="drawer-overlay"></label>
+          <label htmlFor="tag-filter-toggle" className="drawer-overlay"></label>
           <TagSection />
         </div>
       </div>

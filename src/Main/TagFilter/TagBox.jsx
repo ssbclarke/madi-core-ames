@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import List from './List'
 import cx from 'classnames'
 
@@ -15,11 +15,10 @@ function buildItems(options){
     }})
 }
 
-export const TagBox = ({options, className, value, setValue})=>{
+export const TagBox = ({options, className, value, optionGroup, setValue})=>{
 
-    const handleChange = (val) => {
-      console.log('tagbox handler', val) 
-      setValue(options.filter((o,i)=>val.includes(i)));
+    const handleChange = (indices) => {
+      setValue(indices, options, optionGroup)
     };
 
     let classes = cx(
