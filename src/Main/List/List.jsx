@@ -31,13 +31,13 @@ const ComplexList = () => {
       {filterList({ entityFilterStore, tagFilterStore, list }).map((item) => (
         <div
           key={item.id}
-          tabindex="0"
-          class="collapse collapse-arrow 
+          tabIndex="0"
+          className="collapse collapse-arrow 
             bg-base-100 
             mb-2
           ">
-          <input type="checkbox" class="peer" />
-          <div class="collapse-title 
+          <input type="checkbox" className="peer" />
+          <div className="collapse-title 
             border-l-8 border-l-base-100
             transition-color ease-out duration-300
             peer-hover:border-l-indigo-500 
@@ -46,7 +46,7 @@ const ComplexList = () => {
             peer-checked:text-base-content">
               Click me to show/hide content
           </div>
-          <div class="collapse-content 
+          <div className="collapse-content 
             border-l-8 border-l-base-100
             transition-color ease-out duration-300
             peer-checked:bg-indigo-200

@@ -32,14 +32,6 @@ export default class List extends React.Component{
 		lastSelected: null,
 	}
 
-	componentWillReceiveProps(nextProps) {
-		this.setState(() => ({
-			items: nextProps.items,
-			selectedItems: nextProps.selected,
-			disabledItems: nextProps.disabled,
-		}))
-	}
-
 	clear = () => {
 		this.setState(() => ({
 			selectedItems: [],
@@ -60,6 +52,8 @@ export default class List extends React.Component{
 
 		this.setState(
 			state => {
+				console.log("calling setState:: ")
+				console.log(state)
 				let {multiple} = this.props
 				let {lastSelected} = state
 				let selectedItems = multiple
@@ -260,7 +254,6 @@ export default class List extends React.Component{
 			let disabled = includes(this.state.disabledItems, index)
 			let selected = includes(this.state.selectedItems, index)
 			let focused = this.state.focusedIndex === index
-
 			return (
 				<ListItem
 					key={index}
