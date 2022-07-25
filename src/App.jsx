@@ -1,29 +1,22 @@
-import { useState } from 'react';
 import './App.css';
-import Navbar from './Main/navbar/navbar';
-import ComplexList from './Main/List/List';
-import { EntityFilterProvider } from './Main/List/EntityFilter/FilterContext';
-import { TagSection } from './Main/TagFilter/TagSection';
-import { Sidebar } from './Sidebar/Sidebar';
-import { TagFilterProvider} from './Main/TagFilter/TagContext';
-import { Main } from './Main/Main'
-import Selector from './selector'
+import { EntityFilterProvider } from './components/EntityList/EntityFilterContext';
+import { Sidebar } from './components/Sidebar/Sidebar';
+import { TagFilterProvider} from './components/TagFilter/TagContext';
+import { Main } from './components/EntityList/Main'
+import { SidebarLayout } from './Layouts/SidebarLayout'
 
 function App() {
   return (
     <EntityFilterProvider>
     <TagFilterProvider>
-    {/* <Selector/> */}
-    {/* Should be visible. */}
-      <div className="App w-full h-screen flex flex-no-wrap">
-        <Sidebar/>
+
+      <SidebarLayout 
+      sidebarComponent={<Sidebar/>}>
         <Main/>
-        
+      </SidebarLayout>
 
-
-      </div>
-      </TagFilterProvider>
-      </EntityFilterProvider>
+    </TagFilterProvider>
+    </EntityFilterProvider>
   );
 }
 

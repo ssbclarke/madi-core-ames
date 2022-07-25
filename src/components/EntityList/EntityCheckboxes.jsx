@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { EntityFilterContext } from './FilterContext';
+import { EntityFilterContext } from './EntityFilterContext';
 const checkboxes = [
     {
       name: 'filter-checkbox-scenario',

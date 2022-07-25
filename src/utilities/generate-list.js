@@ -1,4 +1,4 @@
-import { entities, categories, subcategories } from './options'
+import { entities, categories, subcategories } from '../config/options'
 
 function getRandomSubarray(arr, size) {
     var shuffled = arr.slice(0), i = arr.length, temp, index;

@@ -14,6 +14,7 @@ import {ListItem} from './list-item'
 
 
 export default class List extends React.Component{
+
 	static defaultProps = {
 		items: [],
 		selected: [],
@@ -32,6 +33,14 @@ export default class List extends React.Component{
 		lastSelected: null,
 	}
 
+	componentDidUpdate = (prevProps, prevState, snapshot)=>{
+		if(JSON.stringify(prevProps.selected) !== JSON.stringify(this.props.selected)){
+			this.setState(() => ({
+				selectedItems: this.props.selected
+			}))
+		};
+	}
+	
 	clear = () => {
 		this.setState(() => ({
 			selectedItems: [],
@@ -250,10 +259,13 @@ export default class List extends React.Component{
 	}
 
 	render() {
+		console.log('selectedItems', this.state.selectedItems)
+
 		let items = this.props.items.map((itemContent, index) => {
 			let disabled = includes(this.state.disabledItems, index)
 			let selected = includes(this.state.selectedItems, index)
 			let focused = this.state.focusedIndex === index
+
 			return (
 				<ListItem
 					key={index}

@@ -1,12 +1,13 @@
 import { useState } from "react";
-import Navbar from "./navbar/navbar";
-import ComplexList from "./List/List";
-import { TagSection } from "./TagFilter/TagSection";
+import Navbar from "../navbar/navbar";
+import ComplexList from "./List";
+import { TagSection } from "../TagFilter/TagSection"
+import { CheckboxGroup } from "./EntityCheckboxes";
 
 export const Main = ({ children }) => {
   return (
     <div className="h-full w-full overflow-hidden">
-      <Navbar style />
+      <Navbar />
       <div
         style={{
           height: `calc(100vh - 4rem)`, //height of the navbar
@@ -15,12 +16,20 @@ export const Main = ({ children }) => {
         <input
           type="checkbox"
           id="tag-filter-toggle"
-          className="drawer-toggle"
+          className="drawer-toggle w-0"
         />
-        <div className="drawer-content w-full bg-slate-100 p-5">
-          <label htmlFor="tag-filter-toggle" className="btn btn-primary drawer-button">
-            Search Filters
-          </label>
+        <div className="drawer-content w-full bg-slate-100">
+          <div className="flex flex-wrap justify-between m-5 ">
+            <label htmlFor="tag-filter-toggle" className="btn btn-sm mt-1 btn-primary drawer-button rounded">
+            <svg class="h-6 w-6 pr-1" stroke="currentColor"  fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+              Search Filters
+            </label>
+            <CheckboxGroup />
+          </div>
+
+
           <ComplexList />
         </div>
         <div className="drawer-side">

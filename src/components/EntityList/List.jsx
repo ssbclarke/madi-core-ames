@@ -1,8 +1,8 @@
 import React, { useContext, useMemo } from "react";
-import { CheckboxGroup } from "./EntityFilter/EntityCheckboxes";
-import { generateList } from "./generate-list";
-import { EntityFilterContext } from "./EntityFilter/FilterContext";
-import { TagFilterContext } from "../TagFilter/TagContext";
+import { CheckboxGroup } from "./EntityCheckboxes";
+import { generateList } from "../../utilities/generate-list"
+import { EntityFilterContext } from "./EntityFilterContext";
+import { TagFilterContext } from "../TagFilter/TagContext"
 
 
 
@@ -26,15 +26,14 @@ const ComplexList = () => {
   const { tagFilterStore, setTagFilterStore } = useContext(TagFilterContext);
 
   return (
-    <div className="overflow-x-auto w-full">
-      <CheckboxGroup />
+    <div className="overflow-x-auto w-full px-5">
       {filterList({ entityFilterStore, tagFilterStore, list }).map((item) => (
         <div
           key={item.id}
           tabIndex="0"
           className="collapse collapse-arrow 
             bg-base-100 
-            mb-2
+            mb-1
           ">
           <input type="checkbox" className="peer" />
           <div className="collapse-title 

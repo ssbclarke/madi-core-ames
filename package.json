@@ -11,6 +11,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-list-select": "^0.4.1",
+    "react-pro-sidebar": "^0.7.1",
     "react-select": "^5.4.0",
     "react-virtualized": "^9.22.3"
   },
