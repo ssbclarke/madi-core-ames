@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 
-export const SidebarLayout = ()=>{
+export const SidebarLayoutNew = ()=>{
   return (
     <ProSidebar>
       <SidebarHeader>
@@ -25,7 +25,7 @@ export const SidebarLayout = ()=>{
 }
 
 
-export const SidebarLayoutOld = ({ children, sidebarComponent }) => {
+export const SidebarLayout = ({ children, sidebarComponent }) => {
   // const [sidebarStatus]
   return (
     <div className="w-full h-screen flex flex-no-wrap">

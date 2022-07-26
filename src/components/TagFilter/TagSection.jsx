@@ -29,7 +29,7 @@ export const TagSection = ()=>{
         setTagFilterStore({...Object.values(tagFilterStore).reduce((o, key) => ({ ...o, [key]:[]}), {})})
     }
     return (
-            <div className="flex h-full flex-col min-w-min w-4/5 border-t border-base-300">  
+            <div className="flex h-full overflow-hidden flex-col min-w-min w-4/5 border-t border-base-300">  
                 <div className="min-h-14 bg-base-200 shrink-0 ">
                     <div className="flex m-5 mb-2 justify-between">
                         <div className="flex flex-nowrap">
@@ -151,8 +151,9 @@ export const TagSection = ()=>{
                         />
 
                     </div>
-                    <div className="flex-col w-5 bg-primary"></div>
-
+                    <div className="flex-col w-5">
+                        {/* Saved for later in case drawer icon is used */}
+                    </div>
                 </div>
            
             </div>
