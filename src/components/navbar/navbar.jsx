@@ -1,11 +1,12 @@
 import { useState, useContext } from 'react';
-import { SidebarContext } from '../../Layouts/SidebarLayout'
+import { SidebarContext } from '../../components/Sidebar/SidebarContext'
 
 const SidebarToggle = ()=>{
     const [sidebarStore, setSidebarStore] = useContext(SidebarContext)
 
     const toggleSidebar = () => {
-        setSidebarStore({...sidebarStore, toggled:!sidebarStore.toggled})
+        console.log('in the nacbar', sidebarStore.collapsed)
+        setSidebarStore({...sidebarStore, collapsed:!sidebarStore.collapsed})
     };
     return (
         <label htmlFor="sidebar-toggle" className="btn btn-link btn-primary pl-0" onClick={toggleSidebar}>
