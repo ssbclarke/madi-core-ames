@@ -28,5 +28,5 @@
       "passwordField": "password"
     }
   },
-  "postgres": "postgres://postgres:@localhost:5432/backend"
+  "postgres": "postgres://unicorn_user:magical_password@database:5432/rainbow_database"
 }

@@ -28,6 +28,13 @@ export default function (app: Application): void {
     // Sync to the database
     app.set('sequelizeSync', sequelize.sync());
 
+
+
     return result;
   };
+}
+
+
+function importTestData(){
+  
 }

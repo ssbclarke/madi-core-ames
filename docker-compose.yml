@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  database:
+    image: "postgres:10.16"
+    environment:
+    - POSTGRES_USER=unicorn_user
+    - POSTGRES_PASSWORD=magical_password
+    - POSTGRES_DB=rainbow_database
+    volumes:
+    - database-data:/var/lib/postgresql/data/
+    ports:
+    - "5432:5432"
+
+  app:
+    # environment:
+    #   - NODE_ENV=in_docker_compose
+    depends_on:
+      - database
+    build: ./backend
+    ports:
+      - "3030:3030"
+    command: npm start
+    # network_mode: host
+
+
+volumes:
+  database-data:
