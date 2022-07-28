@@ -1,28 +1,30 @@
-// Initializes the `users` service on path `/users`
-import { ServiceAddons } from '@feathersjs/feathers';
-import { Application } from '../../declarations';
-import { Users } from './users.class';
-import createModel from '../../models/users.model';
-import hooks from './users.hooks';
+import type { Application } from '../../declarations'
+
+import { UsersService, usersHooks } from './users.class'
+
+// A configure function that registers the service and its hooks via `app.configure`
+export function users(app: Application) {
+  const options = {
+    paginate: app.get('paginate'),
+    Model: app.get('postgresqlClient'),
+    name: 'users'
+    // Service options will go here
+  }
+
+  // Register our service on the Feathers application
+  app.use('users', new UsersService(options), {
+    // A list of all methods this service exposes externally
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove'],
+    // You can add additional custom events to be sent to clients here
+    events: []
+  })
+  // Initialize hooks
+  app.service('users').hooks(usersHooks)
+}
 
 // Add this service to the service type index
 declare module '../../declarations' {
   interface ServiceTypes {
-    'users': Users & ServiceAddons<any>;
+    users: UsersService
   }
-}
-
-export default function (app: Application): void {
-  const options = {
-    Model: createModel(app),
-    paginate: app.get('paginate')
-  };
-
-  // Initialize our service with any options it requires
-  app.use('/users', new Users(options, app));
-
-  // Get our initialized service so that we can register hooks
-  const service = app.service('users');
-
-  service.hooks(hooks);
 }

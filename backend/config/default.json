@@ -1,15 +1,19 @@
 {
   "host": "localhost",
   "port": 3030,
-  "public": "../public/",
+  "public": "./public/",
   "paginate": {
     "default": 10,
     "max": 50
   },
+  "postgresql": {
+    "client": "pg",
+    "connection": "postgres://unicorn_user:magical_password@localhost:5432/rainbow_database"
+  },
   "authentication": {
     "entity": "user",
     "service": "users",
-    "secret": "WFI9wrpiM6MW7EFxvX014Q7bic4=",
+    "secret": "xC83SmIi76qjmSl5DToN6WtpMWfNgmgk",
     "authStrategies": [
       "jwt",
       "local"
@@ -19,7 +23,6 @@
         "typ": "access"
       },
       "audience": "https://yourdomain.com",
-      "issuer": "feathers",
       "algorithm": "HS256",
       "expiresIn": "1d"
     },
@@ -27,6 +30,5 @@
       "usernameField": "email",
       "passwordField": "password"
     }
-  },
-  "postgres": "postgres://unicorn_user:magical_password@database:5432/rainbow_database"
+  }
 }
