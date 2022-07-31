@@ -6,7 +6,7 @@ const authentication_1 = require("@feathersjs/authentication");
 exports.configurationSchema = (0, schema_1.schema)({
     $id: 'ApplicationConfiguration',
     type: 'object',
-    additionalProperties: false,
+    // additionalProperties: false,
     required: ['host', 'port', 'public', 'paginate'],
     properties: {
         host: { type: 'string' },

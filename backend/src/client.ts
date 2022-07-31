@@ -1,5 +1,15 @@
 import { feathers } from '@feathersjs/feathers'
 import type {
+  ProblemsData,
+  ProblemsResult,
+  ProblemsQuery,
+} from './services/problems/problems.schema'
+import type {
+  ObservationsData,
+  ObservationsResult,
+  ObservationsQuery,
+} from './services/observations/observations.schema'
+import type {
   UsersData,
   UsersResult,
   UsersQuery,
@@ -7,6 +17,8 @@ import type {
 import type { Service, TransportConnection, Params } from '@feathersjs/feathers'
 
 export interface ServiceTypes {
+  'problems': Service<ProblemsData, ProblemsResult, Params<ProblemsQuery>>
+  'observations': Service<ObservationsData, ObservationsResult, Params<ObservationsQuery>>
   'users': Service<UsersData, UsersResult, Params<UsersQuery>>
   // A mapping of client side services
 }

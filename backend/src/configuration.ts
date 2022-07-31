@@ -6,7 +6,7 @@ export const configurationSchema = schema(
   {
     $id: 'ApplicationConfiguration',
     type: 'object',
-    additionalProperties: false,
+    // additionalProperties: false,
     required: ['host', 'port', 'public', 'paginate'],
     properties: {
       host: { type: 'string' },
