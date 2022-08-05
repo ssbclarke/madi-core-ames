@@ -1,4 +1,6 @@
 import { useState, cloneElement, useContext, createContext } from "react";
+import { FaGem, FaGithub, FaCog, FaRegQuestionCircle, FaConfluence, FaCubes, FaBookmark } from 'react-icons/fa'
+import { SiNotion, SiAirtable } from 'react-icons/si'
 import {
     ProSidebar,
     Menu,
@@ -10,7 +12,7 @@ import {
   } from "react-pro-sidebar";
   import "react-pro-sidebar/dist/css/styles.css";
 import { SidebarContext } from "./SidebarContext";
-import './sidebar.css'
+import './Sidebar.css'
 
 export const Sidebar = () => {
   const [sidebarStore, setSidebarStore] = useContext(SidebarContext)
@@ -22,10 +24,9 @@ export const Sidebar = () => {
           // onToggle={toggleSidebar}
           >
           <SidebarHeader>
-     
-            <div className={`flex flex-1 max-h-20 justify-center text-white h-16
+            <div className={`flex flex-1 max-h-20 justify-left text-white h-16 transition-all pl-4 pt-1
             overflow-hidden nowrap
-            ${sidebarStore.collapsed?"w-12": "w-full"}`}>
+            ${sidebarStore.collapsed?"w-20": "w-full"}`}>
                 <Logo/>
                 {!sidebarStore.collapsed?
                     <LogoName/>
@@ -49,68 +50,47 @@ export const Sidebar = () => {
 
           <SidebarContent>
             <Menu iconShape="circle">
-              <MenuItem
-                // icon={<FaTachometerAlt />}
-                suffix={<span className="badge red">new</span>}>
-                dashboard
-              </MenuItem>
-              <MenuItem
-              // icon={<FaGem />}
+              <SubMenu 
+                // defaultOpen	
+                icon={<FaBookmark />}
+                title="My Investigations"
               >
-                {" "}
-                components
-              </MenuItem>
+                <MenuItem >Draft X2</MenuItem>
+                <MenuItem >Democratization & Health</MenuItem>
+                <MenuItem >DRAFT Strategic Investigation 2024</MenuItem>
+              </SubMenu>
             </Menu>
+
             <Menu iconShape="circle">
               <SubMenu
-                suffix={<span className="badge yellow">3</span>}
-                title="withSuffix"
-                // icon={<FaRegLaughWink />}
+                // defaultOpen	
+                icon={<FaCubes />}
+                title="Document Repositories"
               >
-                <MenuItem>1</MenuItem>
-                <MenuItem>2</MenuItem>
-                <MenuItem>3</MenuItem>
-              </SubMenu>
-              <SubMenu
-                prefix={<span className="badge gray">3</span>}
-                title="withPrefix"
-                // icon={<FaHeart />}
-              >
-                <MenuItem>1</MenuItem>
-                <MenuItem> 2</MenuItem>
-                <MenuItem>3</MenuItem>
-              </SubMenu>
-              <SubMenu
-                title={`$2`}
-                // icon={<FaList />}
-              >
-                <MenuItem>1 </MenuItem>
-                <MenuItem>2 </MenuItem>
-                <SubMenu title={`$3`}>
-                  <MenuItem>3.1 </MenuItem>
-                  <MenuItem>3.2 </MenuItem>
-                  <SubMenu title={`$3.3`}>
-                    <MenuItem>3.3.1 </MenuItem>
-                    <MenuItem>3.3.2 </MenuItem>
-                    <MenuItem>3.3.3 </MenuItem>
-                  </SubMenu>
-                </SubMenu>
+                <MenuItem icon={<SiNotion />}>Notion</MenuItem>
+                <MenuItem icon={<FaConfluence />}>Confluence</MenuItem>
+                <MenuItem icon={<SiAirtable />}>Airtable</MenuItem>
               </SubMenu>
             </Menu>
           </SidebarContent>
 
-          <SidebarFooter style={{ textAlign: "center" }}>
-            <div
+          <SidebarFooter>
+            <Menu iconShape="circle">
+              <MenuItem icon={<FaGithub />}>View Source</MenuItem>
+              <MenuItem icon={<FaCog />}>Settings</MenuItem>
+              <MenuItem icon={<FaRegQuestionCircle />}>Help</MenuItem>
+            </Menu>
+           
+            {/* <div
               className="sidebar-btn-wrapper"
               style={{
                 padding: "20px 24px",
               }}>
               <a
-                href="https://github.com/azouaoui-med/react-pro-sidebar"
+                href="https://github.com"
                 target="_blank"
                 className="sidebar-btn"
                 rel="noopener noreferrer">
-                {/* <FaGithub /> */}
                 <span
                   style={{
                     whiteSpace: "nowrap",
@@ -120,7 +100,7 @@ export const Sidebar = () => {
                   viewSource
                 </span>
               </a>
-            </div>
+            </div> */}
           </SidebarFooter>
         </ProSidebar>
   );
