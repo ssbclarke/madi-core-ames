@@ -11,8 +11,14 @@ export const TagFilterProvider = ({children}) => {
         category:[],
         subcategory:[]
     });
+    const [tagAnyAllStore, setTagAnyAllStore] = useState('any');
+    const [tagBookmarkStore, setTagBookmarkStore] = useState(false);
 	return (
-		<TagFilterContext.Provider value={{tagFilterStore, setTagFilterStore}}>
+		<TagFilterContext.Provider value={{
+            tagFilterStore, setTagFilterStore,
+            tagAnyAllStore, setTagAnyAllStore,
+            tagBookmarkStore, setTagBookmarkStore
+        }}>
 			{children}
 		</TagFilterContext.Provider>
 	)
