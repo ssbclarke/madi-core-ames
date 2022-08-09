@@ -8,7 +8,8 @@ export const TagSection = ()=>{
     const { 
         tagFilterStore, setTagFilterStore,
         tagAnyAllStore, setTagAnyAllStore,
-        tagBookmarkStore, setTagBookmarkStore
+        tagBookmarkStore, setTagBookmarkStore,
+        investigationStore, setInvestigationStore
     } = useContext(TagFilterContext)
 
     let selected = [];

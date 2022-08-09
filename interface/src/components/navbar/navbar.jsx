@@ -1,5 +1,7 @@
 import { useState, useContext } from 'react';
 import { SidebarContext } from '../../components/Sidebar/SidebarContext'
+import { TagFilterContext } from '../TagFilter/TagContext';
+import { investigations } from '../../config/options';
 
 const SidebarToggle = ()=>{
     const [sidebarStore, setSidebarStore] = useContext(SidebarContext)
@@ -16,20 +18,21 @@ const SidebarToggle = ()=>{
 }
 
 function Navbar() {
+  const { investigationStore, setInvestigationStore } = useContext(TagFilterContext)
   return (
         <div className="navbar bg-base-100 max-h-16">
 
             <div className="flex mx-3 w-full justify-between">
                 
                 <SidebarToggle/>
-                <div className="form-control w-full">
+                <div className="form-control w-2/5">
                     <div className="input-group">
                         <input type="text" placeholder="Search…" className="input input-bordered border-r-0 text-lg
                         peer
                         outline-0	
                         focus:outline-0
                         focus:border-primary
-                        w-2/5
+                        w-full
                         " />
                         <button className="btn btn-square btn-outline btn-primary border-base-300 border-l-0
                         peer-focus:border-primary">
@@ -37,6 +40,12 @@ function Navbar() {
                         </button>
                     </div>
                 </div>
+                <div className="w-2/5 flex">
+                    {investigations.filter(i=>investigationStore===i.id).map((inv,i)=>{
+                        return(<div key={i}>{inv.name}</div>)
+                    })}
+                </div>
+
 
                 <label tabIndex="0" className="btn btn-ghost btn-circle avatar">
                     <div className="w-10 rounded-full">

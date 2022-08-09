@@ -13,7 +13,7 @@ export const TagFilterProvider = ({children}) => {
     });
     const [tagAnyAllStore, setTagAnyAllStore] = useState('any');
     const [tagBookmarkStore, setTagBookmarkStore] = useState(false);
-    const [investigationStore, setInvestigationStore] = useState(false);
+    const [investigationStore, setInvestigationStore] = useState(null);
 
     return (
 		<TagFilterContext.Provider value={{

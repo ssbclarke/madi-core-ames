@@ -1,6 +1,7 @@
 import { useState, cloneElement, useContext, createContext } from "react";
 import { FaGem, FaGithub, FaCog, FaRegQuestionCircle, FaConfluence, FaCubes, FaBookmark } from 'react-icons/fa'
 import { SiNotion, SiAirtable } from 'react-icons/si'
+import { TagFilterContext } from "../TagFilter/TagContext";
 import {
     ProSidebar,
     Menu,
@@ -17,6 +18,7 @@ import { investigations } from "../../config/options";
 
 export const Sidebar = () => {
   const [sidebarStore, setSidebarStore] = useContext(SidebarContext)
+  const {investigationStore, setInvestigationStore} = useContext(TagFilterContext)
 
   return (
         <ProSidebar
@@ -58,7 +60,7 @@ export const Sidebar = () => {
               >
                 {investigations.map((investigation,i)=>{
                   return(
-                    <MenuItem key={i} onClick={()=>{}}>
+                    <MenuItem key={i} onClick={()=>setInvestigationStore(investigation.id)}>
                       {investigation.name}
                     </MenuItem>
                   )
