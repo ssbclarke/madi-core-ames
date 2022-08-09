@@ -1,0 +1,5 @@
+terraform/.terraform
+terraform/root-terraform/.terraform
+.git
+api/node_modules
+loadtests/node_modules

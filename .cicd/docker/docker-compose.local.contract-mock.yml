@@ -1,0 +1,42 @@
+########################################
+# CONTRACT MOCK - This compose file stands up and runs the contract-mock tests and depencies only.  No database is needed.
+########################################
+
+version: '3.8'
+
+services:
+
+
+  # # # This is the mock API available at port 8080
+  api_mock:
+    container_name: prism_top_mock
+    image: stoplight/prism:4.2.6
+    volumes:
+      - "../../api/specifications:/tmp"
+    ports:
+      - "8080:4010"
+    networks:
+      - default
+    command: >
+      mock -m -p 4010 --host 0.0.0.0 "/tmp/api-specification.yml" -m
+    # logging: # This suppresses logs
+    #   driver: "none"
+
+
+  # # Contract Tests against the OpenAPI Specs
+  blueprint_mock_test:
+    image: "postman/newman" # use latest official postgres version
+    depends_on:
+      - "api_mock"
+    volumes:
+      - "../../api/specifications:/etc/newman"
+    networks:
+      - default
+    entrypoint: >
+      sh -c "
+        sleep 10
+        newman run blueprint.postman_collection.json \
+        --folder v1 \
+        -e local_prism.postman_environment.json \
+        --env-var 'baseUrl=api_mock:4010'
+      "
