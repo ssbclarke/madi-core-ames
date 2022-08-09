@@ -27,7 +27,11 @@ const ComplexList = () => {
 
   return (
     <div className="overflow-x-auto w-full px-5">
-      {filterList({ entityFilterStore, tagFilterStore, list }).map((item) => (
+      {filterList({ entityFilterStore, tagFilterStore, list }).map((item) => {
+
+        
+
+        return (
         <div
           key={item.id}
           tabIndex="0"
@@ -58,7 +62,7 @@ const ComplexList = () => {
             <p>{item.type}</p>
             </div>
         </div>
-      ))}
+      )})}
     </div>
   );
 };
