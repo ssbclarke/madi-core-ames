@@ -1,3 +1,9 @@
+export const investigations = [
+    {   name:   "Draft X2",                             id:"draft_x2"   },
+    {   name:   "Democratization & Health",             id:"dnh"        },
+    {   name:   "DRAFT Strategic Investigation 2024",   id:"strat2024"  }
+]
+
 export const entities = [
     'report', 
     'scenario',
@@ -6,11 +12,13 @@ export const entities = [
     'observation',
     'trend'
 ]
+
 export const topics = [
     'Geoengineering', 
     'Democratization',
     'Decisioning for EcoSystem Wellness'
 ]
+
 export const ilities = [
     "accessibility",
     "accountability",

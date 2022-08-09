@@ -1,60 +1,56 @@
 version: '3.8'
 
 services:
+  # This is the mock API available at port 8080
+  api_mock:
+    image: stoplight/prism:4.2.6
+    volumes:
+      - "./api/specifications:/tmp"
+    ports:
+      - "8080:4010"
+    command: >
+      mock -m -p 4010 --host 0.0.0.0 "/tmp/api-specification.yml" -m
+
+
+  # This is the real API available at port 3030
+  #   - This builds an image for the top level docker-compose
+  #     and may not be the same image as built under the /api folder directly
+  api:
+    build: ./api
+    environment:
+      - NODE_CONFIG_ENV=mac-docker
+      - POSTGRES_PASSWORD=magical_password
+      - POSTGRES_USER=unicorn_user
+      - POSTGRES_DB=rainbow_database
+      - POSTGRES_HOST=database
+      - POSTGRES_PORT=5432
+      - PUSH_ENDPOINT=http://api:3030/
+      - PUBSUB_API_ENDPOINT=pubsub:8085
+    ports:
+      - "3030:3030"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  # This is the postgres docker DB available at port 35432
+  #   - This only for local usage and has no bearing on CloudSQL
+  #   - When referencing the db from a compose container, use database:5432
+  #   - When referencing the db from an external process, use localhost:35432
   database:
     image: "postgres:10.16"
     environment:
-    - POSTGRES_USER=unicorn_user
-    - POSTGRES_PASSWORD=magical_password
-    - POSTGRES_DB=rainbow_database
+      - POSTGRES_USER=unicorn_user
+      - POSTGRES_PASSWORD=magical_password
+      - POSTGRES_DB=rainbow_database
     volumes:
-    - database-data:/var/lib/postgresql/data/
+      - database-data:/var/lib/postgresql/data/
     ports:
-    - "5432:5432"
-
-  app:
-    # environment:
-    #   - NODE_ENV=in_docker_compose
-    depends_on:
-      - database
-    build: ./backend
-    ports:
-      - "3030:3030"
-    command: npm start
-    # network_mode: host
-  
-  # elasticsearch browser
-  dejavu:
-      image: appbaseio/dejavu:3.6.0
-      container_name: dejavu
-      ports:
-          - '1358:1358'
-      links:
-          - opensearch
-
-  # search engine
-  opensearch:
-    image: opensearchproject/opensearch:1.2.4
-    container_name: opensearch
-    environment:
-        - plugins.security.disabled=true
-        - discovery.type=single-node
-        - http.port=9200
-        - http.cors.enabled=true
-        - http.cors.allow-origin=http://localhost:1358,http://127.0.0.1:1358
-        - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
-        - http.cors.allow-credentials=true
-        - bootstrap.memory_lock=true
-        - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
-    ports:
-        - '9200:9200'
-        - '9300:9300'
-    ulimits:
-        memlock:
-            soft: -1
-            hard: -1
-    volumes:
-        - ./data:/usr/share/opensearch/data
+      - "35432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U unicorn_user -d rainbow_database"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   database-data:

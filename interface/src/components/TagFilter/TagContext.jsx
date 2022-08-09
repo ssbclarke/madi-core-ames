@@ -9,15 +9,18 @@ export const TagFilterProvider = ({children}) => {
         ility:[],
         need:[],
         category:[],
-        subcategory:[]
+        subcategory:[],
     });
     const [tagAnyAllStore, setTagAnyAllStore] = useState('any');
     const [tagBookmarkStore, setTagBookmarkStore] = useState(false);
-	return (
+    const [investigationStore, setInvestigationStore] = useState(false);
+
+    return (
 		<TagFilterContext.Provider value={{
             tagFilterStore, setTagFilterStore,
             tagAnyAllStore, setTagAnyAllStore,
-            tagBookmarkStore, setTagBookmarkStore
+            tagBookmarkStore, setTagBookmarkStore,
+            investigationStore, setInvestigationStore
         }}>
 			{children}
 		</TagFilterContext.Provider>

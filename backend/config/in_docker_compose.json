@@ -1,3 +1,0 @@
-{
-    "postgres": "postgres://unicorn_user:magical_password@database:5432/rainbow_database"
-}

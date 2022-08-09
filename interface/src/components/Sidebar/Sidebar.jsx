@@ -13,6 +13,7 @@ import {
   import "react-pro-sidebar/dist/css/styles.css";
 import { SidebarContext } from "./SidebarContext";
 import './Sidebar.css'
+import { investigations } from "../../config/options";
 
 export const Sidebar = () => {
   const [sidebarStore, setSidebarStore] = useContext(SidebarContext)
@@ -55,9 +56,13 @@ export const Sidebar = () => {
                 icon={<FaBookmark />}
                 title="My Investigations"
               >
-                <MenuItem >Draft X2</MenuItem>
-                <MenuItem >Democratization & Health</MenuItem>
-                <MenuItem >DRAFT Strategic Investigation 2024</MenuItem>
+                {investigations.map((investigation,i)=>{
+                  return(
+                    <MenuItem key={i} onClick={()=>{}}>
+                      {investigation.name}
+                    </MenuItem>
+                  )
+                })}
               </SubMenu>
             </Menu>
 
