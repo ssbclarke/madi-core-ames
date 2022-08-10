@@ -11,7 +11,6 @@ loremIpsum({
     sentenceUpperBound: 15,  // Max. number of words per sentence.
     suffix: "\n",            // Line ending, defaults to "\n" or "\r\n" (win32)
     units: "sentences",      // paragraph(s), "sentence(s)", or "word(s)"
-    words: ["ad", ...]       // Array of words to draw from
   })
 
 

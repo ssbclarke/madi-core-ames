@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from "react";
 import { CheckboxGroup } from "./EntityCheckboxes";
-import { generateList } from "../../utilities/generate-list"
+import { generateList } from "../../utils/generate-list"
 import { EntityFilterContext } from "./EntityFilterContext";
 import { TagFilterContext } from "../TagFilter/TagContext"
 

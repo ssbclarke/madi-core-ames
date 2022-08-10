@@ -3,20 +3,44 @@ import { EntityFilterProvider } from './components/EntityList/EntityFilterContex
 import { Sidebar } from './components/Sidebar/SidebarOLD';
 import { TagFilterProvider} from './components/TagFilter/TagContext';
 import { EntityList } from './components/EntityList/EntityList'
-import { SidebarLayout} from './Layouts/SidebarLayout'
+import { SidebarLayout} from './components/Layouts/SidebarLayout'
 import { SidebarProvider } from "./components/Sidebar/SidebarContext";
+import Loading from "./components/Loading";
+
+import { Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
+import { ProtectedRoute } from './components/Auth/ProtectedRoute'
+import { useAuth0 } from "@auth0/auth0-react";
+import history from "./utils/history";
+import { Login } from './Pages/Login'
+
 
 function App() {
+  const { isLoading, error, isAuthenticated, user } = useAuth0();
+
+  if (error) {
+    return <div>Oops... {error.message}</div>;
+  }
+  if (isLoading){
+    return <div>is loading</div>;
+  }
+  console.log('app login', isLoading, error, isAuthenticated, user)
+  
   return (
-    <EntityFilterProvider>
-    <TagFilterProvider>
-      
-      <SidebarLayout>
-        <EntityList/>
-      </SidebarLayout>
-    
-    </TagFilterProvider>
-    </EntityFilterProvider>
+
+        <BrowserRouter>
+          <Routes>
+            <Route element={<ProtectedRoute user={user} />}>
+              <Route path="/" element={
+                  <SidebarLayout>
+                    <EntityList/>
+                  </SidebarLayout>
+                } />
+            </Route>
+            <Route path="/login" element={<Login/>} />
+          </Routes>
+        </BrowserRouter>
+
   );
 }
 

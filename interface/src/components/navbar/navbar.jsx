@@ -2,6 +2,10 @@ import { useState, useContext } from 'react';
 import { SidebarContext } from '../../components/Sidebar/SidebarContext'
 import { TagFilterContext } from '../TagFilter/TagContext';
 import { investigations } from '../../config/options';
+import { LogoutButton } from '../Auth/LogoutButton'
+import { LoginButton } from '../Auth/LoginButton'
+import { Avatar } from '../Auth/Avatar'
+import { useAuth0 } from "@auth0/auth0-react";
 
 const SidebarToggle = ()=>{
     const [sidebarStore, setSidebarStore] = useContext(SidebarContext)
@@ -19,6 +23,8 @@ const SidebarToggle = ()=>{
 
 function Navbar() {
   const { investigationStore, setInvestigationStore } = useContext(TagFilterContext)
+  const { user, isAuthenticated, isLoading } = useAuth0();
+
   return (
         <div className="navbar bg-base-100 max-h-16">
 
@@ -45,13 +51,12 @@ function Navbar() {
                         return(<div key={i}>{inv.name}</div>)
                     })}
                 </div>
-
-
-                <label tabIndex="0" className="btn btn-ghost btn-circle avatar">
-                    <div className="w-10 rounded-full">
-                        <img src="https://placeimg.com/80/80/people" />
-                    </div>
-                </label>
+                {isAuthenticated?
+                    (<><LogoutButton/><h2>{user.name.split(' ')[0]}</h2><Avatar/></>)
+                    :(<LoginButton/>)
+                }
+                
+                
                 {/*<ul tabIndex="0" className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
                     <li>
                     <a className="justify-between">

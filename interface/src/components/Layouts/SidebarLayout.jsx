@@ -1,7 +1,7 @@
 import { useState, cloneElement, useContext, createContext } from "react";
 
-import { Sidebar } from "../components/Sidebar/Sidebar";
-import { SidebarProvider } from "../components/Sidebar/SidebarContext";
+import { Sidebar } from "../Sidebar/Sidebar";
+import { SidebarProvider } from "../Sidebar/SidebarContext";
 
 export const SidebarLayout = ({ children }) => {
   return (
