@@ -51,9 +51,9 @@ function Navbar() {
                         return(<div key={i}>{inv.name}</div>)
                     })}
                 </div>
-                {isAuthenticated?
-                    (<><LogoutButton/><h2>{user.name.split(' ')[0]}</h2><Avatar/></>)
-                    :(<LoginButton/>)
+                {isAuthenticated
+                    ?(<div className="flex mr-4"><h2 className="px-5 place-self-center">{user.name.split(' ')[0]}</h2><Avatar/></div>)
+                    :null
                 }
                 
                 

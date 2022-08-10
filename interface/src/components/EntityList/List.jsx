@@ -7,7 +7,7 @@ import { TagFilterContext } from "../TagFilter/TagContext"
 
 
 
-const list = generateList(20);
+const list = generateList(30);
 
 // this SHOULD be a search filter of some sort.
 // but we'll do local tag filtering for now.
@@ -57,10 +57,19 @@ const ComplexList = () => {
             peer-checked:border-l-indigo-500 
             "> 
             <p>{item.id}</p>
-            <p>{item.firstname}</p>
-            <p>{item.lastname}</p>
+            <p>{item.summary}</p><br/>
+            <p>{item.description}</p>
             <p>{item.type}</p>
+            <div>
+              <div className="collapse collapse-arrow ">
+                <input type="checkbox" /> 
+                <div className="collapse-title bg-white">JSON details</div>
+                <div className="collapse-content bg-gray-300"> 
+                  <pre>{JSON.stringify(item,null,2)}</pre>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
       )})}
     </div>
