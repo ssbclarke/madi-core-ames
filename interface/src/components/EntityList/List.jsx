@@ -3,7 +3,7 @@ import { CheckboxGroup } from "./EntityCheckboxes";
 import { generateList } from "../../utils/generate-list"
 import { EntityFilterContext } from "./EntityFilterContext";
 import { TagFilterContext } from "../TagFilter/TagContext"
-
+import { EntityRow } from "./EntityRow";
 
 
 
@@ -27,9 +27,9 @@ const ComplexList = () => {
 
   return (
     <div className="overflow-x-auto w-full px-5">
-      {filterList({ entityFilterStore, tagFilterStore, list }).map((item) => {
+      {filterList({ entityFilterStore, tagFilterStore, list }).map((item,i) => {
 
-        
+        let tags = (item.ilities||[]).map((m)=>(<div class="badge">{m}</div>))
 
         return (
         <div
@@ -41,13 +41,32 @@ const ComplexList = () => {
           ">
           <input type="checkbox" className="peer" />
           <div className="collapse-title 
-            border-l-8 border-l-base-100
+            p-0
+            border-l-8 border-l-transparent
             transition-color ease-out duration-300
             peer-hover:border-l-indigo-500 
+            peer-hover:overflow-hidden
             peer-checked:border-l-indigo-500 
             peer-checked:bg-indigo-200
-            peer-checked:text-base-content">
-              Click me to show/hide content
+            peer-checked:text-base-content
+            peer-checked:overflow-hidden
+
+            ">
+              <div className="flex flex-row">
+                {i%4==0?
+                  (<img src="https://via.placeholder.com/110x70" className="-ml-4"/>)
+                  :<div/>
+                }
+                <div className="flex flex-col px-4 py-2 h-24">
+                  <div className="pb-1">
+                    <span className="uppercase font-bold text-xs pr-4 self-center">{item.type}</span>
+                    <span className="">{item.Title} This is the title of the Article. It's great.</span> 
+                  </div>
+                  <div className="text-sm text-ellipsis overflow-hidden">
+                    {item.summary}
+                  </div>
+                </div>
+              </div>
           </div>
           <div className="collapse-content 
             border-l-8 border-l-base-100
@@ -56,10 +75,11 @@ const ComplexList = () => {
             peer-checked:text-base-content
             peer-checked:border-l-indigo-500 
             "> 
-            <p>{item.id}</p>
-            <p>{item.summary}</p><br/>
-            <p>{item.description}</p>
-            <p>{item.type}</p>
+            <EntityRow title="Summary">{item.summary}</EntityRow>
+            <EntityRow title="Description">{item.description}</EntityRow>
+            <EntityRow title="Type">{item.type}</EntityRow>
+            <EntityRow title="summary">{item.summary}</EntityRow>
+            <EntityRow title="tags">{tags}</EntityRow>
             <div>
               <div className="collapse collapse-arrow ">
                 <input type="checkbox" /> 
