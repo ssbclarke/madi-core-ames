@@ -1,4 +1,4 @@
-import { entities, needs, ilities, categories, subcategories } from '../config/options'
+import { entities, topics, needs, ilities, categories, subcategories } from '../config/options'
 import { LoremIpsum, loremIpsum } from "lorem-ipsum";
 import data from './test_data.json'
 
@@ -41,6 +41,7 @@ export const generateList = (count)=>{
             firstname: Math.random().toString(16).substr(2, 4),
             lastname: Math.random().toString(16).substr(2, 10),
             type: getRandomSubarray(entities, 1),
+            topic: getRandomSubarray(topics, 1),
             ility: getRandomSubarray(ilities, 1),
             need: getRandomSubarray(needs, 1),
             summary: lorem.generateSentences(2),

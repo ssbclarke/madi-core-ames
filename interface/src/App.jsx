@@ -2,7 +2,7 @@ import './App.css';
 import { EntityFilterProvider } from './components/EntityList/EntityFilterContext';
 import { Sidebar } from './components/Sidebar/SidebarOLD';
 import { TagFilterProvider} from './components/TagFilter/TagContext';
-import { EntityList } from './components/EntityList/EntityList'
+import { ListLayout } from './components/EntityList/ListLayout'
 import { SidebarLayout} from './components/Layouts/SidebarLayout'
 import { SidebarProvider } from "./components/Sidebar/SidebarContext";
 import Loading from "./components/Loading";
@@ -33,7 +33,7 @@ function App() {
             <Route element={<ProtectedRoute user={user} />}>
               <Route path="/" element={
                   <SidebarLayout>
-                    <EntityList/>
+                    <ListLayout/>
                   </SidebarLayout>
                 } />
             </Route>

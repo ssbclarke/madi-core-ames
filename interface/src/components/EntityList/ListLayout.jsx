@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Navbar from "../navbar/navbar";
-import ComplexList from "./List";
+import { List } from "./List";
 import { TagSection } from "../TagFilter/TagSection"
-import { CheckboxGroup } from "./EntityCheckboxes";
+import { CheckboxGroup } from "./ListCheckboxes";
 
-export const EntityList = () => {
+export const ListLayout = () => {
   return (
     <div className="h-full w-full overflow-hidden">
       <Navbar />
@@ -28,9 +28,7 @@ export const EntityList = () => {
             </label>
             <CheckboxGroup />
           </div>
-
-
-          <ComplexList />
+          <List />
         </div>
         <div className="drawer-side">
           <label htmlFor="tag-filter-toggle" className="drawer-overlay"></label>

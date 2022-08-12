@@ -1,4 +1,4 @@
-export const EntityRow = ({
+export const Attribute = ({
     title, children
 })=>{
     // children = "yes\nno"
