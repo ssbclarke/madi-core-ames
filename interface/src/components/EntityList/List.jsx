@@ -5,7 +5,7 @@ import { EntityFilterContext } from "./EntityFilterContext";
 import { TagFilterContext } from "../TagFilter/TagContext";
 import { Attribute } from "./Attribute";
 
-const list = generateList(1);
+const list = generateList(20);
 
 // this SHOULD be a search filter of some sort.
 // but we'll do local tag filtering for now.
