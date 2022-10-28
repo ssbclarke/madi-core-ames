@@ -59,6 +59,95 @@ export const generateList = (count)=>{
     })
 }
 
+export const generateObservation = (count)=>{
+    return [...Array(count)].map((x,i)=>{
+        let date_published = randomDate(new Date(2010,0,1),new Date(2021,12,31))
+        
+        return {
+            id: i,
+            type: 'observation',
+            date_added: randomDate(date_published, new Date(date_published.getDate() + 30)),
+            takeaway: lorem.generateParagraphs(1),
+            category: getRandomSubarray(categories, Math.floor(Math.random()*2)),
+            subcategory: getRandomSubarray(subcategories, Math.floor(Math.random()*4)),
+            reference_link: "https://example.com",
+            trends: [],
+            problems:[],
+        }
+    })
+}
+
+export const generateTrend = (count)=>{
+    return [...Array(count)].map((x,i)=>{
+        
+        return {
+            id: i,
+            type: 'trend',
+            date_added: randomDate(date_published, new Date(date_published.getDate() + 30)),
+            image: getRandomSubarray([
+                null,
+                
+            ],1),
+            takeaway: lorem.generateParagraphs(1),
+
+            x_axis: lorem.generateSentences(1),
+            y_axis: lorem.generateSentences(1)
+        }
+    })
+}
+
+export const generateProblem = (count)=>{
+    return [...Array(count)].map((x,i)=>{
+        
+        return {
+            id: i,
+            type: 'problem',
+            date_added: randomDate(date_published, new Date(date_published.getDate() + 30)),
+            
+            problem_statement: lorem.generateParagraphs(1),
+            reach: lorem.generateParagraphs(1),
+            impact: lorem.generateParagraphs(1),
+            solutions: []
+        }
+    })
+}
+
+export const generateSolution = (count)=>{
+    return [...Array(count)].map((x,i)=>{
+        
+        return {
+            id: i,
+            type: 'solution',
+            date_added: randomDate(date_published, new Date(date_published.getDate() + 30)),
+            
+            summary: lorem.generateParagraphs(1)
+        }
+    })
+}
+
+
+
+//             topic: getRandomSubarray(topics, 1),
+//             ility: getRandomSubarray(ilities, 1),
+//             need: getRandomSubarray(needs, 1),
+//             summary: lorem.generateSentences(2),
+//             description: lorem.generateParagraphs(2),
+//             category: getRandomSubarray(categories, Math.floor(Math.random()*2)),
+//             subcategory: getRandomSubarray(subcategories, Math.floor(Math.random()*4)), //keywords
+            
+//             date_published,
+//             relevance: lorem.generateParagraphs(3),
+//             raw_text: lorem.generateParagraphs(15)
+
+
+//             source_name: Math.random().toString(16).substr(2, 10),
+//             reference_link: "https://example.com",
+//             initiator: "",
+//         }
+//     })
+// }
+
+
 
 // "ID": "39",
 // "Title": "",

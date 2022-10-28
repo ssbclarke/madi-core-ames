@@ -1,0 +1,12 @@
+{
+    "files": [],
+    "references": [
+        {"path": "./src"},
+        {"path": "./test"}
+    ],
+    "compilerOptions": {
+        "baseUrl":"./",
+        "esModuleInterop": true
+    }
+    // "exclude" :["./node_modules"]
+}

@@ -1,0 +1,13 @@
+{
+    "extends": "../tsconfig.settings.json",
+    "compilerOptions": {
+        "module": "commonjs",
+        "rootDir":"../",
+        "noEmit": true,
+        "esModuleInterop": true,
+        "baseUrl": "./"
+
+    },
+    "include": ["**/*.test.ts", "unit/utils.test.js", "unit/after-hook.test.js", "unit/before-hook.test.js"],
+    "exclude" :["../node_modules"]
+}
