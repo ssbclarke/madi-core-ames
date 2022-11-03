@@ -1,0 +1,22 @@
+{
+    "clientId": "39dddd4b-a99f-461d-a70b-205146e3c9e3",
+    "clientSecret": "XXX",
+    "redirectUri": "http://localhost:5000/auth/token/",
+    "authUri": "http://localhost:5000/auth/",
+    "scopes": [
+        "murals:read",
+        "murals:write",
+        "rooms:read",
+        "rooms:write",
+        "workspaces:read",
+        "identity:read",
+        "templates:read",
+        "templates:write",
+        "users:read"
+    ],
+    "serverPort": 5000,
+    "apiBase":"https://app.mural.co",
+    "authorizationUri": "/api/public/v1/authorization/oauth2/",
+    "accessTokenUri": "/api/public/v1/authorization/oauth2/token",
+    "refreshTokenUri": "/api/public/v1/authorization/oauth2/refresh"
+}
