@@ -13,4 +13,5 @@ app.use(converterRoutes)
 console.log(config)
 app.listen(config.serverPort, ()=>{
     console.log(`Example app listening at http://localhost:${config.serverPort}`);
+    console.log('Go here: http://localhost:5000/converter?actId=mtcleverest3967&muralId=1660683804692');
 });
