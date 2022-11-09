@@ -6,8 +6,14 @@ const  {
     QUOTE,
     ACTOR,
     NONE,
+    COLOR_TAKEAWAY,
+    COLOR_PROBLEM,
+    COLOR_TREND,
+    COLOR_SOLUTION,
+    COLOR_QUOTE,
+    COLOR_ACTOR,
     CONST_ARRAY
-} = require('./constants')
+} = require('../constants')
 
 function populateMadiTypeField(db,raw){
     raw.widgets.forEach(w=>{
@@ -44,22 +50,22 @@ function populateMadiTypeField(db,raw){
                     // guess by color as fallback
                     let color = w.style?.backgroundColor || null
                     switch (color){
-                        case "#FCFE7DFF":
+                        case COLOR_TAKEAWAY:
                             ++guessMatrix[0]
                             break;
-                        case "#FCFE7DFF":
+                        case COLOR_PROBLEM:rel
                             ++guessMatrix[1]
                             break;
-                        case "#9BEDFDFF":
+                        case COLOR_TREND:
                             ++guessMatrix[2]
                             break;
-                        case "#FFC2E8FF":
+                        case COLOR_SOLUTION:
                             ++guessMatrix[3]
                             break;
-                        case "#FFE08AFF":
+                        case COLOR_QUOTE:
                             ++guessMatrix[4]
                             break;
-                        case "#C7FE80FF":
+                        case COLOR_ACTOR:
                             ++guessMatrix[5]
                             break;
                         default:

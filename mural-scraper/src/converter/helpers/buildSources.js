@@ -1,6 +1,6 @@
 const  {
     CONST_ARRAY
-} = require('./constants')
+} = require('../constants')
 
 function buildSources(db){
     Object.keys(db).forEach(id=>{

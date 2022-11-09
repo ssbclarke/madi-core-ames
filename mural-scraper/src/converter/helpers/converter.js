@@ -1,4 +1,4 @@
-let raw = require("../test.json")
+let raw = require("../../test.json")
 const addArrowRelations = require('./addArrowRelations')
 const populateMadiTypeField = require( './populateMadiTypeField')
 const stripOrphans = require('./stripOrphans')
@@ -12,7 +12,7 @@ const  {
     ACTOR,
     NONE,
     CONST_ARRAY
-} = require('./constants')
+} = require('../constants')
 
 let typed = populateMadiTypeField({}, raw)
 let arranged = addArrowRelations(typed,raw)

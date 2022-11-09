@@ -43,6 +43,17 @@ router.get(
   }
 );
 
+function setCookieAndRedirect(data, redirect, res){
+  res.cookie("access_token", data.access_token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  })
+  .cookie("refresh_token", data.refresh_token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  })
+  .redirect(302, redirect);
+}
 
 router.get(
     '/auth/token',
@@ -83,15 +94,13 @@ router.get(
         throw 'token request failed';
       }
 
-      redirectUrl.searchParams.set('accessToken',response.data.access_token);
-      redirectUrl.searchParams.set('refreshToken', response.data.refresh_token);
+      return setCookieAndRedirect(response.data, redirectUrl.href, res)
 
-      console.log(redirectUrl)
-      res.redirect(302, redirectUrl.href);
+
     },
 );
 
-router.post(
+router.get(
     '/auth/refresh',
     /**
      *
@@ -105,7 +114,7 @@ router.post(
           client_id: config.clientId,
           client_secret: config.clientSecret,
           grant_type: 'refresh_token',
-          refresh_token: req.body.refreshToken,
+          refresh_token: req.cookies.refresh_token,
           scope: config.scopes,
         },
         method: 'POST',
@@ -114,13 +123,14 @@ router.post(
 
       const response = await axios.request(payload);
       if (response.status !== 200) {
-        throw 'refresh token request failed';
+        console.error('REFRESH TOKEN REQUEST FAILED. CLEARING COOKIES AND STARTING OVER.')
+        res.clearCookie('refresh_token')
+          .clearCookie('auth_token')
+          .redirect('/auth')
+        // throw 'refresh token request failed';
       }
-
-      res.json({
-        accessToken: response.data.access_token,
-        refreshToken: response.data.refresh_token,
-      });
+      
+      return setCookieAndRedirect(response.data, req.cookies.redirectUri, res)
     },
 );
 

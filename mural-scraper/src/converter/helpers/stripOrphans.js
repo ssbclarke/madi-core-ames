@@ -1,7 +1,6 @@
 
 function stripOrphans(db){
     let structuredData = {observations:{}, orphans:{}}
-
     Object.keys(db).forEach(id=>{
         console.log(db[id].type)
         if(db[id].type === 'takeaway'){
