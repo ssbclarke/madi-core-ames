@@ -13,6 +13,8 @@ import { ProtectedRoute } from './components/Auth/ProtectedRoute'
 import { useAuth0 } from "@auth0/auth0-react";
 import history from "./utils/history";
 import { Login } from './Pages/Login'
+import { Mural } from './Pages/Mural'
+
 
 
 function App() {
@@ -38,6 +40,7 @@ function App() {
                 } />
             </Route>
             <Route path="/login" element={<Login/>} />
+            <Route path="/mural" element={<Mural/>} />
           </Routes>
         </BrowserRouter>
 

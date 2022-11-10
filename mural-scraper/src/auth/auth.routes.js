@@ -3,47 +3,9 @@ let router = express.Router();
 const config = require('../config')
 const axios = require("axios");
 
-/**
- * If someone has not been authenticated, you can request a url from this endpoint to redirect them to
- * first. You can optionally pass a `state` query parameter and a `redirectUri` query parameter.
- * @param state
- * @param redirectUri
- */
-router.get(
-  "/auth",
-  /**
-   *
-   * @param {import('express').Request} req
-   * @param {import('express').Response} res
-   */
-  (req, res) => {
-    // decide where we are redirecting after being authenticated.
-    const redirectUri = req.query.redirectUri
-      ? req.query.redirectUri.toString()
-      : undefined;
-    // is there any state that needs to be passed through the auth process
-    const state = req.query.state ? req.query.state.toString() : undefined;
-    const query = new URLSearchParams();
-    query.set("client_id", config.clientId);
-    query.set("redirect_uri", config.redirectUri);
-    query.set("response_type", "code");
 
-    console.log(config)
-    if (state) {
-      query.set("state", state);
-    }
 
-    if (config.scopes && config.scopes.length) {
-      query.set("scope", config.scopes.join(" "));
-    }
-    // This will return a url string that will allow you to authenticate your app
-    // and it can also redirect back to your client application
-    res.cookie('redirectUri', redirectUri)
-    res.redirect(302, `${config.authorizationUri}?${query}`);
-  }
-);
-
-function setCookieAndRedirect(data, redirect, res){
+export function setCookieAndRedirect(data, redirect, res){
   res.cookie("access_token", data.access_token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -52,85 +14,133 @@ function setCookieAndRedirect(data, redirect, res){
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   })
-  .redirect(302, redirect);
+  if(redirect){
+    res.redirect(302, redirect);
+  }
 }
 
+
+
+
+/**
+ * If someone has not been authenticated, you can request a url from this endpoint to redirect them to
+ * first. You can optionally pass a `state` query parameter and a `redirectUri` query parameter.
+ * @param state
+ * @param redirectUri
+ */
 router.get(
-    '/auth/token',
-    /**
-     *
-     * @param {import('express').Request} req
-     * @param {import('express').Response} res
-     */
+  config.auth.authUri, //"/auth",
+  /**
+   *
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  (req, res, next) => {
+    console.log('\n\n/auth',req.query)
+
+    // decide where we are redirecting after being authenticated.
+    const { originUri } = req.query //.originUri ? req.query.originUri.toString() : undefined;
+
+    
+    // is there any state that needs to be passed through the auth process
+    const query = new URLSearchParams(req.query)
+    query.set("client_id", config.clientId)
+    query.set("redirect_uri", config.base + config.auth.tokenUri) // where the authorizer callsback
+    query.set("response_type", "code")
+    query.set("scope", config.mural.scopes?.join(" "));
+
+  
+    // This will return a url string that will allow you to authenticate your app
+    // and it can also redirect back to your client application
+    return res.cookie('originUri', originUri)
+    .redirect(307, `${config.mural.base + config.mural.authorizationUri}?${query}`);
+  }
+);
+
+
+
+
+
+
+
+export async function requestToken(req){
+  const payload = {
+    data: {
+      client_id: config.clientId,
+      client_secret: config.clientSecret,
+      code: req.query.code,
+      grant_type: 'authorization_code',
+      redirect_uri: config.base + config.auth.tokenUri, //same as above
+    },
+    method: 'POST',
+    url: config.mural.base + config.mural.accessTokenUri
+  };
+  return await axios.request(payload);
+}
+router.get(
+    config.auth.tokenUri, //'/auth/token',
     async (
         req,
         res,
     ) => {
-
-      // console.log(req)
-      // console.log(req.cookies)
-      // console.log(req.protocol)
-      // console.log(req.hostname)
-      // console.log(req.cookies.redirectUri || req.protocol+'://'+req.hostname+'/')
-
-      const redirectUrl = new URL(req.cookies.redirectUri || req.protocol+'://'+req.hostname+'/');
-
-      // console.log(req.cookies.redirectUri, redirectUrl.href);
-
-      const payload = {
-        data: {
-          client_id: config.clientId,
-          client_secret: config.clientSecret,
-          code: req.query.code,
-          grant_type: 'authorization_code',
-          redirect_uri: req.query.redirectUri || config.redirectUri,
-        },
-        method: 'POST',
-        url: config.accessTokenUri
-      };
-
-      const response = await axios.request(payload);
-      if (response.status !== 200) {
-        throw 'token request failed';
-      }
-
-      return setCookieAndRedirect(response.data, redirectUrl.href, res)
-
-
-    },
+      console.log('\n\n/auth/token')
+      console.log("cookies", req.cookies)
+      const originUri = new URL(req.cookies.originUri || config.base);
+      let response = await requestToken(req) 
+      return setCookieAndRedirect(response.data, originUri.href, res)
+    }
 );
 
+
+
+export async function requestRefresh(req){
+  const payload= {
+    data: {
+      client_id: config.clientId,
+      client_secret: config.clientSecret,
+      grant_type: 'refresh_token',
+      refresh_token: req.cookies.refresh_token,
+      scope: config.scopes,
+    },
+    method: 'POST',
+    url: config.refreshTokenUri,
+  };
+
+  return await axios.request(payload)
+}
+
 router.get(
-    '/auth/refresh',
+    config.auth.refreshUri, //'/auth/refresh',
     /**
      *
      * @param {import('express').Request} req
      * @param {import('express').Response} res
      */
     async (req, res) => {
+      console.log('\n\n/auth/refresh')
+      // let redirect = false;
 
-      const payload= {
-        data: {
-          client_id: config.clientId,
-          client_secret: config.clientSecret,
-          grant_type: 'refresh_token',
-          refresh_token: req.cookies.refresh_token,
-          scope: config.scopes,
-        },
-        method: 'POST',
-        url: config.refreshTokenUri,
-      };
+      // // const originUri = req.query.originUri
+      // // ? req.query.originUri.toString()
+      // // : undefined;
 
-      const response = await axios.request(payload);
-      if (response.status !== 200) {
-        console.error('REFRESH TOKEN REQUEST FAILED. CLEARING COOKIES AND STARTING OVER.')
-        res.clearCookie('refresh_token')
-          .clearCookie('auth_token')
-          .redirect('/auth')
-        // throw 'refresh token request failed';
-      }
-      
-      return setCookieAndRedirect(response.data, req.cookies.redirectUri, res)
+      // const state = req.query.state ? req.query.state.toString() : undefined;
+      // const query = new URLSearchParams();
+      // query.set("redirectUri", config.appBase + redirectUri);
+      // console.log('redirectUri', config.appBase + redirectUri)
+      // console.log('\n\nREFRESHING TOKEN')
+
+
+      // .catch(e=>{
+      //   redirect = true
+      //   console.error('REFRESH TOKEN REQUEST FAILED. CLEARING COOKIES AND STARTING OVER.')
+      //   res.clearCookie('refresh_token')
+      //     .clearCookie('auth_token')
+      //     res.redirect(302, `/auth?${query}`);
+      // })
+      // if(!redirect){
+        return setCookieAndRedirect(response.data, null, res)
+      // }
     },
 );
 

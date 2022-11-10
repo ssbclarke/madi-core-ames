@@ -1,6 +1,6 @@
 const express = require("express");
 let router = express.Router();
-const config = require('../config')
+const config = require('../src/config')
 const axios = require("axios");
 
 /**

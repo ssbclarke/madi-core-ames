@@ -2,9 +2,10 @@ const config = require('../../config')
 const axios = require('axios');
 
 async function requestWidgets(query, authToken, storage = [], next){
+  // console.log(config)
   let requestConfig = {
     method: 'get',
-    url: `${config.apiBase}/api/public/v1/murals/${query.actId}.${query.muralId}/widgets`,
+    url: `${config.mural.base}/api/public/v1/murals/${query.actId}.${query.muralId}/widgets`,
     headers: { 
       'accept': 'application/json', 
       'Authorization': `Bearer ${authToken}`
