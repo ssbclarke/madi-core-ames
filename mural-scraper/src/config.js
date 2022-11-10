@@ -1,3 +1,6 @@
+process.env["NODE_CONFIG_DIR"] = __dirname + "/config/";
+console.log(process.env)
+console.log(__dirname+"")
 let config = require('config');
 config = {
   ...config,
@@ -6,5 +9,5 @@ config = {
   murealRefreshTokenUri: config.mural.base + config.mural.refreshTokenUri
 };
 
-// console.log(config)
+console.log('CONFIG', config)
 module.exports = config

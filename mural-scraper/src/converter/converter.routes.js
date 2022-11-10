@@ -75,25 +75,9 @@ router.get(
 
       // if it has a mural and account id, fetch the widgets
       if(muralId && actId) {
-        let redirect = false
-        let widgets = await requestWidgets(query, req.cookies.access_token).catch(e=>{
-          console.log('\n\n**** ERROR ****')
-          console.log(e)
-          console.log(e.config?.url)
-          console.log(e.message)
-          console.log(e.response?.status)
-          if(e.response?.status === 401){
-            redirect = true
-            console.log('\n\n HEADING TO REFRESH')
-            // res.clearCookie('access_token')
-            let params = new URLSearchParams()
-            params.set('redirectUri', req.protocol + '://' + req.get('host') + req.originalUrl)
-            return res.redirect(302, `/auth/refresh?${params}`)
-          }else{
-            return res.send(e)
-          }
-        })
-        if(!redirect){
+        try{
+          // let redirect = false
+          let widgets = await requestWidgets(query, req.cookies.access_token)
           console.log("\n\n **** NO REDIRECT ****")
           let raw = { widgets }
           let typed = populateMadiTypeField({}, raw)
@@ -110,12 +94,34 @@ router.get(
           data = {
             observations, orphans, errorIds
           }
+        }catch(e){
+          console.error(`\n\n**** ERROR ****\n${req.originalUrl}`,
+          e.response,
+          // e.response.config,
+          // e.response.request.path,
+          // e.response.data
+          )
+          if(e.response?.status === 401){
+            // redirect = true
+            console.log('\n\n HEADING TO REFRESH')
+            // res.clearCookie('access_token')
+            let params = new URLSearchParams()
+            params.set('redirectUri', req.protocol + '://' + req.get('host') + req.originalUrl)
+            return res.redirect(302, `/auth/refresh?${params}`)
+          }else{
+            res.status(e.status || 500);
+            res.setHeader('Content-Type', 'application/json');
+          
+            return res.send(JSON.stringify({
+              message: e.message,
+              // error: e,
+              data:e.response.data
+            },null,4));
+          }
         }
       }
       console.log('SENDING',req.path, req.query, data)
       return res.send(buildHtml(req.path, req.query, data))
-
-
     }
 );
 

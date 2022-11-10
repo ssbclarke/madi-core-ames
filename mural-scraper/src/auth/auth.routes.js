@@ -14,8 +14,10 @@ export function setCookieAndRedirect(data, redirect, res){
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   })
-  if(redirect){
-    res.redirect(302, redirect);
+  if(!!redirect){
+    return res.redirect(302, redirect);
+  }else{
+    return res
   }
 }
 
@@ -52,6 +54,7 @@ router.get(
   
     // This will return a url string that will allow you to authenticate your app
     // and it can also redirect back to your client application
+    console.log(`/auth redirect to ${config.mural.base + config.mural.authorizationUri}?${query}`)
     return res.cookie('originUri', originUri)
     .redirect(307, `${config.mural.base + config.mural.authorizationUri}?${query}`);
   }
@@ -75,7 +78,9 @@ export async function requestToken(req){
     method: 'POST',
     url: config.mural.base + config.mural.accessTokenUri
   };
-  return await axios.request(payload);
+  return await axios.request(payload).catch(e=>{
+
+  })
 }
 router.get(
     config.auth.tokenUri, //'/auth/token',
@@ -86,8 +91,16 @@ router.get(
       console.log('\n\n/auth/token')
       console.log("cookies", req.cookies)
       const originUri = new URL(req.cookies.originUri || config.base);
-      let response = await requestToken(req) 
-      return setCookieAndRedirect(response.data, originUri.href, res)
+      try{
+        let response = await requestToken(req)
+        return setCookieAndRedirect(response.data, originUri.href, res)
+      }catch(e){
+        res.status(e.status || 500);
+        return res.json({
+          message: e.message,
+          error: e
+        });
+      }
     }
 );
 
@@ -103,7 +116,7 @@ export async function requestRefresh(req){
       scope: config.scopes,
     },
     method: 'POST',
-    url: config.refreshTokenUri,
+    url: config.mural.base + config.mural.refreshTokenUri
   };
 
   return await axios.request(payload)
@@ -118,7 +131,8 @@ router.get(
      */
     async (req, res) => {
       console.log('\n\n/auth/refresh')
-      // let redirect = false;
+      console.log("cookies", req.cookies)
+      const originUri = new URL(req.cookies.originUri || config.base);
 
       // // const originUri = req.query.originUri
       // // ? req.query.originUri.toString()
@@ -128,19 +142,24 @@ router.get(
       // const query = new URLSearchParams();
       // query.set("redirectUri", config.appBase + redirectUri);
       // console.log('redirectUri', config.appBase + redirectUri)
-      // console.log('\n\nREFRESHING TOKEN')
+      console.log('\n\nREFRESHING TOKEN')
+      console.log(originUri.href)
 
-
-      // .catch(e=>{
-      //   redirect = true
-      //   console.error('REFRESH TOKEN REQUEST FAILED. CLEARING COOKIES AND STARTING OVER.')
-      //   res.clearCookie('refresh_token')
-      //     .clearCookie('auth_token')
-      //     res.redirect(302, `/auth?${query}`);
-      // })
-      // if(!redirect){
-        return setCookieAndRedirect(response.data, null, res)
-      // }
+      try{
+        let response = await requestRefresh(req)
+        return setCookieAndRedirect(response.data, originUri.href, res)
+      }catch(e){
+        console.log('\n\nREFRESHING TOKEN ERROR')
+        console.log(e)
+        res.status(e.status || 500);
+        res.setHeader('Content-Type', 'application/json');
+        return res.send(JSON.stringify({
+          message: e.message,
+          error: e,
+          response: e.response
+          // data:e.response.data
+        },null,4));
+      }
     },
 );
 
