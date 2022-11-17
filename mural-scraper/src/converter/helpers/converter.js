@@ -1,4 +1,4 @@
-let raw = require("../../test.json")
+let widgets = require("../widgets.json")
 const addArrowRelations = require('./addArrowRelations')
 const populateMadiTypeField = require( './populateMadiTypeField')
 const stripOrphans = require('./stripOrphans')
@@ -14,12 +14,34 @@ const  {
     CONST_ARRAY
 } = require('../constants')
 
-let typed = populateMadiTypeField({}, raw)
-let arranged = addArrowRelations(typed,raw)
-let sourced = buildSources(arranged)
-let { observations, orphans } = stripOrphans(sourced)
 
-console.log({ observations, orphans })
+
+class Converter{
+    constructor(db ={}){
+        if(Array.isArray(db) && db[0]['id']){
+            this.db = {}
+            db.forEach(w=>{this.db[w.id]=w})
+        }else{
+            this.db = db
+        }
+    }
+    populateMadiTypeField = populateMadiTypeField
+    addArrowRelations = addArrowRelations
+    stripOrphans = stripOrphans
+    buildSources = buildSources
+
+}
+
+
+let con = new Converter(widgets) 
+console.log(con)
+
+// let typed = populateMadiTypeField({}, raw)
+// let arranged = addArrowRelations(typed,raw)
+// let sourced = buildSources(arranged)
+// let { observations, orphans } = stripOrphans(sourced)
+
+// console.log({ observations, orphans })
 
 // function buildFetchList(){
 //     let sourceToId = {}

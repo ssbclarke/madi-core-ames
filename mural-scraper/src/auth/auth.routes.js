@@ -5,13 +5,13 @@ const axios = require("axios");
 
 
 
-export function setCookieAndRedirect(data, redirect, res){
+function setCookieAndRedirect(data, redirect, res){
   res.cookie("access_token", data.access_token, {
-    httpOnly: true,
+    // httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   })
   .cookie("refresh_token", data.refresh_token, {
-    httpOnly: true,
+    // httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   })
   if(!!redirect){
@@ -41,8 +41,9 @@ router.get(
     console.log('\n\n/auth',req.query)
 
     // decide where we are redirecting after being authenticated.
-    const { originUri } = req.query //.originUri ? req.query.originUri.toString() : undefined;
-
+    const originUri = new URL(req.query?.originUri || req.cookies?.originUri || config.base);
+    // const { originUri } = req.query //.originUri ? req.query.originUri.toString() : undefined;
+    console.log(req.query)
     
     // is there any state that needs to be passed through the auth process
     const query = new URLSearchParams(req.query)
@@ -66,7 +67,7 @@ router.get(
 
 
 
-export async function requestToken(req){
+async function requestToken(req){
   const payload = {
     data: {
       client_id: config.clientId,
@@ -90,7 +91,7 @@ router.get(
     ) => {
       console.log('\n\n/auth/token')
       console.log("cookies", req.cookies)
-      const originUri = new URL(req.cookies.originUri || config.base);
+      const originUri = new URL(req.query?.originUri || req.cookies?.originUri || config.base);
       try{
         let response = await requestToken(req)
         return setCookieAndRedirect(response.data, originUri.href, res)
@@ -106,7 +107,7 @@ router.get(
 
 
 
-export async function requestRefresh(req){
+async function requestRefresh(req){
   const payload= {
     data: {
       client_id: config.clientId,
@@ -132,7 +133,8 @@ router.get(
     async (req, res) => {
       console.log('\n\n/auth/refresh')
       console.log("cookies", req.cookies)
-      const originUri = new URL(req.cookies.originUri || config.base);
+      const originUri = new URL(req.query?.originUri || req.cookies?.originUri || config.base);
+      res.cookie('originUri', originUri.href)
 
       // // const originUri = req.query.originUri
       // // ? req.query.originUri.toString()
@@ -143,7 +145,7 @@ router.get(
       // query.set("redirectUri", config.appBase + redirectUri);
       // console.log('redirectUri', config.appBase + redirectUri)
       console.log('\n\nREFRESHING TOKEN')
-      console.log(originUri.href)
+      console.log('originUri', originUri.href)
 
       try{
         let response = await requestRefresh(req)

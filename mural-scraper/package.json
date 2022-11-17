@@ -5,8 +5,8 @@
   "main": "src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev2": "NODE_ENV=production nodemon src/server.js",
-    "dev": "NODE_ENV=production vercel dev --listen 5000"
+    "dev:old": "NODE_ENV=production nodemon src/server.js",
+    "dev": "vercel dev --listen 5000 --cwd ../"
   },
   "author": "",
   "license": "ISC",
