@@ -37,7 +37,7 @@
     "minLines": 6,
     "shape": "rectangle",
     "style": {
-      "backgroundColor": "#7FFFD4FF",
+      "backgroundColor": "#FFC2E8FF",
       "bold": false,
       "font": "proxima-nova",
       "fontSize": 23,
