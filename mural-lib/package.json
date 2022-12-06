@@ -1,0 +1,46 @@
+{
+  "name": "mural-db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "mocha ./test/**.test.js",
+    "test:dev": "mocha --watch ./test/converter-nedb.test.js",
+    "dev:old": "NODE_ENV=production nodemon src/server.js",
+    "dev": "vercel dev --listen 5000 --cwd ../",
+    "test2": "mocha --config test/runners/mocha/.mocharc.jsonc",
+    "test3": "ts-mocha test/**/*.test.ts -w --watch-files '**/*.ts'",
+    "test4": "mocha -r ts-node/register test/**/*.test.ts",
+    "lint": "eslint . --ext .ts",
+    "lint-and-fix": "eslint . --ext .ts --fix",
+    "build": "rimraf ./build && tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@seald-io/nedb": "^3.1.0",
+    "@types/nedb": "^1.8.12",
+    "axios": "^1.1.3",
+    "axios-rate-limit": "^1.3.0",
+    "nedb": "^1.8.0",
+    "yaml": "^2.1.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.4",
+    "@types/expect": "^24.3.0",
+    "@types/jest": "^29.2.3",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^18.11.9",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "chai": "^4.3.7",
+    "eslint": "^8.28.0",
+    "mocha": "^7.2.0",
+    "nodemon": "^2.0.20",
+    "rimraf": "^3.0.2",
+    "ts-mocha": "^10.0.0",
+    "ts-mockito": "^2.5.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.8.3"
+  }
+}
