@@ -1,8 +1,6 @@
 import Converter from '../src/converter-nedb';
 import { strict as assert } from 'assert'
 import widgets from './widgets.json';
-import populateMadiTypeField from '../src/populateMadiTypeField';
-import Datastore from '@seald-io/nedb';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import mocha from 'mocha'
