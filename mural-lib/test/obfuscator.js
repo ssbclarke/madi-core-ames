@@ -23,6 +23,9 @@ o.ignoredFields.delete("createdBy")
 o.ignoredFields.delete("updatedBy")
 o.ignoredFields.delete("hyperlink")
 o.ignoredFields.delete("text")
+o.ignoredFields.delete("url")
+o.ignoredFields.delete("thumbnailUrl")
+o.ignoredFields.delete("link")
 let results = o.obfuscate(json);
 
 fs.writeFileSync("widgets.json",JSON.stringify(results))
