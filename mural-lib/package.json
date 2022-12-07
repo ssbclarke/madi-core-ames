@@ -18,17 +18,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@seald-io/nedb": "^3.1.0",
-    "@types/nedb": "^1.8.12",
-    "axios": "^1.1.3",
-    "axios-rate-limit": "^1.3.0",
-    "nedb": "^1.8.0",
-    "yaml": "^2.1.3"
+    "@seald-io/nedb": "^3.1.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.4",
-    "@types/expect": "^24.3.0",
-    "@types/jest": "^29.2.3",
+    "@types/nedb": "^1.8.12",
     "@types/mocha": "^7.0.2",
     "@types/node": "^18.11.9",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
@@ -36,7 +29,6 @@
     "chai": "^4.3.7",
     "data-obfuscator": "^1.0.2",
     "eslint": "^8.28.0",
-    "json-mask": "^2.0.0",
     "mocha": "^7.2.0",
     "nodemon": "^2.0.20",
     "rimraf": "^3.0.2",

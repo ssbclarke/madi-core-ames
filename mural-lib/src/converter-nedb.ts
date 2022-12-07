@@ -5,7 +5,9 @@ import populateMadiTypeField from './populateMadiTypeField'
 // const buildSources = require('./converter/helpers/buildSources')
 // const customInspectSymbol = Symbol.for('nodejs.util.inspect.custom');
 import Nedb from '@seald-io/nedb'
-import { AnyARecord } from 'dns'
+import Cursor from '@seald-io/nedb/lib/cursor'
+import { callbackify, deprecate } from 'util'
+import { cursorTo } from 'readline'
 
 // import { TAKEAWAY, PROBLEM, SOLUTION, QUOTE, ACTOR, NONE, CONST_ARRAY, SOURCE_MATCH_ERROR, SOURCE_MISSING_ERROR } from './constants'
 
@@ -93,7 +95,7 @@ class MuralDB extends Nedb{
           | ((reason: any) => any)
           | undefined
           | null
-      ): Promise<any>{
+      ): Promise<any>{        
        if(onFulfilled) onFulfilled(this.queue); 
        if(onRejected) onRejected(this.queue);
     }
@@ -101,20 +103,54 @@ class MuralDB extends Nedb{
         return onRejected(this.queue);
     }
     
-    finally (onFinally: ((value: any) => any)) {
-        return onFinally(onFinally)
+    finally (onFinally: (() => any)) {
+        return onFinally()
     }
 
 
 
-    chain(callback: (x:any)=>Promise<any[]>): Promise<any> {
+    chain(callback: (x:any)=>Promise<any[]>): Promise<any>|Cursor {
+
+
         return this.queue = this.queue
             .then(callback)
             .finally(()=>{ // this is CRITICAL or queues will continue to add, despite distinct awaits
-                this.queue = Promise.resolve()
-                this.cacheDb = null
+                console.log('calling finally')
+                // this.queue = Promise.resolve() //new Cursor(this, {}, this.queuePromise.resolve()
+                // this.cacheDb = null
             })
     }
+
+    // sort(sortQuery){
+    //     return new Cursor(this.cacheDb,sortQuery)
+    // }
+
+    asCursor(projection:any={}):Cursor<any>{
+
+        // // const cursor = new Cursor(this, {})
+        // // return cursor._execASync()
+        // const cursor = (this.cacheDb||this).findAsync({})
+
+        // return callbackify(cursor.execAsync.bind(cursor))(callback)
+
+        // return this.chain(async (results: any[]):Cursor=>{
+        //     console.log(out)
+        //     return out
+        // })
+        // // const curse = new Cursor(this, {}, (z:any)=>z)
+        // // return curse.then(async ()=>{
+        // //     const results = await this.queue
+        // //     await this.setupCacheDb(results)
+        // //     curse.db = this.cacheDb
+        // //     curse.projection(projection)
+        // //     console.log(curse.constructor.name)
+        // //     console.log(curse.sort)
+        // //     return curse
+        // // })
+        return new Cursor(this,{}).then(()=>this.queue)
+    }
+
+
     async setupCacheDb(results:any[]): Promise<any>{
         this.cacheDb = this.cacheDb || new MuralDB()
         const count = await this.cacheDb.countAsync({})
@@ -170,6 +206,14 @@ class MuralDB extends Nedb{
             const params = [{type:{'$in':types}},projection]
             return this.runOperation(x, func, params)
         })
+
+        // this.executor.pushAsync(async(x:any)=>{
+        //     console.log('run')
+        //     const func = 'chainFindAsync'
+        //     const params = [{type:{'$in':types}},projection]
+        //     return this.runOperation(x, func, params)
+        // })
+
         // console.log(this.findAsync)
         return this
     }
