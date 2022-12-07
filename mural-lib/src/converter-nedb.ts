@@ -107,17 +107,23 @@ class MuralDB extends Nedb{
         return onFinally()
     }
 
+    // execAsync () {
+    //     return this.cacheDb.executor.pushAsync(() => this._execAsync())
+    // }
+    
+    // then (onFulfilled, onRejected) {
+    //     return this.execAsync().then(onFulfilled, onRejected)
+    // }
+
 
 
     chain(callback: (x:any)=>Promise<any[]>): Promise<any>|Cursor {
-
-
         return this.queue = this.queue
             .then(callback)
             .finally(()=>{ // this is CRITICAL or queues will continue to add, despite distinct awaits
-                console.log('calling finally')
-                // this.queue = Promise.resolve() //new Cursor(this, {}, this.queuePromise.resolve()
-                // this.cacheDb = null
+                console.log('finally')
+                this.queue = Promise.resolve() //new Cursor(this, {}, this.queuePromise.resolve()
+                this.cacheDb = null
             })
     }
 
@@ -125,16 +131,29 @@ class MuralDB extends Nedb{
     //     return new Cursor(this.cacheDb,sortQuery)
     // }
 
-    asCursor(projection:any={}):Cursor<any>{
+    asCursor(projection:any={}){
 
-        // // const cursor = new Cursor(this, {})
+
+        // in this context there are NO RESULTS YET
+
+
+        // eslint-disable-next-line prefer-const
+        console.log('asCursor')
+        // let cursor = new Cursor((this),{})
+        // cursor.projection(projection)
         // // return cursor._execASync()
         // const cursor = (this.cacheDb||this).findAsync({})
 
         // return callbackify(cursor.execAsync.bind(cursor))(callback)
-
-        // return this.chain(async (results: any[]):Cursor=>{
-        //     console.log(out)
+        // this.queue = 
+        // this.chain(async (results: any[]):Cursor=>{
+        //     console.log('asCursor chain' , results.length)
+        //     await this.setupCacheDb(results)
+        //     cursor = new Cursor((this.cacheDb), {})
+        //     cursor.projection(projection)
+        //     // return find.apply(this.cacheDb,[query,projection])
+        //     const out = await this.cacheDb?.findAsync({},projection)
+        //     // console.log(out)
         //     return out
         // })
         // // const curse = new Cursor(this, {}, (z:any)=>z)
@@ -147,8 +166,96 @@ class MuralDB extends Nedb{
         // //     console.log(curse.sort)
         // //     return curse
         // // })
-        return new Cursor(this,{}).then(()=>this.queue)
+        // return callbackify(console.log(this.queue)
+        // return callbackify(async ()=>this.queue)
+        // const out = callbackify(async()=>this.queue)
+        // return out((err, ret) => {
+        //     if (err) throw err;
+        //     console.log(ret);
+        //  });
+
+            // .then((r)=>{
+            //     console.log(r.length)
+            //     console.log(cursor)
+            //     console.log('asCursor return then')
+            // })
+        // return callbackify(()=>new Cursor(this,{}))
+
+
+
+
+
+        const cursor = new Cursor(this,{})
+
+        const proxyCursor = {
+            sort:(function(this:Cursor<T>,x:any):any{ 
+                this.sort(x); 
+                return proxyCursor
+            }).bind(cursor),
+
+            limit:(function(this:Cursor<T>,x:number):any{ 
+                this.limit(x) 
+                return proxyCursor
+            }).bind(cursor),
+            skip:(function(this:Cursor<T>, x:number):any{ 
+                this.skip(x); 
+                return proxyCursor
+            }).bind(cursor),
+
+            then: (async function(
+                    this:any, 
+                    onFulfilled?:
+                      | ((value: any) => any)
+                      | undefined
+                      | null,
+                    onRejected?:
+                      | ((reason: any) => any)
+                      | undefined
+                      | null
+                  ): Promise<any>{
+                const results = await this.queue
+                console.log('RESULTS', results.length)
+                if(this.cacheDb){
+                    console.log('asCursor - cacheDb used')
+                }
+                this.cacheDb = null
+                await this.setupCacheDb(results)
+                const db = this.cacheDb || this
+                const out = this.cacheDb.findAsync({}).sort(cursor._sort).skip(cursor._skip).limit(cursor._limit).projection(projection)
+                if(onFulfilled) onFulfilled(out)
+                if(onRejected) onRejected(out);
+            }).bind(this)
+        }
+        return proxyCursor
+        // return new Cursor(db,{},async data=>{
+        //     console.log('before queue')
+        //     const results = await this.queue
+        //     // const final = new MuralDB()
+        //     // await final.insertAsync(results)
+        //     console.log('results', results.length)
+        //     return results
+        // })
+        // .then(async (r)=>{
+        //     console.log('before queue')
+        //     const results = await this.queue
+        //     const final = new MuralDB()
+        //     await final.insertAsync(results)
+        //     const c = new Cursor((final), {})
+        //     console.log('after queue', c)
+        //     return c
+        // })
+
+
+        ////// THIS WORKS FOR asCursor() but not asCursor().limit()
+        // return cursor
+        // .then(async (r)=>{
+        //     console.log('before queue')
+        //     const results = await this.queue
+        //     return results
+        // })
     }
+    // add an extra mechanism to call
+    and = this.asCursor
 
 
     async setupCacheDb(results:any[]): Promise<any>{
@@ -166,7 +273,8 @@ class MuralDB extends Nedb{
         await this.setupCacheDb(results)
 
         // run the command on the new db
-        return this.cacheDb ? this.cacheDb[func](...params) : null
+        const out = this.cacheDb ? this.cacheDb[func](...params) : null
+        return out
     }
 
 
@@ -184,7 +292,8 @@ class MuralDB extends Nedb{
             //     await this.cacheDb.insertAsync(this.getAllData())
             // }
             await this.setupCacheDb(results)
-            return find.apply(this.cacheDb,[query,projection])
+            // return find.apply(this.cacheDb,[query,projection])
+            return this.cacheDb?.findAsync(query,projection)
         })
         return this
     }
@@ -204,7 +313,8 @@ class MuralDB extends Nedb{
         this.chain(async(x:any) : Promise<any[]> =>{
             const func = 'chainFindAsync'
             const params = [{type:{'$in':types}},projection]
-            return this.runOperation(x, func, params)
+            const out = this.runOperation(x, func, params)
+            return out
         })
 
         // this.executor.pushAsync(async(x:any)=>{
@@ -232,7 +342,9 @@ class MuralDB extends Nedb{
                 // @ts-expect-error this context is passed as the object from the nedb library
                 $where: function():boolean{return !!this.text && this.text.startsWith(text)}
             },projection]
-            return this.runOperation(x, func, params)
+            // return this.runOperation(x, func, params)
+            const out = this.runOperation(x, func, params)
+            return out
         })
         return this
     }
@@ -363,7 +475,7 @@ class MuralDB extends Nedb{
     }
     filterBgColor(color:string, projection={})
         :MuralDB{
-        // console.log('\nfilterBgColor')
+        console.log('filterBgColor')
         const validColorReg=/^#([0-9a-f]{3}){1,2}$/i;
         if(!validColorReg.test(color)){
             const colors:any = {"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
@@ -392,8 +504,8 @@ class MuralDB extends Nedb{
         }
         color = color.toUpperCase();
 
-        this.chain(async(x): Promise<any[]>=>{
-
+        this.chain((x): Promise<any[]>=>{
+            console.log('filterBgColor - chain')
             // let result = this.findAsync({
             //     $where: function(){return !!this.style && !!this.style.backgroundColor && this.style.backgroundColor.indexOf(color)===0}
             // }, projection)
@@ -406,7 +518,7 @@ class MuralDB extends Nedb{
                     return !!this.style && !!this.style.backgroundColor && this.style.backgroundColor.indexOf(color)===0
                 }
             },projection]
-            return await this.runOperation(x, func, params)
+            return this.runOperation(x, func, params)
         })
         return this
     }

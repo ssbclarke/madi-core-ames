@@ -31,15 +31,13 @@ describe('converter', () => {
     //     // await con.dropDatabaseAsync()
     // });
 
-    it('filter by type', async () => {
-        const data = getData()
-        const con = new Converter(data) 
-        await con.insertAsync(data)
-        const results = await con.asCursor().sort({type:1});
-        console.log('results',results)
-        // assert.strictEqual(results.length, stickyCount)
-        // await con.dropDatabaseAsync()
-    });
+    // it('filter by type', async () => {
+    //     const data = getData()
+    //     const con = new Converter() 
+    //     await con.insertAsync(data)
+    //     const results = await con.filterType("sticky note")
+    //     assert.strictEqual(results.length, stickyCount)
+    // });
 
     // it('starts with text', async () => {
     //     const data = getData()
@@ -114,24 +112,41 @@ describe('converter', () => {
     // });
 
 
-    // it('can chain custom and standard functions', async () => {
-    //     const data = getData()
-    //     const con = new Converter() 
-    //     await con.insertAsync(data)
-    //     // const results1 = await con.filterType('sticky note')
-    //     // const results2 = await con.findAsync({ height: { $gte: 150 } })
-    //     const results3 = await con.filterBgColor('#FFC2E8FF').sort({type:1})
-    //     // const results4 = await con.filterType('sticky note').chainFindAsync({ height: { $gte: 150 } })
-    //     // const results5 = await con.filterBgColor('#FFC2E8FF').chainFindAsync({ height: { $gte: 100 } })
-    //     // const results6 = await con.filterBgColor('#FFC2E8FF').chainFindAsync({ height: { $gte: 100 } }).filterBgColor('#FFC2EAFF')
+    it('can chain custom and standard functions', async () => {
+        const data = getData()
+        const con = new Converter() 
+        await con.insertAsync(data)
+        const results1 = await con.filterType('sticky note')
+        const results1b = await con.filterType('sticky note').asCursor()
+        const results1c = await con.filterType('sticky note').asCursor().sort({type:1})
+        const results1d = await con.filterType('sticky note').asCursor().sort({type:1}).limit(1)
+        // const results2 = await con.findAsync({ height: { $gte: 150 } }).sort({type:1}).limit(2)
+        // const results2b = await con.chainFindAsync({ height: { $gte: 150 } }).and().sort({type:1})
+        // const results3 = await con.filterBgColor('#FFC2E8FF').asCursor().sort({type:1}).limit(3)
+        // const results4 = await con.filterType('sticky note').chainFindAsync({ height: { $gte: 150 } }).and().sort({type:1}).limit(4)
+        // const results5 = await con.filterBgColor('#FFC2E8FF').chainFindAsync({ height: { $gte: 100 } }).and().sort({type:1}).limit(5)
+        // const results6 = await con.filterBgColor('#FFC2E8FF').chainFindAsync({ height: { $gte: 100 } }).filterBgColor('#FFC2EAFF').and().sort({type:1}).limit(1)
+        
+        
+        assert.strictEqual(results1.length,358)
+        assert.strictEqual(results1b.length,358)
+        console.log(results1c[0].type, 'sticky note')
+        assert.strictEqual(results1c.length,358)
+        assert.strictEqual(results1d.length,1)
+        // assert.strictEqual(results2[0].type, 'area')
+        
+        // assert.strictEqual(results2.length,2)
+        
+        // console.log('test', results1b)
+        // console.log('results2b', results2b.length)
 
-    //     // assert.strictEqual(results1.length,358)
-    //     // assert.strictEqual(results2.length,50)
-    //     assert.strictEqual(results3.length,35)
-    //     // assert.strictEqual(results4.length,4)
-    //     // assert.strictEqual(results5.length,13)
-    //     // assert.strictEqual(results6.length,0)
-    // });
+        // assert.strictEqual(results2[0].type, 'area')
+        // // console.log(results3)
+        // assert.strictEqual(results3.length,3)
+        // assert.strictEqual(results4.length,4)
+        // assert.strictEqual(results5.length,5)
+        // assert.strictEqual(results6.length,0)
+    });
     
 
     // it('confirm that findAsync and chainFindAsync return the same results', async () => {
