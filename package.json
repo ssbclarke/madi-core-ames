@@ -1,0 +1,24 @@
+{
+  "name": "madi",
+  "version": "1.0.0",
+  "description": "**DNS**: _xxx.nasa.gov_ <br/> **SHORTNAME**: _xxx_",
+  "main": "index.js",
+  "scripts": {
+    "drs:create-snapshot": "docker compose exec directus npx directus schema snapshot --yes ./snapshots/latest.yaml;  cp ./dl/snapshots/latest.yaml ./dl/snapshots/\"$(date \"+%F\")\"-snapshot-\"$(date \"+%s\")\".yaml;",
+    "drs:apply-snapshot": "docker compose exec directus npx directus schema apply --yes ./snapshots/latest.yaml"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://jamesvillarrubia@github.com/jamesvillarrubia/madi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jamesvillarrubia/madi/issues"
+  },
+  "homepage": "https://github.com/jamesvillarrubia/madi#readme",
+  "dependencies": {
+    "@feathersjs/feathers": "^5.0.0-pre.38",
+    "create-feathers": "^5.0.0-pre.38"
+  }
+}

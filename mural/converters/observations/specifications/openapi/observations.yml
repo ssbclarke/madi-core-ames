@@ -1,0 +1,378 @@
+# TODO: Pagination on the conversations endpoint
+
+openapi: 3.0.0
+info:
+  description: MADI Observations MVP API
+  version: "0.1"
+  title: MADI Observations MVP API
+  contact:
+    email: james.a.villarrubia@nasa.gov
+security:
+  - bearerAuth: []
+paths:
+  /observations:
+    get:
+      summary: Returns observation(s) based on query parameters
+      operationId: getObservations
+      description: |
+        By including the appropriate query string parameters, search & return relevant observation records
+      parameters:
+        - in: query
+          name: subjectId
+          description: the unique id of the subject
+          required: false
+          schema:
+            $ref: "#/components/schemas/string_id"
+        - in: query
+          name: firstName
+          description: the first name of the observation
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: lastName
+          description: the last name of the observation
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: includes the results matching query string criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Observation_FJS_Array'
+              examples:
+                # EXAMPLE: fetching all observations with default limit
+                observations_default:
+                  $ref: "#/components/examples//observations_default"
+                # EXAMPLE: fetching all observations with default limit
+                observations_zero:
+                  $ref: "#/components/examples//observations_zero"
+        "400":
+          description: bad input parameter
+        default:
+          description: default response if no query string parameters are sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: adds a new observation
+      operationId: postObservation
+      description: >-
+        Creates a new observation that is associated with the unique identifier in the query string ('subjectId')
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/Observation"
+                - $ref: "#/components/schemas/Observation_Array"
+        description: Observation to add
+      responses:
+        "201":
+          description: observation created
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Observation"
+                  - $ref: "#/components/schemas/Observation_Array"
+              examples:
+                # EXAMPLE: fetching all observations with the same subjectId
+                observations_post_default:
+                  $ref: "#/components/examples//observations_post_default"
+                observations_post_array:
+                  $ref: "#/components/examples//observations_post_array"
+        "400":
+          description: "invalid input, object invalid"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: an existing observation already exists
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: soft deletes multiple observations
+      operationId: deleteObservations
+      responses:
+        "405":
+          description: multiple deletes not allowed
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                # EXAMPLE: updating a observation
+                observations_delete_subjectId:
+                  $ref: "#/components/examples//observations_delete_subjectId"
+  /observations/{observationId}:
+    get:
+      summary: Returns observation based id
+      operationId: getObservation
+      description: |
+        By including the id, get a single observation
+      parameters:
+        - in: path
+          name: observationId
+          description: the id of a specific observation
+          required: true
+          schema:
+            $ref: "#/components/schemas/int_id"
+      responses:
+        "200":
+          description: includes the results matching query string criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Observation"
+              examples:
+                # EXAMPLE: fetching a observation
+                observations_id_default:
+                  $ref: "#/components/examples//observations_id_default"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: updates a whole observation
+      operationId: putObservation
+      description: Updates a whole observation
+      parameters:
+        - in: path
+          name: observationId
+          description: the id of a specific observation
+          required: true
+          schema:
+            $ref: "#/components/schemas/int_id"
+      responses:
+        "200":
+          description: observation updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Observation"
+              examples:
+                # EXAMPLE: updating a observation
+                observations_id_put_default:
+                  $ref: "#/components/examples//observations_id_put_default"
+        "400":
+          description: "invalid input, object invalid"
+    patch:
+      summary: patches a subset of fields on a observation
+      operationId: patchObservation
+      description: Patches a observation by field
+      parameters:
+        - in: path
+          name: observationId
+          description: the id of a specific observation
+          schema:
+            $ref: '#/components/schemas/int_id'
+          required: true
+      responses:
+        "200":
+          description: observation patched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Observation"
+              examples:
+                observations_id_patch_default:
+                  $ref: "#/components/examples/observations_id_patch_default"
+        "400":
+          description: "invalid input, object invalid"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: deletes a observation
+      operationId: deleteObservation
+      description: deletes a observation
+      parameters:
+        - in: path
+          name: observationId
+          description: the id of a specific observation
+          required: true
+          schema:
+            $ref: "#/components/schemas/int_id"
+      responses:
+        "200":
+          description: observation deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Observation"
+              examples:
+                observations_id_delete_default:
+                  $ref: "#/components/examples//observations_id_delete_default"
+  /observations/{observationId}:{rpcVerb}:
+    post:
+      summary: Calls the RPC verb 
+      operationId: postObservationRpcVerb
+      description: Calls the RPC verb
+      parameters:
+        - in: path
+          name: observationId
+          description: the id of a specific observation
+          required: true
+          schema:
+            $ref: "#/components/schemas/int_id"
+        - in: path
+          name: rpcVerb
+          description: the rpc verb that calls the request-opt-in functionality
+          required: true
+          schema:
+            $ref: "#/components/schemas/rpc_string"
+      responses:
+        '200':
+          description:  returns the created observation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Observation'
+        '400':
+          description: missing required ID(s)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: required entity could not be found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: invalid RPC verb
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    rpc_string:
+      type: string
+    Observation_FJS_Array:
+      type: object
+      required:
+        - total
+        - limit
+        - skip
+        - data
+      properties:
+        total:
+          type: integer
+        limit:
+          type: integer
+        skip:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Observation"
+    Observation_Array:
+      type: array
+      items:
+        $ref: "#/components/schemas/Observation"
+    Observation:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - phoneNumber
+        - subjectId
+      properties:
+        id:
+          $ref: "#/components/schemas/int_id"
+        firstName:
+          type: string
+          example: Jane
+        lastName:
+          type: string
+          example: Smith
+  examples:
+    observations_zero:
+      value:
+        total: 0
+        limit: 10
+        skip: 0
+        data: []
+    observations_default:
+      value:
+        total: 2
+        limit: 10
+        skip: 0
+        data:
+          - id: 12345678
+            firstName: "Jane"
+            lastName: "Smith"
+            createdAt: "2012-11-11T23:36:55.994Z"
+            updatedAt: "2005-01-02T10:54:59.531Z"
+          - id: 3456788
+            firstName: "Bob"
+            lastName: "Smith"
+            createdAt: "2012-11-11T23:36:55.994Z"
+            updatedAt: "2005-01-02T10:54:59.531Z"
+    observations_post_default:
+      value:
+        id: 12345678
+        firstName: "Janet"
+        lastName: "Smith"
+        createdAt: "2012-11-11T23:36:55.994Z"
+        updatedAt: "2005-01-02T10:54:59.531Z"
+    observations_post_array:
+      value:
+        - id: 3456788
+          firstName: "Bob"
+          lastName: "Smith"
+          createdAt: "2012-11-11T23:36:55.994Z"
+          updatedAt: "2005-01-02T10:54:59.531Z"
+        - id: 23457109
+          firstName: "Mary"
+          lastName: "Gomez"
+          createdAt: "2012-11-11T23:36:55.994Z"
+          updatedAt: "2005-01-02T10:54:59.531Z"
+    observations_delete_subjectId:
+      value:
+        name: MethodNotAllowed
+        message: Can not remove multiple entries
+        code: 405
+        className: method-not-allowed
+        errors: {}
+    observations_id_default:
+      $ref: "#/components/examples//observations_post_default"
+    observations_id_patch_default:
+      value:
+        id: 12345678
+        firstName: "Jane"
+        lastName: "Smith"
+        createdAt: "2012-11-11T23:36:55.994Z"
+        updatedAt: "2005-01-02T10:54:59.531Z"
+    observations_id_put_default:
+      value:
+        id: 12345678
+        firstName: "Jane"
+        lastName: "Smith"
+        createdAt: "2012-11-11T23:36:55.994Z"
+        updatedAt: "2005-01-02T10:54:59.531Z"
+    observations_id_delete_default:
+      value:
+        id: 12345678
+        firstName: "Jane"
+        lastName: "Smith"
+        createdAt: "2012-11-11T23:36:55.994Z"
+        updatedAt: "2005-01-02T10:54:59.531Z"

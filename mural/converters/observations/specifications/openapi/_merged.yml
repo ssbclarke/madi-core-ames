@@ -1,0 +1,1561 @@
+openapi: 3.0.0
+info:
+  description: MADI Observations MVP API
+  version: '0.1'
+  title: MADI Observations MVP API
+  contact:
+    email: james.a.villarrubia@nasa.gov
+security:
+  - bearerAuth: []
+paths:
+  /keys:
+    get:
+      summary: Returns key based on query parameters
+      operationId: getKeys
+      description: >-
+        By including the appropriate query string parameters, search & return
+        relevant key records
+      parameters:
+        - in: query
+          name: clientKey
+          description: the ID (username) for the key
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: orgId
+          description: the organization ID
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: includes the results matching query string criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+                  required:
+                    - total
+                    - limit
+                    - skip
+                    - data
+                  properties:
+                    total:
+                      type: integer
+                    limit:
+                      type: integer
+                    skip:
+                      type: integer
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - clientKey
+                          - clientSecret
+                          - orgId
+                        properties:
+                          id:
+                            $ref: '#/components/schemas/int_id'
+                          clientKey:
+                            type: string
+                            example: user01
+                          orgId:
+                            type: string
+                            example: password123
+                          createdAt:
+                            $ref: '#/components/schemas/iso_date'
+              examples:
+                keys_default:
+                  value:
+                    total: 1
+                    limit: 10
+                    skip: 0
+                    data:
+                      - id: 1
+                        clientKey: abcdefg
+                        orgId: orgIdUsedForTesting
+                        createdAt: '2018-11-11T23:36:55.994Z'
+                        updatedAt: '2010-01-02T10:54:59.531Z'
+        '400':
+          description: bad input parameter
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: adds a new key associated with the unique identifier in the query string
+      operationId: postKey
+      description: >-
+        Creates a new key that is associated with the unique identifier in the
+        query string ('clientKey')
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  required:
+                    - clientKey
+                    - clientSecret
+                    - orgId
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/int_id'
+                    clientKey:
+                      type: string
+                      example: user01
+                    orgId:
+                      type: string
+                      example: password123
+                    createdAt:
+                      $ref: '#/components/schemas/iso_date'
+                - type: array
+                  items:
+                    type: object
+                    required:
+                      - clientKey
+                      - clientSecret
+                      - orgId
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/int_id'
+                      clientKey:
+                        type: string
+                        example: user01
+                      orgId:
+                        type: string
+                        example: password123
+                      createdAt:
+                        $ref: '#/components/schemas/iso_date'
+        description: key to add
+      responses:
+        '201':
+          description: key created
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    required:
+                      - clientKey
+                      - clientSecret
+                      - orgId
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/int_id'
+                      clientKey:
+                        type: string
+                        example: user01
+                      orgId:
+                        type: string
+                        example: password123
+                      createdAt:
+                        $ref: '#/components/schemas/iso_date'
+                  - type: array
+                    items:
+                      type: object
+                      required:
+                        - clientKey
+                        - clientSecret
+                        - orgId
+                      properties:
+                        id:
+                          $ref: '#/components/schemas/int_id'
+                        clientKey:
+                          type: string
+                          example: user01
+                        orgId:
+                          type: string
+                          example: password123
+                        createdAt:
+                          $ref: '#/components/schemas/iso_date'
+              examples:
+                keys_post_default:
+                  value:
+                    id: 1
+                    clientKey: hijklmno
+                    orgId: orgIdUsedForTesting
+                    createdAt: '2012-11-11T23:36:55.994Z'
+                    updatedAt: '2005-01-02T10:54:59.531Z'
+                keys_post_array:
+                  value:
+                    - id: 1
+                      clientKey: abcdefg
+                      orgId: orgIdUsedForTesting
+                      createdAt: '2018-11-11T23:36:55.994Z'
+                      updatedAt: '2010-01-02T10:54:59.531Z'
+                    - id: 2
+                      clientKey: hijklmno
+                      orgId: orgIdUsedForTesting
+                      createdAt: '2019-11-11T23:36:55.994Z'
+                      updatedAt: '2020-01-02T10:54:59.531Z'
+        '400':
+          description: invalid input, object invalid
+          content:
+            application/json:
+              examples:
+                keys_post_duplicate:
+                  value:
+                    name: BadRequest
+                    message: Validation error
+                    code: 400
+                    className: bad-request
+                    data: {}
+                    errors:
+                      - message: clientKey must be unique
+                        type: unique violation
+                        path: clientKey
+                        value: userName
+                        origin: DB
+                        instance:
+                          id: null
+                          clientKey: userName
+                          clientSecret: >-
+                            $2a$10$.hJrkH/Lbam.ef8XTveAP.NSkDDFEIH891sL4Uj593n6VPr/5bEWG
+                          orgId: abcdefg
+                          updatedAt: '2021-03-17T01:10:39.286Z'
+                          createdAt: '2021-03-17T01:10:39.286Z'
+                        validatorKey: not_unique
+                        validatorName: null
+                        validatorArgs: []
+                      - message: 'notNull Violation: keys.clientSecret cannot be null'
+                        type: notNull Violation
+                        path: clientSecret
+                        value: null
+                        origin: CORE
+                        instance:
+                          id: null
+                          clientKey: userName
+                          orgId: abcdefg
+                          updatedAt: '2021-03-17T01:10:39.286Z'
+                          createdAt: '2021-03-17T01:10:39.286Z'
+                        validatorKey: is_null
+                        validatorName: null
+                        validatorArgs: []
+                      - message: 'notNull Violation: keys.clientKey cannot be null'
+                        type: notNull Violation
+                        path: clientSecret
+                        value: null
+                        origin: CORE
+                        instance:
+                          id: null
+                          clientSecret: >-
+                            $2a$10$2cx.9iXUxamaP9hrwIkOyuzDHhy1rrWZDPjV53eh445paSTaRG3AO
+                          orgId: abcdefg
+                          updatedAt: '2021-03-17T01:10:39.286Z'
+                          createdAt: '2021-03-17T01:10:39.286Z'
+                        validatorKey: is_null
+                        validatorName: null
+                        validatorArgs: []
+  /keys/{keyId}:
+    get:
+      summary: Returns key based id
+      operationId: getKey
+      description: |
+        By including the id, get a single key
+      parameters:
+        - in: path
+          name: keyId
+          description: the id of a specific key
+          required: true
+          schema:
+            $ref: '#/components/schemas/int_id'
+      responses:
+        '200':
+          description: includes the results matching query string criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - clientKey
+                    - clientSecret
+                    - orgId
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/int_id'
+                    clientKey:
+                      type: string
+                      example: user01
+                    orgId:
+                      type: string
+                      example: password123
+                    createdAt:
+                      $ref: '#/components/schemas/iso_date'
+              examples:
+                keys_id_default:
+                  value:
+                    id: 1
+                    clientKey: hijklmno
+                    orgId: orgIdUsedForTesting
+                    createdAt: '2012-11-11T23:36:55.994Z'
+                    updatedAt: '2005-01-02T10:54:59.531Z'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: updates a whole key
+      operationId: putKey
+      description: Updates a whole key
+      parameters:
+        - in: path
+          name: keyId
+          description: the id of a specific key
+          required: true
+          schema:
+            $ref: '#/components/schemas/int_id'
+      responses:
+        '200':
+          description: key updated
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - clientKey
+                  - clientSecret
+                  - orgId
+                properties:
+                  id:
+                    $ref: '#/components/schemas/int_id'
+                  clientKey:
+                    type: string
+                    example: user01
+                  orgId:
+                    type: string
+                    example: password123
+                  createdAt:
+                    $ref: '#/components/schemas/iso_date'
+              examples:
+                keys_id_put_default:
+                  value:
+                    id: 1
+                    clientKey: hijklmno
+                    orgId: orgIdUsedForTesting
+                    createdAt: '2012-11-11T23:36:55.994Z'
+                    updatedAt: '2005-01-02T10:54:59.531Z'
+        '400':
+          description: invalid input, object invalid
+    patch:
+      summary: patches a subset of fields on a key
+      operationId: patchkey
+      description: Patches a key by field
+      parameters:
+        - in: path
+          name: keyId
+          description: the id of a specific key
+          required: true
+          schema:
+            $ref: '#/components/schemas/int_id'
+      responses:
+        '200':
+          description: key patched
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - clientKey
+                  - clientSecret
+                  - orgId
+                properties:
+                  id:
+                    $ref: '#/components/schemas/int_id'
+                  clientKey:
+                    type: string
+                    example: user01
+                  orgId:
+                    type: string
+                    example: password123
+                  createdAt:
+                    $ref: '#/components/schemas/iso_date'
+              examples:
+                keys_id_patch_default:
+                  value:
+                    id: 1
+                    clientKey: hijklmno
+                    orgId: orgIdUsedForTesting
+                    createdAt: '2012-11-11T23:36:55.994Z'
+                    updatedAt: '2005-01-02T10:54:59.531Z'
+        '400':
+          description: invalid input, object invalid
+          content:
+            application/json:
+              examples:
+                keys_post_duplicate:
+                  value:
+                    name: BadRequest
+                    message: Validation error
+                    code: 400
+                    className: bad-request
+                    data: {}
+                    errors:
+                      - message: clientKey must be unique
+                        type: unique violation
+                        path: clientKey
+                        value: userName
+                        origin: DB
+                        instance:
+                          id: null
+                          clientKey: userName
+                          clientSecret: >-
+                            $2a$10$.hJrkH/Lbam.ef8XTveAP.NSkDDFEIH891sL4Uj593n6VPr/5bEWG
+                          orgId: abcdefg
+                          updatedAt: '2021-03-17T01:10:39.286Z'
+                          createdAt: '2021-03-17T01:10:39.286Z'
+                        validatorKey: not_unique
+                        validatorName: null
+                        validatorArgs: []
+                      - message: 'notNull Violation: keys.clientSecret cannot be null'
+                        type: notNull Violation
+                        path: clientSecret
+                        value: null
+                        origin: CORE
+                        instance:
+                          id: null
+                          clientKey: userName
+                          orgId: abcdefg
+                          updatedAt: '2021-03-17T01:10:39.286Z'
+                          createdAt: '2021-03-17T01:10:39.286Z'
+                        validatorKey: is_null
+                        validatorName: null
+                        validatorArgs: []
+                      - message: 'notNull Violation: keys.clientKey cannot be null'
+                        type: notNull Violation
+                        path: clientSecret
+                        value: null
+                        origin: CORE
+                        instance:
+                          id: null
+                          clientSecret: >-
+                            $2a$10$2cx.9iXUxamaP9hrwIkOyuzDHhy1rrWZDPjV53eh445paSTaRG3AO
+                          orgId: abcdefg
+                          updatedAt: '2021-03-17T01:10:39.286Z'
+                          createdAt: '2021-03-17T01:10:39.286Z'
+                        validatorKey: is_null
+                        validatorName: null
+                        validatorArgs: []
+    delete:
+      summary: deletes a key
+      operationId: deletekey
+      description: Deletes a key
+      parameters:
+        - in: path
+          name: keyId
+          description: the id of a specific key
+          required: true
+          schema:
+            $ref: '#/components/schemas/int_id'
+      responses:
+        '200':
+          description: key deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - clientKey
+                  - clientSecret
+                  - orgId
+                properties:
+                  id:
+                    $ref: '#/components/schemas/int_id'
+                  clientKey:
+                    type: string
+                    example: user01
+                  orgId:
+                    type: string
+                    example: password123
+                  createdAt:
+                    $ref: '#/components/schemas/iso_date'
+              examples:
+                keys_id_delete_default:
+                  value:
+                    id: 1
+                    clientKey: GRC
+                    clientSecret: password123
+                    orgId: orgIdUsedForTesting
+  /observations:
+    get:
+      summary: Returns observation(s) based on query parameters
+      operationId: getObservations
+      description: >
+        By including the appropriate query string parameters, search & return
+        relevant observation records
+      parameters:
+        - in: query
+          name: subjectId
+          description: the unique id of the subject
+          required: false
+          schema:
+            $ref: '#/components/schemas/string_id'
+        - in: query
+          name: firstName
+          description: the first name of the observation
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: lastName
+          description: the last name of the observation
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: includes the results matching query string criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: object
+                  required:
+                    - total
+                    - limit
+                    - skip
+                    - data
+                  properties:
+                    total:
+                      type: integer
+                    limit:
+                      type: integer
+                    skip:
+                      type: integer
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - firstName
+                          - lastName
+                          - phoneNumber
+                          - subjectId
+                        properties:
+                          id:
+                            $ref: '#/components/schemas/int_id'
+                          firstName:
+                            type: string
+                            example: Jane
+                          lastName:
+                            type: string
+                            example: Smith
+              examples:
+                observations_default:
+                  value:
+                    total: 2
+                    limit: 10
+                    skip: 0
+                    data:
+                      - id: 12345678
+                        firstName: Jane
+                        lastName: Smith
+                        createdAt: '2012-11-11T23:36:55.994Z'
+                        updatedAt: '2005-01-02T10:54:59.531Z'
+                      - id: 3456788
+                        firstName: Bob
+                        lastName: Smith
+                        createdAt: '2012-11-11T23:36:55.994Z'
+                        updatedAt: '2005-01-02T10:54:59.531Z'
+                observations_zero:
+                  value:
+                    total: 0
+                    limit: 10
+                    skip: 0
+                    data: []
+        '400':
+          description: bad input parameter
+        default:
+          description: default response if no query string parameters are sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: adds a new observation
+      operationId: postObservation
+      description: >-
+        Creates a new observation that is associated with the unique identifier
+        in the query string ('subjectId')
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  required:
+                    - firstName
+                    - lastName
+                    - phoneNumber
+                    - subjectId
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/int_id'
+                    firstName:
+                      type: string
+                      example: Jane
+                    lastName:
+                      type: string
+                      example: Smith
+                - type: array
+                  items:
+                    type: object
+                    required:
+                      - firstName
+                      - lastName
+                      - phoneNumber
+                      - subjectId
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/int_id'
+                      firstName:
+                        type: string
+                        example: Jane
+                      lastName:
+                        type: string
+                        example: Smith
+        description: Observation to add
+      responses:
+        '201':
+          description: observation created
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    required:
+                      - firstName
+                      - lastName
+                      - phoneNumber
+                      - subjectId
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/int_id'
+                      firstName:
+                        type: string
+                        example: Jane
+                      lastName:
+                        type: string
+                        example: Smith
+                  - type: array
+                    items:
+                      type: object
+                      required:
+                        - firstName
+                        - lastName
+                        - phoneNumber
+                        - subjectId
+                      properties:
+                        id:
+                          $ref: '#/components/schemas/int_id'
+                        firstName:
+                          type: string
+                          example: Jane
+                        lastName:
+                          type: string
+                          example: Smith
+              examples:
+                observations_post_default:
+                  value:
+                    id: 12345678
+                    firstName: Janet
+                    lastName: Smith
+                    createdAt: '2012-11-11T23:36:55.994Z'
+                    updatedAt: '2005-01-02T10:54:59.531Z'
+                observations_post_array:
+                  value:
+                    - id: 3456788
+                      firstName: Bob
+                      lastName: Smith
+                      createdAt: '2012-11-11T23:36:55.994Z'
+                      updatedAt: '2005-01-02T10:54:59.531Z'
+                    - id: 23457109
+                      firstName: Mary
+                      lastName: Gomez
+                      createdAt: '2012-11-11T23:36:55.994Z'
+                      updatedAt: '2005-01-02T10:54:59.531Z'
+        '400':
+          description: invalid input, object invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: an existing observation already exists
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: soft deletes multiple observations
+      operationId: deleteObservations
+      responses:
+        '405':
+          description: multiple deletes not allowed
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                observations_delete_subjectId:
+                  value:
+                    name: MethodNotAllowed
+                    message: Can not remove multiple entries
+                    code: 405
+                    className: method-not-allowed
+                    errors: {}
+  /observations/{observationId}:
+    get:
+      summary: Returns observation based id
+      operationId: getObservation
+      description: |
+        By including the id, get a single observation
+      parameters:
+        - in: path
+          name: observationId
+          description: the id of a specific observation
+          required: true
+          schema:
+            $ref: '#/components/schemas/int_id'
+      responses:
+        '200':
+          description: includes the results matching query string criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - firstName
+                    - lastName
+                    - phoneNumber
+                    - subjectId
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/int_id'
+                    firstName:
+                      type: string
+                      example: Jane
+                    lastName:
+                      type: string
+                      example: Smith
+              examples:
+                observations_id_default:
+                  value:
+                    id: 12345678
+                    firstName: Janet
+                    lastName: Smith
+                    createdAt: '2012-11-11T23:36:55.994Z'
+                    updatedAt: '2005-01-02T10:54:59.531Z'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: updates a whole observation
+      operationId: putObservation
+      description: Updates a whole observation
+      parameters:
+        - in: path
+          name: observationId
+          description: the id of a specific observation
+          required: true
+          schema:
+            $ref: '#/components/schemas/int_id'
+      responses:
+        '200':
+          description: observation updated
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - firstName
+                  - lastName
+                  - phoneNumber
+                  - subjectId
+                properties:
+                  id:
+                    $ref: '#/components/schemas/int_id'
+                  firstName:
+                    type: string
+                    example: Jane
+                  lastName:
+                    type: string
+                    example: Smith
+              examples:
+                observations_id_put_default:
+                  value:
+                    id: 12345678
+                    firstName: Jane
+                    lastName: Smith
+                    createdAt: '2012-11-11T23:36:55.994Z'
+                    updatedAt: '2005-01-02T10:54:59.531Z'
+        '400':
+          description: invalid input, object invalid
+    patch:
+      summary: patches a subset of fields on a observation
+      operationId: patchObservation
+      description: Patches a observation by field
+      parameters:
+        - in: path
+          name: observationId
+          description: the id of a specific observation
+          schema:
+            $ref: '#/components/schemas/int_id'
+          required: true
+      responses:
+        '200':
+          description: observation patched
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - firstName
+                  - lastName
+                  - phoneNumber
+                  - subjectId
+                properties:
+                  id:
+                    $ref: '#/components/schemas/int_id'
+                  firstName:
+                    type: string
+                    example: Jane
+                  lastName:
+                    type: string
+                    example: Smith
+              examples:
+                observations_id_patch_default:
+                  value:
+                    id: 12345678
+                    firstName: Jane
+                    lastName: Smith
+                    createdAt: '2012-11-11T23:36:55.994Z'
+                    updatedAt: '2005-01-02T10:54:59.531Z'
+        '400':
+          description: invalid input, object invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: deletes a observation
+      operationId: deleteObservation
+      description: deletes a observation
+      parameters:
+        - in: path
+          name: observationId
+          description: the id of a specific observation
+          required: true
+          schema:
+            $ref: '#/components/schemas/int_id'
+      responses:
+        '200':
+          description: observation deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - firstName
+                  - lastName
+                  - phoneNumber
+                  - subjectId
+                properties:
+                  id:
+                    $ref: '#/components/schemas/int_id'
+                  firstName:
+                    type: string
+                    example: Jane
+                  lastName:
+                    type: string
+                    example: Smith
+              examples:
+                observations_id_delete_default:
+                  value:
+                    id: 12345678
+                    firstName: Jane
+                    lastName: Smith
+                    createdAt: '2012-11-11T23:36:55.994Z'
+                    updatedAt: '2005-01-02T10:54:59.531Z'
+  /observations/{observationId}:{rpcVerb}:
+    post:
+      summary: Calls the RPC verb
+      operationId: postObservationRpcVerb
+      description: Calls the RPC verb
+      parameters:
+        - in: path
+          name: observationId
+          description: the id of a specific observation
+          required: true
+          schema:
+            $ref: '#/components/schemas/int_id'
+        - in: path
+          name: rpcVerb
+          description: the rpc verb that calls the request-opt-in functionality
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: returns the created observation
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - firstName
+                  - lastName
+                  - phoneNumber
+                  - subjectId
+                properties:
+                  id:
+                    $ref: '#/components/schemas/int_id'
+                  firstName:
+                    type: string
+                    example: Jane
+                  lastName:
+                    type: string
+                    example: Smith
+        '400':
+          description: missing required ID(s)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: required entity could not be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: invalid RPC verb
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /authentication:
+    post:
+      summary: >-
+        Returns JWT authentication token based on accurate login information
+        that can be included in request headers to access restricted routes
+      operationId: postAuthToken
+      description: Creates a new JWT token and allows the user to use restricted paths
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - strategy
+                - clientKey
+                - clientSecret
+              properties:
+                strategy:
+                  type: string
+                  example: local
+                clientKey:
+                  type: string
+                  example: keyUsedForTesting
+                clientSecret:
+                  type: string
+                  example: passwordUsedForTesting
+        description: Authenticate api requests
+      security: []
+      responses:
+        '201':
+          description: JWT created
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - accessToken
+                  - authentication
+                  - key
+                properties:
+                  accessToken:
+                    type: string
+                    example: uoiiopuiopiUzI1NiIsInR5cCI6ImFjY2VzcyJ9
+                  authentication:
+                    type: object
+                    properties:
+                      strategy:
+                        type: string
+                        example: local
+                      accessToken:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9
+                      payload:
+                        type: object
+                        properties:
+                          iat:
+                            type: string
+                            example: 1621287175
+                          exp:
+                            type: string
+                            example: 1621373575
+                          aud:
+                            type: string
+                            example: https://yourdomain.com
+                          iss:
+                            type: string
+                            example: feathers
+                          sub:
+                            type: string
+                            example: 1
+                          jti:
+                            type: string
+                            example: e22bac05-bea6-4169-a839-cad4cfab22ce
+              examples:
+                authentication_default:
+                  value:
+                    accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9
+                    authentication:
+                      strategy: local
+                      accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9
+                      payload:
+                        iat: 1621287175
+                        exp: 1621373575
+                        aud: https://yourdomain.com
+                        iss: feathers
+                        sub: 1
+                        jti: e22bac05-bea6-4169-a839-cad4cfab22ce
+                        key:
+                          $ref: '#/components/schemas/Key'
+        '401':
+          description: authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                authentication_login_error:
+                  value:
+                    name: NotAuthenticated
+                    message: Not Authenticated
+                    code: 401
+                    className: not-authenticated
+                    data: {}
+                    errors:
+                      - message: >-
+                          Invalid authentication information (strategy not
+                          allowed in authStrategies)
+                      - message: Invalid login
+        default:
+          description: login error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                authentication_login_error:
+                  value:
+                    name: NotAuthenticated
+                    message: Not Authenticated
+                    code: 401
+                    className: not-authenticated
+                    data: {}
+                    errors:
+                      - message: >-
+                          Invalid authentication information (strategy not
+                          allowed in authStrategies)
+                      - message: Invalid login
+components:
+  examples:
+    keys_default:
+      value:
+        total: 1
+        limit: 10
+        skip: 0
+        data:
+          - id: 1
+            clientKey: abcdefg
+            orgId: orgIdUsedForTesting
+            createdAt: '2018-11-11T23:36:55.994Z'
+            updatedAt: '2010-01-02T10:54:59.531Z'
+    keys_post_default:
+      value:
+        id: 1
+        clientKey: hijklmno
+        orgId: orgIdUsedForTesting
+        createdAt: '2012-11-11T23:36:55.994Z'
+        updatedAt: '2005-01-02T10:54:59.531Z'
+    keys_post_array:
+      value:
+        - id: 1
+          clientKey: abcdefg
+          orgId: orgIdUsedForTesting
+          createdAt: '2018-11-11T23:36:55.994Z'
+          updatedAt: '2010-01-02T10:54:59.531Z'
+        - id: 2
+          clientKey: hijklmno
+          orgId: orgIdUsedForTesting
+          createdAt: '2019-11-11T23:36:55.994Z'
+          updatedAt: '2020-01-02T10:54:59.531Z'
+    keys_id_patch_default:
+      value:
+        id: 1
+        clientKey: hijklmno
+        orgId: orgIdUsedForTesting
+        createdAt: '2012-11-11T23:36:55.994Z'
+        updatedAt: '2005-01-02T10:54:59.531Z'
+    keys_post_bad_request:
+      value:
+        name: BadRequest
+        message: Validation error
+        code: 400
+        className: bad-request
+        data: {}
+        errors:
+          - message: clientKey must be unique
+            type: unique violation
+            path: clientKey
+            value: userName
+            origin: DB
+            instance:
+              id: null
+              clientKey: userName
+              clientSecret: $2a$10$.hJrkH/Lbam.ef8XTveAP.NSkDDFEIH891sL4Uj593n6VPr/5bEWG
+              orgId: abcdefg
+              updatedAt: '2021-03-17T01:10:39.286Z'
+              createdAt: '2021-03-17T01:10:39.286Z'
+            validatorKey: not_unique
+            validatorName: null
+            validatorArgs: []
+          - message: 'notNull Violation: keys.clientSecret cannot be null'
+            type: notNull Violation
+            path: clientSecret
+            value: null
+            origin: CORE
+            instance:
+              id: null
+              clientKey: userName
+              orgId: abcdefg
+              updatedAt: '2021-03-17T01:10:39.286Z'
+              createdAt: '2021-03-17T01:10:39.286Z'
+            validatorKey: is_null
+            validatorName: null
+            validatorArgs: []
+          - message: 'notNull Violation: keys.clientKey cannot be null'
+            type: notNull Violation
+            path: clientSecret
+            value: null
+            origin: CORE
+            instance:
+              id: null
+              clientSecret: $2a$10$2cx.9iXUxamaP9hrwIkOyuzDHhy1rrWZDPjV53eh445paSTaRG3AO
+              orgId: abcdefg
+              updatedAt: '2021-03-17T01:10:39.286Z'
+              createdAt: '2021-03-17T01:10:39.286Z'
+            validatorKey: is_null
+            validatorName: null
+            validatorArgs: []
+    keys_id_default:
+      value:
+        id: 1
+        clientKey: hijklmno
+        orgId: orgIdUsedForTesting
+        createdAt: '2012-11-11T23:36:55.994Z'
+        updatedAt: '2005-01-02T10:54:59.531Z'
+    keys_id_delete_default:
+      value:
+        id: 1
+        clientKey: GRC
+        clientSecret: password123
+        orgId: orgIdUsedForTesting
+    keys_post_duplicate:
+      value:
+        name: BadRequest
+        message: Validation error
+        code: 400
+        className: bad-request
+        data: {}
+        errors:
+          - message: clientKey must be unique
+            type: unique violation
+            path: clientKey
+            value: userName
+            origin: DB
+            instance:
+              id: null
+              clientKey: userName
+              clientSecret: $2a$10$.hJrkH/Lbam.ef8XTveAP.NSkDDFEIH891sL4Uj593n6VPr/5bEWG
+              orgId: abcdefg
+              updatedAt: '2021-03-17T01:10:39.286Z'
+              createdAt: '2021-03-17T01:10:39.286Z'
+            validatorKey: not_unique
+            validatorName: null
+            validatorArgs: []
+          - message: 'notNull Violation: keys.clientSecret cannot be null'
+            type: notNull Violation
+            path: clientSecret
+            value: null
+            origin: CORE
+            instance:
+              id: null
+              clientKey: userName
+              orgId: abcdefg
+              updatedAt: '2021-03-17T01:10:39.286Z'
+              createdAt: '2021-03-17T01:10:39.286Z'
+            validatorKey: is_null
+            validatorName: null
+            validatorArgs: []
+          - message: 'notNull Violation: keys.clientKey cannot be null'
+            type: notNull Violation
+            path: clientSecret
+            value: null
+            origin: CORE
+            instance:
+              id: null
+              clientSecret: $2a$10$2cx.9iXUxamaP9hrwIkOyuzDHhy1rrWZDPjV53eh445paSTaRG3AO
+              orgId: abcdefg
+              updatedAt: '2021-03-17T01:10:39.286Z'
+              createdAt: '2021-03-17T01:10:39.286Z'
+            validatorKey: is_null
+            validatorName: null
+            validatorArgs: []
+    observations_zero:
+      value:
+        total: 0
+        limit: 10
+        skip: 0
+        data: []
+    observations_default:
+      value:
+        total: 2
+        limit: 10
+        skip: 0
+        data:
+          - id: 12345678
+            firstName: Jane
+            lastName: Smith
+            createdAt: '2012-11-11T23:36:55.994Z'
+            updatedAt: '2005-01-02T10:54:59.531Z'
+          - id: 3456788
+            firstName: Bob
+            lastName: Smith
+            createdAt: '2012-11-11T23:36:55.994Z'
+            updatedAt: '2005-01-02T10:54:59.531Z'
+    observations_post_default:
+      value:
+        id: 12345678
+        firstName: Janet
+        lastName: Smith
+        createdAt: '2012-11-11T23:36:55.994Z'
+        updatedAt: '2005-01-02T10:54:59.531Z'
+    observations_post_array:
+      value:
+        - id: 3456788
+          firstName: Bob
+          lastName: Smith
+          createdAt: '2012-11-11T23:36:55.994Z'
+          updatedAt: '2005-01-02T10:54:59.531Z'
+        - id: 23457109
+          firstName: Mary
+          lastName: Gomez
+          createdAt: '2012-11-11T23:36:55.994Z'
+          updatedAt: '2005-01-02T10:54:59.531Z'
+    observations_delete_subjectId:
+      value:
+        name: MethodNotAllowed
+        message: Can not remove multiple entries
+        code: 405
+        className: method-not-allowed
+        errors: {}
+    observations_id_default:
+      value:
+        id: 12345678
+        firstName: Janet
+        lastName: Smith
+        createdAt: '2012-11-11T23:36:55.994Z'
+        updatedAt: '2005-01-02T10:54:59.531Z'
+    observations_id_patch_default:
+      value:
+        id: 12345678
+        firstName: Jane
+        lastName: Smith
+        createdAt: '2012-11-11T23:36:55.994Z'
+        updatedAt: '2005-01-02T10:54:59.531Z'
+    observations_id_put_default:
+      value:
+        id: 12345678
+        firstName: Jane
+        lastName: Smith
+        createdAt: '2012-11-11T23:36:55.994Z'
+        updatedAt: '2005-01-02T10:54:59.531Z'
+    observations_id_delete_default:
+      value:
+        id: 12345678
+        firstName: Jane
+        lastName: Smith
+        createdAt: '2012-11-11T23:36:55.994Z'
+        updatedAt: '2005-01-02T10:54:59.531Z'
+    authentication_default:
+      value:
+        accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9
+        authentication:
+          strategy: local
+          accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9
+          payload:
+            iat: 1621287175
+            exp: 1621373575
+            aud: https://yourdomain.com
+            iss: feathers
+            sub: 1
+            jti: e22bac05-bea6-4169-a839-cad4cfab22ce
+            key:
+              $ref: '#/components/schemas/Key'
+    authentication_login_error:
+      value:
+        name: NotAuthenticated
+        message: Not Authenticated
+        code: 401
+        className: not-authenticated
+        data: {}
+        errors:
+          - message: >-
+              Invalid authentication information (strategy not allowed in
+              authStrategies)
+          - message: Invalid login
+  schemas:
+    int_id:
+      type: integer
+      readOnly: true
+      minimum: 0
+      maximum: 100000000
+    string_id:
+      type: string
+      minLength: 4
+      maxLength: 36
+    iso_date:
+      type: string
+      format: date-time
+      example: '2017-07-21T17:32:28.000Z'
+    rpc_string:
+      type: string
+    Key_FJS_Array:
+      type: string
+      required:
+        - total
+        - limit
+        - skip
+        - data
+      properties:
+        total:
+          type: integer
+        limit:
+          type: integer
+        skip:
+          type: integer
+        data:
+          type: array
+          items:
+            type: object
+            required:
+              - clientKey
+              - clientSecret
+              - orgId
+            properties:
+              id:
+                $ref: '#/components/schemas/int_id'
+              clientKey:
+                type: string
+                example: user01
+              orgId:
+                type: string
+                example: password123
+              createdAt:
+                $ref: '#/components/schemas/iso_date'
+    Key:
+      type: object
+      required:
+        - clientKey
+        - clientSecret
+        - orgId
+      properties:
+        id:
+          $ref: '#/components/schemas/int_id'
+        clientKey:
+          type: string
+          example: user01
+        orgId:
+          type: string
+          example: password123
+        createdAt:
+          $ref: '#/components/schemas/iso_date'
+    Key_Array:
+      type: array
+      items:
+        type: object
+        required:
+          - clientKey
+          - clientSecret
+          - orgId
+        properties:
+          id:
+            $ref: '#/components/schemas/int_id'
+          clientKey:
+            type: string
+            example: user01
+          orgId:
+            type: string
+            example: password123
+          createdAt:
+            $ref: '#/components/schemas/iso_date'
+    Observation_FJS_Array:
+      type: object
+      required:
+        - total
+        - limit
+        - skip
+        - data
+      properties:
+        total:
+          type: integer
+        limit:
+          type: integer
+        skip:
+          type: integer
+        data:
+          type: array
+          items:
+            type: object
+            required:
+              - firstName
+              - lastName
+              - phoneNumber
+              - subjectId
+            properties:
+              id:
+                $ref: '#/components/schemas/int_id'
+              firstName:
+                type: string
+                example: Jane
+              lastName:
+                type: string
+                example: Smith
+    Observation_Array:
+      type: array
+      items:
+        type: object
+        required:
+          - firstName
+          - lastName
+          - phoneNumber
+          - subjectId
+        properties:
+          id:
+            $ref: '#/components/schemas/int_id'
+          firstName:
+            type: string
+            example: Jane
+          lastName:
+            type: string
+            example: Smith
+    Observation:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - phoneNumber
+        - subjectId
+      properties:
+        id:
+          $ref: '#/components/schemas/int_id'
+        firstName:
+          type: string
+          example: Jane
+        lastName:
+          type: string
+          example: Smith
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          minimum: 0
+        message:
+          type: string
+        name:
+          type: string
+        className:
+          type: string
+    Authentication_Response:
+      type: object
+      required:
+        - accessToken
+        - authentication
+        - key
+      properties:
+        accessToken:
+          type: string
+          example: uoiiopuiopiUzI1NiIsInR5cCI6ImFjY2VzcyJ9
+        authentication:
+          type: object
+          properties:
+            strategy:
+              type: string
+              example: local
+            accessToken:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9
+            payload:
+              type: object
+              properties:
+                iat:
+                  type: string
+                  example: 1621287175
+                exp:
+                  type: string
+                  example: 1621373575
+                aud:
+                  type: string
+                  example: https://yourdomain.com
+                iss:
+                  type: string
+                  example: feathers
+                sub:
+                  type: string
+                  example: 1
+                jti:
+                  type: string
+                  example: e22bac05-bea6-4169-a839-cad4cfab22ce
+    Authentication:
+      type: object
+      required:
+        - strategy
+        - clientKey
+        - clientSecret
+      properties:
+        strategy:
+          type: string
+          example: local
+        clientKey:
+          type: string
+          example: keyUsedForTesting
+        clientSecret:
+          type: string
+          example: passwordUsedForTesting
