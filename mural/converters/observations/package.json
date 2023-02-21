@@ -37,7 +37,8 @@
     "test": "npm run mocha",
     "bundle:client": "npm pack --pack-destination ./public",
     "spec:build": "npx swagger-merger -i ./specifications/openapi/spec.yml -o ./specifications/openapi/_merged.yml",
-    "spec:validate":"npx swagger-cli validate ./specifications/openapi/_merged.yml "
+    "spec:validate": "npx swagger-cli validate ./specifications/openapi/_merged.yml",
+    "spec:mock": "npx @stoplight/prism-cli mock ./specifications/openapi/_merged.yml"
   },
   "dependencies": {
     "@feathersjs/adapter-commons": "^5.0.0-pre.38",
