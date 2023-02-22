@@ -1,14 +1,3 @@
-# TODO: Pagination on the conversations endpoint
-
-openapi: 3.0.0
-info:
-  description: MADI Observations MVP API
-  version: "0.1"
-  title: MADI Observations MVP API
-  contact:
-    email: james.a.villarrubia@nasa.gov
-security:
-  - bearerAuth: []
 paths:
   /observations:
     get:
