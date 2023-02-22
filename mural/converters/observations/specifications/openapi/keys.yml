@@ -2,6 +2,8 @@
 paths:
   /keys:
     get:
+      tags:
+        - keys
       summary: Returns key based on query parameters
       operationId: getKeys
       description: By including the appropriate query string parameters, search & return relevant key records
@@ -20,17 +22,7 @@ paths:
             type: string
       responses:
         '200':
-          description: includes the results matching query string criteria
-          content:
-            application/json:
-              schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/Key_FJS_Array'
-              examples:
-                # EXAMPLE: fetching all keys with the same subjectId
-                keys_default:
-                  $ref: "#/components/examples/keys_default"
+          $ref: '#/components/responses/Key_FJS_Array'
         '400':
           description: bad input parameter
         default:
@@ -40,6 +32,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     post:
+      tags:
+        - keys
       summary: adds a new key associated with the unique identifier in the query string
       operationId: postKey
       description: >-
@@ -50,7 +44,9 @@ paths:
             schema:
               oneOf:
                 - $ref: '#/components/schemas/Key'
-                - $ref: '#/components/schemas/Key_Array'
+                - type: array
+                  items:
+                    $ref: "#/components/schemas/Key"
         description: key to add
       responses:
         '201':
@@ -60,7 +56,9 @@ paths:
               schema:
                 oneOf:
                   - $ref: '#/components/schemas/Key'
-                  - $ref: '#/components/schemas/Key_Array'
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/Key"
               examples:
                 # EXAMPLE: fetching all keys with the same subjectId
                 keys_post_default:
@@ -76,6 +74,8 @@ paths:
                   $ref: "#/components/examples/keys_post_bad_request"
   /keys/{keyId}:
     get:
+      tags: 
+        - keys
       summary: Returns key based id
       operationId: getKey
       description: |
@@ -86,7 +86,7 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/int_id'
+            $ref: '#/components/schemas/IntegerId'
       responses:
         '200':
           description: includes the results matching query string criteria
@@ -106,6 +106,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     put:
+      tags: 
+        - keys
       summary: updates a whole key
       operationId: putKey
       description: Updates a whole key
@@ -115,7 +117,7 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/int_id'
+            $ref: '#/components/schemas/IntegerId'
       responses:
         '200':
           description: key updated
@@ -130,6 +132,8 @@ paths:
         '400':
           description: 'invalid input, object invalid'
     patch:
+      tags: 
+        - keys
       summary: patches a subset of fields on a key
       operationId: patchkey
       description: Patches a key by field
@@ -139,7 +143,7 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/int_id'
+            $ref: '#/components/schemas/IntegerId'
       responses:
         '200':
           description: key patched
@@ -159,6 +163,8 @@ paths:
                 keys_post_duplicate:
                   $ref: "#/components/examples/keys_post_bad_request"
     delete:
+      tags: 
+        - keys
       summary: deletes a key
       operationId: deletekey
       description: Deletes a key
@@ -168,7 +174,7 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/int_id'
+            $ref: '#/components/schemas/IntegerId'
       responses:
         '200':
           description: key deleted
@@ -181,25 +187,27 @@ paths:
                   $ref: "#/components/examples/keys_id_delete_default"
 
 components: 
-  schemas:
+  responses:
     Key_FJS_Array:
-      type: string
-      required:
-        - total
-        - limit
-        - skip
-        - data
-      properties:
-        total:
-          type: integer
-        limit:
-          type: integer
-        skip:
-          type: integer
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/Key"
+      description: includes the results matching query string criteria
+      content:
+        application/json:
+          schema:
+            properties:
+              total:
+                type: integer
+              limit:
+                type: integer
+              skip:
+                type: integer
+              data:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Key"
+          examples:
+            keys_default:
+              $ref: "#/components/examples/keys_default"
+  schemas:
     Key:
       type: object
       required:
@@ -208,7 +216,7 @@ components:
         - orgId
       properties:
         id:
-          $ref: "#/components/schemas/int_id"
+          $ref: "#/components/schemas/IntegerId"
         clientKey:
           type: string
           example: user01
@@ -216,11 +224,7 @@ components:
           type: string
           example: password123
         createdAt:
-          $ref: "#/components/schemas/iso_date"
-    Key_Array:
-      type: array
-      items:
-        $ref: "#/components/schemas/Key"
+          $ref: "#/components/schemas/ISODate"
   examples:
     keys_default:
       value:

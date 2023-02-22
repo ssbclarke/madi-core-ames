@@ -1,26 +1,19 @@
+security: 
+  BearerAuth: []
 paths:
   /authentication:
     post:
+      tags: 
+        - authentication
       summary: Returns JWT authentication token based on accurate login information that can be included in request headers to access restricted routes
       operationId: postAuthToken
       description: Creates a new JWT token and allows the user to use restricted paths
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Authentication'
-        description: Authenticate api requests
+        $ref: '#/components/requestBodies/Authentication'
       security: []
       responses:
         '201':
-          description: JWT created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Authentication_Response'
-              examples:
-                authentication_default:
-                  $ref: "#/components/examples/authentication_default"
+          $ref: '#/components/responses/Authentication'
         '401':
           description: authentication error
           content:
@@ -41,67 +34,79 @@ paths:
                   $ref: "#/components/examples/authentication_login_error"
 components: 
   securitySchemes:
-    bearerAuth:
+    BearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT  # optional, for documentation purposes only
-  schemas:
-    Authentication_Response:
-      type: object
-      required:
-        - accessToken
-        - authentication
-        - key
-      properties:
-        accessToken:
-          type: string
-          example: "uoiiopuiopiUzI1NiIsInR5cCI6ImFjY2VzcyJ9"
-        authentication:
-          type: object
-          properties:
-            strategy:
-              type: string
-              example: local
-            accessToken:
-              type: string
-              example: eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9
-            payload:
-              type: object
-              properties:
-                iat:
-                  type: string
-                  example: 1621287175
-                exp:
-                  type: string
-                  example: 1621373575
-                aud:
-                  type: string
-                  example: https://yourdomain.com
-                iss:
-                  type: string
-                  example: feathers
-                sub:
-                  type: string
-                  example: 1
-                jti:
-                  type: string
-                  example: e22bac05-bea6-4169-a839-cad4cfab22ce
+      bearerFormat: JWT
+  requestBodies:
     Authentication:
-      type: object
-      required:
-        - strategy
-        - clientKey
-        - clientSecret
-      properties:
-        strategy:
-          type: string
-          example: local
-        clientKey:
-          type: string
-          example: keyUsedForTesting
-        clientSecret:
-          type: string
-          example: passwordUsedForTesting
+      description: Authenticate api requests
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - strategy
+              - clientKey
+              - clientSecret
+            properties:
+              strategy:
+                type: string
+                example: local
+              clientKey:
+                type: string
+                example: keyUsedForTesting
+              clientSecret:
+                type: string
+                example: passwordUsedForTesting
+  responses:
+    Authentication:
+      description: JWT created
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - accessToken
+              - authentication
+              - key
+            properties:
+              accessToken:
+                type: string
+                example: "uoiiopuiopiUzI1NiIsInR5cCI6ImFjY2VzcyJ9"
+              authentication:
+                type: object
+                properties:
+                  strategy:
+                    type: string
+                    example: local
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9
+                  payload:
+                    type: object
+                    properties:
+                      iat:
+                        type: string
+                        example: 1621287175
+                      exp:
+                        type: string
+                        example: 1621373575
+                      aud:
+                        type: string
+                        example: https://yourdomain.com
+                      iss:
+                        type: string
+                        example: feathers
+                      sub:
+                        type: string
+                        example: 1
+                      jti:
+                        type: string
+                        example: e22bac05-bea6-4169-a839-cad4cfab22ce
+          examples:
+            authentication_default:
+              $ref: "#/components/examples/authentication_default"
   examples:
     authentication_default:
       value:

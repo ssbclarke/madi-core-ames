@@ -12,45 +12,15 @@ security:
 paths:
   /observations:
     get:
+      tags: 
+        - observations
       summary: Returns observation(s) based on query parameters
       operationId: getObservations
       description: |
         By including the appropriate query string parameters, search & return relevant observation records
-      parameters:
-        - in: query
-          name: subjectId
-          description: the unique id of the subject
-          required: false
-          schema:
-            $ref: "#/components/schemas/string_id"
-        - in: query
-          name: firstName
-          description: the first name of the observation
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: lastName
-          description: the last name of the observation
-          required: false
-          schema:
-            type: string
       responses:
         "200":
-          description: includes the results matching query string criteria
-          content:
-            application/json:
-              schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/Observation_FJS_Array'
-              examples:
-                # EXAMPLE: fetching all observations with default limit
-                observations_default:
-                  $ref: "#/components/examples//observations_default"
-                # EXAMPLE: fetching all observations with default limit
-                observations_zero:
-                  $ref: "#/components/examples//observations_zero"
+          $ref: '#/components/responses/Observation_FJS_Array'
         "400":
           description: bad input parameter
         default:
@@ -60,6 +30,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     post:
+      tags: 
+        - observations
       summary: adds a new observation
       operationId: postObservation
       description: >-
@@ -70,7 +42,9 @@ paths:
             schema:
               oneOf:
                 - $ref: "#/components/schemas/Observation"
-                - $ref: "#/components/schemas/Observation_Array"
+                - type: array
+                  items: 
+                    $ref: "#/components/schemas/Observation"
         description: Observation to add
       responses:
         "201":
@@ -80,13 +54,14 @@ paths:
               schema:
                 oneOf:
                   - $ref: "#/components/schemas/Observation"
-                  - $ref: "#/components/schemas/Observation_Array"
+                  - type: array
+                    items: 
+                      $ref: "#/components/schemas/Observation"
               examples:
-                # EXAMPLE: fetching all observations with the same subjectId
                 observations_post_default:
-                  $ref: "#/components/examples//observations_post_default"
+                  $ref: "#/components/examples/observations_post_default"
                 observations_post_array:
-                  $ref: "#/components/examples//observations_post_array"
+                  $ref: "#/components/examples/observations_post_array"
         "400":
           description: "invalid input, object invalid"
           content:
@@ -102,6 +77,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     delete:
+      tags: 
+        - observations
       summary: soft deletes multiple observations
       operationId: deleteObservations
       responses:
@@ -114,9 +91,11 @@ paths:
               examples:
                 # EXAMPLE: updating a observation
                 observations_delete_subjectId:
-                  $ref: "#/components/examples//observations_delete_subjectId"
+                  $ref: "#/components/examples/observations_delete_subjectId"
   /observations/{observationId}:
     get:
+      tags: 
+        - observations
       summary: Returns observation based id
       operationId: getObservation
       description: |
@@ -127,7 +106,7 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: "#/components/schemas/int_id"
+            $ref: "#/components/schemas/IntegerId"
       responses:
         "200":
           description: includes the results matching query string criteria
@@ -140,7 +119,7 @@ paths:
               examples:
                 # EXAMPLE: fetching a observation
                 observations_id_default:
-                  $ref: "#/components/examples//observations_id_default"
+                  $ref: "#/components/examples/observations_id_default"
         default:
           description: unexpected error
           content:
@@ -148,6 +127,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     put:
+      tags: 
+        - observations
       summary: updates a whole observation
       operationId: putObservation
       description: Updates a whole observation
@@ -157,7 +138,13 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: "#/components/schemas/int_id"
+            $ref: "#/components/schemas/IntegerId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/Observation"
       responses:
         "200":
           description: observation updated
@@ -168,19 +155,28 @@ paths:
               examples:
                 # EXAMPLE: updating a observation
                 observations_id_put_default:
-                  $ref: "#/components/examples//observations_id_put_default"
+                  $ref: "#/components/examples/observations_id_put_default"
         "400":
           description: "invalid input, object invalid"
     patch:
+      tags: 
+        - observations
       summary: patches a subset of fields on a observation
       operationId: patchObservation
       description: Patches a observation by field
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                $ref: '#/components/schemas/Observation/properties'
       parameters:
         - in: path
           name: observationId
           description: the id of a specific observation
           schema:
-            $ref: '#/components/schemas/int_id'
+            $ref: '#/components/schemas/IntegerId'
           required: true
       responses:
         "200":
@@ -199,6 +195,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     delete:
+      tags: 
+        - observations
       summary: deletes a observation
       operationId: deleteObservation
       description: deletes a observation
@@ -208,7 +206,7 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: "#/components/schemas/int_id"
+            $ref: "#/components/schemas/IntegerId"
       responses:
         "200":
           description: observation deleted
@@ -218,9 +216,11 @@ paths:
                 $ref: "#/components/schemas/Observation"
               examples:
                 observations_id_delete_default:
-                  $ref: "#/components/examples//observations_id_delete_default"
+                  $ref: "#/components/examples/observations_id_delete_default"
   /observations/{observationId}:{rpcVerb}:
     post:
+      tags: 
+        - observations
       summary: Calls the RPC verb 
       operationId: postObservationRpcVerb
       description: Calls the RPC verb
@@ -230,13 +230,13 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: "#/components/schemas/int_id"
+            $ref: "#/components/schemas/IntegerId"
         - in: path
           name: rpcVerb
           description: the rpc verb that calls the request-opt-in functionality
           required: true
           schema:
-            $ref: "#/components/schemas/rpc_string"
+            type: string
       responses:
         '200':
           description:  returns the created observation
@@ -263,31 +263,35 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 components:
-  schemas:
-    rpc_string:
-      type: string
+  responses:
     Observation_FJS_Array:
-      type: object
-      required:
-        - total
-        - limit
-        - skip
-        - data
-      properties:
-        total:
-          type: integer
-        limit:
-          type: integer
-        skip:
-          type: integer
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/Observation"
-    Observation_Array:
-      type: array
-      items:
-        $ref: "#/components/schemas/Observation"
+      description: includes the results matching query string criteria
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - total
+              - limit
+              - skip
+              - data
+            properties:
+              total:
+                type: integer
+              limit:
+                type: integer
+              skip:
+                type: integer
+              data:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Observation"
+          examples:
+            observations_default:
+              $ref: "#/components/examples/observations_default"
+            observations_zero:
+              $ref: "#/components/examples/observations_zero"
+  schemas:
     Observation:
       type: object
       required:
@@ -297,7 +301,7 @@ components:
         - subjectId
       properties:
         id:
-          $ref: "#/components/schemas/int_id"
+          $ref: "#/components/schemas/IntegerId"
         firstName:
           type: string
           example: Jane
@@ -354,7 +358,7 @@ components:
         className: method-not-allowed
         errors: {}
     observations_id_default:
-      $ref: "#/components/examples//observations_post_default"
+      $ref: "#/components/examples/observations_post_default"
     observations_id_patch_default:
       value:
         id: 12345678

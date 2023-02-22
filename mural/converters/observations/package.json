@@ -38,7 +38,8 @@
     "bundle:client": "npm pack --pack-destination ./public",
     "spec:build": "npx swagger-merger -i ./specifications/openapi/spec.yml -o ./specifications/openapi/_merged.yml",
     "spec:validate": "npx swagger-cli validate ./specifications/openapi/_merged.yml",
-    "spec:mock": "npx @stoplight/prism-cli mock ./specifications/openapi/_merged.yml"
+    "spec:mock": "npx @stoplight/prism-cli mock ./specifications/openapi/_merged.yml",
+    "spec:swagger": "node ./node_modules/swagger-to-static/index.js ./specifications/openapi/_merged.yml ./specifications/build"
   },
   "dependencies": {
     "@feathersjs/adapter-commons": "^5.0.0-pre.38",
@@ -65,6 +66,7 @@
     "cross-env": "^7.0.3",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.20",
-    "prettier": "^2.8.4"
+    "prettier": "^2.8.4",
+    "swagger-to-static": "^1.1.0"
   }
 }
