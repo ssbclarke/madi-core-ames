@@ -30,7 +30,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
     post:
       tags:
         - keys
@@ -86,7 +86,7 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            $ref: './shared.yml#/components/schemas/IntegerId'
       responses:
         '200':
           description: includes the results matching query string criteria
@@ -104,7 +104,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
     put:
       tags: 
         - keys
@@ -117,7 +117,7 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            $ref: './shared.yml#/components/schemas/IntegerId'
       responses:
         '200':
           description: key updated
@@ -143,7 +143,7 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            $ref: './shared.yml#/components/schemas/IntegerId'
       responses:
         '200':
           description: key patched
@@ -174,7 +174,7 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            $ref: './shared.yml#/components/schemas/IntegerId'
       responses:
         '200':
           description: key deleted
@@ -216,7 +216,7 @@ components:
         - orgId
       properties:
         id:
-          $ref: "#/components/schemas/IntegerId"
+          $ref: "./shared.yml#/components/schemas/IntegerId"
         clientKey:
           type: string
           example: user01
@@ -224,7 +224,7 @@ components:
           type: string
           example: password123
         createdAt:
-          $ref: "#/components/schemas/ISODate"
+          $ref: "./shared.yml#/components/schemas/ISODate"
   examples:
     keys_default:
       value:

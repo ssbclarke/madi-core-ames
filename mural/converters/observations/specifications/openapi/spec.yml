@@ -7,40 +7,31 @@ info:
   contact:
     email: james.a.villarrubia@nasa.gov
 
-# $ref: "./authentication.yml#core"
 security:
-  - $ref: "./authentication.yml#security"
+  - $ref: "./authentication.yml#/security"
 
 paths:
-  $ref#keys: "./keys.yml#paths"
-  $ref#obsv: "./observations.yml#paths"
-  $ref#auth: "./authentication.yml#paths"
+  $ref#keys: "./keys.yml#/paths"
+  $ref#obsv: "./observations.yml#/paths"
+  $ref#auth: "./authentication.yml#/paths"
 
 components:
   securitySchemes:
-    $ref#auth: "./authentication.yml#components/securitySchemes"
+    $ref#auth: "./authentication.yml#/components/securitySchemes"
   requestBodies:
     # $ref#keys: "./keys.yml#components/requestBodies"
     # $ref#obsv: "./observations.yml#components/requestBodies"
-    $ref#auth: "./authentication.yml#components/requestBodies"
+    $ref#auth: "./authentication.yml#/components/requestBodies"
   responses:
-    $ref#keys: "./keys.yml#components/responses"
-    $ref#obsv: "./observations.yml#components/responses"
-    $ref#auth: "./authentication.yml#components/responses"
+    $ref#keys: "./keys.yml#/components/responses"
+    $ref#obsv: "./observations.yml#/components/responses"
+    $ref#auth: "./authentication.yml#/components/responses"
   examples:
-    $ref#keys: "./keys.yml#components/examples"
-    $ref#obsv: "./observations.yml#components/examples"
-    $ref#auth: "./authentication.yml#components/examples"
+    $ref#keys: "./keys.yml#/components/examples"
+    $ref#obsv: "./observations.yml#/components/examples"
+    $ref#auth: "./authentication.yml#/components/examples"
   schemas:
-    $ref#keys: "./keys.yml#components/schemas"
-    $ref#obsv: "./observations.yml#components/schemas"
-    $ref#erro: "./errors.yml#components/schemas"
-    IntegerId:
-      type: integer
-      readOnly: true
-      minimum: 0
-      maximum: 100000000
-    ISODate:
-      type: string
-      format: date-time
-      example: '2017-07-21T17:32:28.000Z'
+    $ref#keys: "./keys.yml#/components/schemas"
+    $ref#obsv: "./observations.yml#/components/schemas"
+    $ref#erro: "./errors.yml#/components/schemas"
+    $ref#shar: "./shared.yml#/components/schemas"

@@ -28,7 +28,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
     post:
       tags: 
         - observations
@@ -67,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
         "409":
           description: an existing observation already exists
         default:
@@ -75,7 +75,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
     delete:
       tags: 
         - observations
@@ -106,7 +106,7 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: "#/components/schemas/IntegerId"
+            $ref: "./shared.yml#/components/schemas/IntegerId"
       responses:
         "200":
           description: includes the results matching query string criteria
@@ -125,7 +125,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
     put:
       tags: 
         - observations
@@ -138,7 +138,7 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: "#/components/schemas/IntegerId"
+            $ref: "./shared.yml#/components/schemas/IntegerId"
       requestBody:
         content:
           application/json:
@@ -176,7 +176,7 @@ paths:
           name: observationId
           description: the id of a specific observation
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            $ref: './shared.yml#/components/schemas/IntegerId'
           required: true
       responses:
         "200":
@@ -193,7 +193,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
     delete:
       tags: 
         - observations
@@ -206,7 +206,7 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: "#/components/schemas/IntegerId"
+            $ref: "./shared.yml#/components/schemas/IntegerId"
       responses:
         "200":
           description: observation deleted
@@ -230,7 +230,7 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: "#/components/schemas/IntegerId"
+            $ref: "./shared.yml#/components/schemas/IntegerId"
         - in: path
           name: rpcVerb
           description: the rpc verb that calls the request-opt-in functionality
@@ -249,19 +249,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
         '404':
           description: required entity could not be found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
         '422':
           description: invalid RPC verb
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
 components:
   responses:
     Observation_FJS_Array:
@@ -301,7 +301,7 @@ components:
         - subjectId
       properties:
         id:
-          $ref: "#/components/schemas/IntegerId"
+          $ref: "./shared.yml#/components/schemas/IntegerId"
         firstName:
           type: string
           example: Jane

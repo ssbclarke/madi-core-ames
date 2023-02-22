@@ -53,7 +53,10 @@ paths:
                         - orgId
                       properties:
                         id:
-                          $ref: '#/components/schemas/IntegerId'
+                          type: integer
+                          readOnly: true
+                          minimum: 0
+                          maximum: 100000000
                         clientKey:
                           type: string
                           example: user01
@@ -61,7 +64,9 @@ paths:
                           type: string
                           example: password123
                         createdAt:
-                          $ref: '#/components/schemas/ISODate'
+                          type: string
+                          format: date-time
+                          example: '2017-07-21T17:32:28.000Z'
               examples:
                 keys_default:
                   value:
@@ -81,7 +86,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
     post:
       tags:
         - keys
@@ -102,7 +121,10 @@ paths:
                     - orgId
                   properties:
                     id:
-                      $ref: '#/components/schemas/IntegerId'
+                      type: integer
+                      readOnly: true
+                      minimum: 0
+                      maximum: 100000000
                     clientKey:
                       type: string
                       example: user01
@@ -110,7 +132,9 @@ paths:
                       type: string
                       example: password123
                     createdAt:
-                      $ref: '#/components/schemas/ISODate'
+                      type: string
+                      format: date-time
+                      example: '2017-07-21T17:32:28.000Z'
                 - type: array
                   items:
                     type: object
@@ -120,7 +144,10 @@ paths:
                       - orgId
                     properties:
                       id:
-                        $ref: '#/components/schemas/IntegerId'
+                        type: integer
+                        readOnly: true
+                        minimum: 0
+                        maximum: 100000000
                       clientKey:
                         type: string
                         example: user01
@@ -128,7 +155,9 @@ paths:
                         type: string
                         example: password123
                       createdAt:
-                        $ref: '#/components/schemas/ISODate'
+                        type: string
+                        format: date-time
+                        example: '2017-07-21T17:32:28.000Z'
         description: key to add
       responses:
         '201':
@@ -144,7 +173,10 @@ paths:
                       - orgId
                     properties:
                       id:
-                        $ref: '#/components/schemas/IntegerId'
+                        type: integer
+                        readOnly: true
+                        minimum: 0
+                        maximum: 100000000
                       clientKey:
                         type: string
                         example: user01
@@ -152,7 +184,9 @@ paths:
                         type: string
                         example: password123
                       createdAt:
-                        $ref: '#/components/schemas/ISODate'
+                        type: string
+                        format: date-time
+                        example: '2017-07-21T17:32:28.000Z'
                   - type: array
                     items:
                       type: object
@@ -162,7 +196,10 @@ paths:
                         - orgId
                       properties:
                         id:
-                          $ref: '#/components/schemas/IntegerId'
+                          type: integer
+                          readOnly: true
+                          minimum: 0
+                          maximum: 100000000
                         clientKey:
                           type: string
                           example: user01
@@ -170,7 +207,9 @@ paths:
                           type: string
                           example: password123
                         createdAt:
-                          $ref: '#/components/schemas/ISODate'
+                          type: string
+                          format: date-time
+                          example: '2017-07-21T17:32:28.000Z'
               examples:
                 keys_post_default:
                   value:
@@ -263,7 +302,10 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            type: integer
+            readOnly: true
+            minimum: 0
+            maximum: 100000000
       responses:
         '200':
           description: includes the results matching query string criteria
@@ -279,7 +321,10 @@ paths:
                     - orgId
                   properties:
                     id:
-                      $ref: '#/components/schemas/IntegerId'
+                      type: integer
+                      readOnly: true
+                      minimum: 0
+                      maximum: 100000000
                     clientKey:
                       type: string
                       example: user01
@@ -287,7 +332,9 @@ paths:
                       type: string
                       example: password123
                     createdAt:
-                      $ref: '#/components/schemas/ISODate'
+                      type: string
+                      format: date-time
+                      example: '2017-07-21T17:32:28.000Z'
               examples:
                 keys_id_default:
                   value:
@@ -301,7 +348,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
     put:
       tags:
         - keys
@@ -314,7 +375,10 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            type: integer
+            readOnly: true
+            minimum: 0
+            maximum: 100000000
       responses:
         '200':
           description: key updated
@@ -328,7 +392,10 @@ paths:
                   - orgId
                 properties:
                   id:
-                    $ref: '#/components/schemas/IntegerId'
+                    type: integer
+                    readOnly: true
+                    minimum: 0
+                    maximum: 100000000
                   clientKey:
                     type: string
                     example: user01
@@ -336,7 +403,9 @@ paths:
                     type: string
                     example: password123
                   createdAt:
-                    $ref: '#/components/schemas/ISODate'
+                    type: string
+                    format: date-time
+                    example: '2017-07-21T17:32:28.000Z'
               examples:
                 keys_id_put_default:
                   value:
@@ -359,7 +428,10 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            type: integer
+            readOnly: true
+            minimum: 0
+            maximum: 100000000
       responses:
         '200':
           description: key patched
@@ -373,7 +445,10 @@ paths:
                   - orgId
                 properties:
                   id:
-                    $ref: '#/components/schemas/IntegerId'
+                    type: integer
+                    readOnly: true
+                    minimum: 0
+                    maximum: 100000000
                   clientKey:
                     type: string
                     example: user01
@@ -381,7 +456,9 @@ paths:
                     type: string
                     example: password123
                   createdAt:
-                    $ref: '#/components/schemas/ISODate'
+                    type: string
+                    format: date-time
+                    example: '2017-07-21T17:32:28.000Z'
               examples:
                 keys_id_patch_default:
                   value:
@@ -460,7 +537,10 @@ paths:
           description: the id of a specific key
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            type: integer
+            readOnly: true
+            minimum: 0
+            maximum: 100000000
       responses:
         '200':
           description: key deleted
@@ -474,7 +554,10 @@ paths:
                   - orgId
                 properties:
                   id:
-                    $ref: '#/components/schemas/IntegerId'
+                    type: integer
+                    readOnly: true
+                    minimum: 0
+                    maximum: 100000000
                   clientKey:
                     type: string
                     example: user01
@@ -482,7 +565,9 @@ paths:
                     type: string
                     example: password123
                   createdAt:
-                    $ref: '#/components/schemas/ISODate'
+                    type: string
+                    format: date-time
+                    example: '2017-07-21T17:32:28.000Z'
               examples:
                 keys_id_delete_default:
                   value:
@@ -529,7 +614,10 @@ paths:
                         - subjectId
                       properties:
                         id:
-                          $ref: '#/components/schemas/IntegerId'
+                          type: integer
+                          readOnly: true
+                          minimum: 0
+                          maximum: 100000000
                         firstName:
                           type: string
                           example: Jane
@@ -566,7 +654,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
     post:
       tags:
         - observations
@@ -588,7 +690,10 @@ paths:
                     - subjectId
                   properties:
                     id:
-                      $ref: '#/components/schemas/IntegerId'
+                      type: integer
+                      readOnly: true
+                      minimum: 0
+                      maximum: 100000000
                     firstName:
                       type: string
                       example: Jane
@@ -605,7 +710,10 @@ paths:
                       - subjectId
                     properties:
                       id:
-                        $ref: '#/components/schemas/IntegerId'
+                        type: integer
+                        readOnly: true
+                        minimum: 0
+                        maximum: 100000000
                       firstName:
                         type: string
                         example: Jane
@@ -628,7 +736,10 @@ paths:
                       - subjectId
                     properties:
                       id:
-                        $ref: '#/components/schemas/IntegerId'
+                        type: integer
+                        readOnly: true
+                        minimum: 0
+                        maximum: 100000000
                       firstName:
                         type: string
                         example: Jane
@@ -645,7 +756,10 @@ paths:
                         - subjectId
                       properties:
                         id:
-                          $ref: '#/components/schemas/IntegerId'
+                          type: integer
+                          readOnly: true
+                          minimum: 0
+                          maximum: 100000000
                         firstName:
                           type: string
                           example: Jane
@@ -677,7 +791,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
         '409':
           description: an existing observation already exists
         default:
@@ -685,7 +813,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
     delete:
       tags:
         - observations
@@ -720,7 +862,10 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            type: integer
+            readOnly: true
+            minimum: 0
+            maximum: 100000000
       responses:
         '200':
           description: includes the results matching query string criteria
@@ -737,7 +882,10 @@ paths:
                     - subjectId
                   properties:
                     id:
-                      $ref: '#/components/schemas/IntegerId'
+                      type: integer
+                      readOnly: true
+                      minimum: 0
+                      maximum: 100000000
                     firstName:
                       type: string
                       example: Jane
@@ -757,7 +905,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
     put:
       tags:
         - observations
@@ -770,7 +932,10 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            type: integer
+            readOnly: true
+            minimum: 0
+            maximum: 100000000
       requestBody:
         content:
           application/json:
@@ -784,7 +949,10 @@ paths:
                     - subjectId
                   properties:
                     id:
-                      $ref: '#/components/schemas/IntegerId'
+                      type: integer
+                      readOnly: true
+                      minimum: 0
+                      maximum: 100000000
                     firstName:
                       type: string
                       example: Jane
@@ -805,7 +973,10 @@ paths:
                   - subjectId
                 properties:
                   id:
-                    $ref: '#/components/schemas/IntegerId'
+                    type: integer
+                    readOnly: true
+                    minimum: 0
+                    maximum: 100000000
                   firstName:
                     type: string
                     example: Jane
@@ -835,7 +1006,10 @@ paths:
               type: object
               properties:
                 id:
-                  $ref: '#/components/schemas/IntegerId'
+                  type: integer
+                  readOnly: true
+                  minimum: 0
+                  maximum: 100000000
                 firstName:
                   type: string
                   example: Jane
@@ -847,7 +1021,10 @@ paths:
           name: observationId
           description: the id of a specific observation
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            type: integer
+            readOnly: true
+            minimum: 0
+            maximum: 100000000
           required: true
       responses:
         '200':
@@ -863,7 +1040,10 @@ paths:
                   - subjectId
                 properties:
                   id:
-                    $ref: '#/components/schemas/IntegerId'
+                    type: integer
+                    readOnly: true
+                    minimum: 0
+                    maximum: 100000000
                   firstName:
                     type: string
                     example: Jane
@@ -883,7 +1063,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
     delete:
       tags:
         - observations
@@ -896,7 +1090,10 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            type: integer
+            readOnly: true
+            minimum: 0
+            maximum: 100000000
       responses:
         '200':
           description: observation deleted
@@ -911,7 +1108,10 @@ paths:
                   - subjectId
                 properties:
                   id:
-                    $ref: '#/components/schemas/IntegerId'
+                    type: integer
+                    readOnly: true
+                    minimum: 0
+                    maximum: 100000000
                   firstName:
                     type: string
                     example: Jane
@@ -939,7 +1139,10 @@ paths:
           description: the id of a specific observation
           required: true
           schema:
-            $ref: '#/components/schemas/IntegerId'
+            type: integer
+            readOnly: true
+            minimum: 0
+            maximum: 100000000
         - in: path
           name: rpcVerb
           description: the rpc verb that calls the request-opt-in functionality
@@ -960,7 +1163,10 @@ paths:
                   - subjectId
                 properties:
                   id:
-                    $ref: '#/components/schemas/IntegerId'
+                    type: integer
+                    readOnly: true
+                    minimum: 0
+                    maximum: 100000000
                   firstName:
                     type: string
                     example: Jane
@@ -972,19 +1178,61 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
         '404':
           description: required entity could not be found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
         '422':
           description: invalid RPC verb
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
   /authentication:
     post:
       tags:
@@ -1075,13 +1323,47 @@ paths:
                         sub: 1
                         jti: e22bac05-bea6-4169-a839-cad4cfab22ce
                         key:
-                          $ref: '#/components/schemas/Key'
+                          type: object
+                          required:
+                            - clientKey
+                            - clientSecret
+                            - orgId
+                          properties:
+                            id:
+                              type: integer
+                              readOnly: true
+                              minimum: 0
+                              maximum: 100000000
+                            clientKey:
+                              type: string
+                              example: user01
+                            orgId:
+                              type: string
+                              example: password123
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: '2017-07-21T17:32:28.000Z'
         '401':
           description: authentication error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
               examples:
                 authentication_login_error:
                   value:
@@ -1100,7 +1382,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                required:
+                  - code
+                  - message
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                  message:
+                    type: string
+                  name:
+                    type: string
+                  className:
+                    type: string
               examples:
                 authentication_login_error:
                   value:
@@ -1164,7 +1460,10 @@ components:
                     - orgId
                   properties:
                     id:
-                      $ref: '#/components/schemas/IntegerId'
+                      type: integer
+                      readOnly: true
+                      minimum: 0
+                      maximum: 100000000
                     clientKey:
                       type: string
                       example: user01
@@ -1172,7 +1471,9 @@ components:
                       type: string
                       example: password123
                     createdAt:
-                      $ref: '#/components/schemas/ISODate'
+                      type: string
+                      format: date-time
+                      example: '2017-07-21T17:32:28.000Z'
           examples:
             keys_default:
               value:
@@ -1214,7 +1515,10 @@ components:
                     - subjectId
                   properties:
                     id:
-                      $ref: '#/components/schemas/IntegerId'
+                      type: integer
+                      readOnly: true
+                      minimum: 0
+                      maximum: 100000000
                     firstName:
                       type: string
                       example: Jane
@@ -1303,7 +1607,27 @@ components:
                     sub: 1
                     jti: e22bac05-bea6-4169-a839-cad4cfab22ce
                     key:
-                      $ref: '#/components/schemas/Key'
+                      type: object
+                      required:
+                        - clientKey
+                        - clientSecret
+                        - orgId
+                      properties:
+                        id:
+                          type: integer
+                          readOnly: true
+                          minimum: 0
+                          maximum: 100000000
+                        clientKey:
+                          type: string
+                          example: user01
+                        orgId:
+                          type: string
+                          example: password123
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: '2017-07-21T17:32:28.000Z'
   examples:
     keys_default:
       value:
@@ -1547,7 +1871,27 @@ components:
             sub: 1
             jti: e22bac05-bea6-4169-a839-cad4cfab22ce
             key:
-              $ref: '#/components/schemas/Key'
+              type: object
+              required:
+                - clientKey
+                - clientSecret
+                - orgId
+              properties:
+                id:
+                  type: integer
+                  readOnly: true
+                  minimum: 0
+                  maximum: 100000000
+                clientKey:
+                  type: string
+                  example: user01
+                orgId:
+                  type: string
+                  example: password123
+                createdAt:
+                  type: string
+                  format: date-time
+                  example: '2017-07-21T17:32:28.000Z'
     authentication_login_error:
       value:
         name: NotAuthenticated
@@ -1569,7 +1913,10 @@ components:
         - orgId
       properties:
         id:
-          $ref: '#/components/schemas/IntegerId'
+          type: integer
+          readOnly: true
+          minimum: 0
+          maximum: 100000000
         clientKey:
           type: string
           example: user01
@@ -1577,7 +1924,9 @@ components:
           type: string
           example: password123
         createdAt:
-          $ref: '#/components/schemas/ISODate'
+          type: string
+          format: date-time
+          example: '2017-07-21T17:32:28.000Z'
     Observation:
       type: object
       required:
@@ -1587,7 +1936,10 @@ components:
         - subjectId
       properties:
         id:
-          $ref: '#/components/schemas/IntegerId'
+          type: integer
+          readOnly: true
+          minimum: 0
+          maximum: 100000000
         firstName:
           type: string
           example: Jane

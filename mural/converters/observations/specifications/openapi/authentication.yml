@@ -19,7 +19,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
               examples:
                 authentication_login_error:
                   $ref: "#/components/examples/authentication_login_error"
@@ -28,7 +28,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "./errors.yml#/components/schemas/Error"
               examples:
                 authentication_login_error:
                   $ref: "#/components/examples/authentication_login_error"
@@ -122,7 +122,7 @@ components:
             sub: 1
             jti: e22bac05-bea6-4169-a839-cad4cfab22ce
             key:
-              $ref: "#/components/schemas/Key"
+              $ref: "./keys.yml#/components/schemas/Key"
     authentication_login_error:
       value:
         name: NotAuthenticated
