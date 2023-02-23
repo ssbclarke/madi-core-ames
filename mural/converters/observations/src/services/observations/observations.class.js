@@ -16,14 +16,18 @@ export class ObservationsService {
   }
 
   async create(data, params) {
-    console.log(MuralDb)
+    
+  }
+  
+  async convertMuralData(data, params){
+
     const db = new MuralDb()
     const parentField = 'arrowParent';
     await db.insertAsync(data)
 
     // add the arrowParents relations field
     await db.addRelations({ modifyOriginal: true})
-
+  
     // get only the stick notes
     let results = await db.filterType("sticky note", {
       id: 1,
@@ -90,7 +94,6 @@ export class ObservationsService {
     fs.writeFileSync('test.html',output.html)
 
     return output
-
   }
 
 }

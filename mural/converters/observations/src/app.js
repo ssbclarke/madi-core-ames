@@ -1,43 +1,35 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/application.html
 import { feathers } from '@feathersjs/feathers'
-import express, {
-  rest,
-  json,
-  urlencoded,
-  cors,
-  serveStatic,
-  notFound,
-  errorHandler
-} from '@feathersjs/express'
 import configuration from '@feathersjs/configuration'
+import { koa, rest, bodyParser, errorHandler, parseAuthentication, cors, serveStatic } from '@feathersjs/koa'
 
-import { logger } from './logger.js'
+import { configurationValidator } from './configuration.js'
 import { logError } from './hooks/log-error.js'
-import { services } from './services/index.js'
 import rpc from 'feathers-rpc'
+import { postgresql } from './postgresql.js'
 
-const app = express(feathers())
+import { services } from './services/index.js'
 
-// Load app configuration
-app.configure(configuration())
-app.use(cors())
-app.use(json())
-app.use(urlencoded({ extended: true }))
+const app = koa(feathers())
 
-// Host the public folder
-app.use('/', serveStatic(app.get('public')))
+// Load our app configuration (see config/ folder)
+app.configure(configuration(configurationValidator))
 
 // add pre-service middleware 
 app.use(rpc)
+// Set up Koa middleware
+app.use(cors())
+app.use(serveStatic(app.get('public')))
+app.use(errorHandler())
+app.use(parseAuthentication())
+app.use(bodyParser())
 
-// Configure services and real-time functionality
+// Configure services and transports
 app.configure(rest())
 
-app.configure(services)
+app.configure(postgresql)
 
-// Configure a middleware for 404s and the error handler
-app.use(notFound())
-app.use(errorHandler({ logger }))
+app.configure(services)
 
 // Register hooks that run on all service methods
 app.hooks({

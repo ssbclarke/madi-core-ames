@@ -1,4 +1,4 @@
-# obs2
+# observations
 
 > 
 
@@ -12,7 +12,7 @@ This project uses [Feathers](http://feathersjs.com). An open source framework fo
 2. Install your dependencies
 
     ```
-    cd path/to/obs2
+    cd path/to/observations
     npm install
     ```
 
