@@ -2,30 +2,35 @@
 import { feathers } from '@feathersjs/feathers'
 import configuration from '@feathersjs/configuration'
 import { koa, rest, bodyParser, errorHandler, parseAuthentication, cors, serveStatic } from '@feathersjs/koa'
-
+import mount from 'koa-mount';
 import { configurationValidator } from './configuration.js'
 import { logError } from './hooks/log-error.js'
-import rpc from 'feathers-rpc'
 import { postgresql } from './postgresql.js'
 
 import { services } from './services/index.js'
+
+import rpc from 'feathers-rpc'
 
 const app = koa(feathers())
 
 // Load our app configuration (see config/ folder)
 app.configure(configuration(configurationValidator))
 
-// add pre-service middleware 
-app.use(rpc)
 // Set up Koa middleware
 app.use(cors())
 app.use(serveStatic(app.get('public')))
+app.use(mount('/api', serveStatic('./specifications/build')))
 app.use(errorHandler())
 app.use(parseAuthentication())
-app.use(bodyParser())
+app.use(bodyParser({jsonLimit: '3mb',}))
+
+// add pre-service middleware
+app.use(rpc())
 
 // Configure services and transports
 app.configure(rest())
+
+
 
 app.configure(postgresql)
 

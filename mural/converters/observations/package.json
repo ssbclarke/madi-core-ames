@@ -39,7 +39,7 @@
     "spec:build": "swagger-merger -i ./specifications/openapi/spec.yml -o ./specifications/openapi/_merged.yml",
     "spec:validate": "npx swagger-cli validate ./specifications/openapi/_merged.yml",
     "spec:mock": "npx @stoplight/prism-cli mock ./specifications/openapi/_merged.yml",
-    "spec:swagger": "node ./node_modules/swagger-to-static/index.js ./specifications/openapi/_merged.yml ./specifications/build"
+    "spec:swagger": "node ./node_modules/swagger-to-static/index.js ./specifications/openapi/_merged.yml ./specifications/build",
     "migrate": "knex migrate:latest",
     "migrate:make": "knex migrate:make"
   },
@@ -54,17 +54,17 @@
     "@feathersjs/koa": "^5.0.0-pre.38",
     "@feathersjs/schema": "^5.0.0-pre.38",
     "@feathersjs/transport-commons": "^5.0.0-pre.38",
+    "@feathersjs/typebox": "^5.0.0-pre.38",
     "compression": "^1.7.4",
     "feathers-rpc": "^1.0.1",
     "json2md": "^2.0.0",
+    "knex": "^2.4.2",
+    "koa-mount": "^4.0.0",
     "mural-db": "^1.0.2",
+    "pg": "^8.9.0",
     "showdown": "^2.1.0",
     "winston": "^3.8.2",
     "yaml": "^2.2.1"
-    "@feathersjs/typebox": "^5.0.0-pre.38",
-    "knex": "^2.4.2",
-    "pg": "^8.9.0",
-    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@feathersjs/cli": "^5.0.0-pre.38",
@@ -73,8 +73,8 @@
     "cross-env": "^7.0.3",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.20",
+    "prettier": "^2.8.4",
     "swagger-merger": "^1.5.4",
     "swagger-to-static": "^1.1.0"
-    "prettier": "^2.8.4"
   }
 }
