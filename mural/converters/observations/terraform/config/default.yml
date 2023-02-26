@@ -1,0 +1,13 @@
+project_id_base       : "madi-nasa"
+org_id                : ""
+billing_account       : ""
+primary_region        : "us-central1"
+primary_region_id     : "us-central" #for Appengine only
+monitoring_users      :
+  - user:james.villarrubia@gmail.com
+
+db_tier               : "db-f1-micro" # db-f1-micro will not work for postgres_10
+db_size               : 10
+db_type               : "PD_HDD"
+db_backups            : false
+db_highavailability   : false
