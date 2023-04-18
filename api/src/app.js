@@ -1,60 +1,55 @@
-const path = require('path');
-const favicon = require('serve-favicon');
-const compress = require('compression');
-const helmet = require('helmet');
-const cors = require('cors');
-const logger = require('./logger');
+// For more information about this file see https://dove.feathersjs.com/guides/cli/application.html
+import { feathers } from '@feathersjs/feathers'
+import configuration from '@feathersjs/configuration'
+import { koa, rest, bodyParser, errorHandler, parseAuthentication, cors, serveStatic } from '@feathersjs/koa'
+import socketio from '@feathersjs/socketio'
 
-const feathers = require('@feathersjs/feathers');
-const configuration = require('@feathersjs/configuration');
-const express = require('@feathersjs/express');
+import { configurationValidator } from './configuration.js'
+import { logError } from './hooks/log-error.js'
+import { postgresql } from './postgresql.js'
 
+import { services } from './services/index.js'
+import { channels } from './channels.js'
 
+const app = koa(feathers())
 
-const middleware = require('./middleware');
-const services = require('./services');
-const appHooks = require('./app.hooks');
-const channels = require('./channels');
+// Load our app configuration (see config/ folder)
+app.configure(configuration(configurationValidator))
 
-const authentication = require('./authentication');
+// Set up Koa middleware
+app.use(cors())
+app.use(serveStatic(app.get('public')))
+app.use(errorHandler())
+app.use(parseAuthentication())
+app.use(bodyParser())
 
-const knex = require('./knex');
+// Configure services and transports
+app.configure(rest())
+app.configure(
+  socketio({
+    cors: {
+      origin: app.get('origins')
+    }
+  })
+)
+app.configure(channels)
+app.configure(postgresql)
 
-const app = express(feathers());
+app.configure(services)
 
-// Load app configuration
-app.configure(configuration());
-// Enable security, CORS, compression, favicon and body parsing
-app.use(helmet({
-  contentSecurityPolicy: false
-}));
-app.use(cors());
-app.use(compress());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(favicon(path.join(app.get('public'), 'favicon.ico')));
-// Host the public folder
-app.use('/', express.static(app.get('public')));
+// Register hooks that run on all service methods
+app.hooks({
+  around: {
+    all: [logError]
+  },
+  before: {},
+  after: {},
+  error: {}
+})
+// Register application setup and teardown hooks here
+app.hooks({
+  setup: [],
+  teardown: []
+})
 
-// Set up Plugins and providers
-app.configure(express.rest());
-
-
-app.configure(knex);
-
-
-// Configure other middleware (see `middleware/index.js`)
-app.configure(middleware);
-app.configure(authentication);
-// Set up our services (see `services/index.js`)
-app.configure(services);
-// Set up event channels (see channels.js)
-app.configure(channels);
-
-// Configure a middleware for 404s and the error handler
-app.use(express.notFound());
-app.use(express.errorHandler({ logger }));
-
-app.hooks(appHooks);
-
-module.exports = app;
+export { app }
