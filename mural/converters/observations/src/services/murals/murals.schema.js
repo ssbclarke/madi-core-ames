@@ -1,7 +1,7 @@
 // // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
 import { resolve } from '@feathersjs/schema'
 import { Type, getValidator, querySyntax, StringEnum } from '@feathersjs/typebox'
-import { dataValidator, queryValidator } from '../../../validators.js'
+import { dataValidator, queryValidator } from '../../validators.js'
 
 // Main data model schema
 export const muralsSchema = Type.Object(
@@ -14,6 +14,7 @@ export const muralsSchema = Type.Object(
   },
   { $id: 'Murals', additionalProperties: false }
 )
+console.log('MURAL', JSON.stringify(muralsSchema,null,2))
 export const muralsValidator = getValidator(muralsSchema, dataValidator)
 export const muralsResolver = resolve({})
 

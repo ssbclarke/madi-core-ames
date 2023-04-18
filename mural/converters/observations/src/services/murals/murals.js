@@ -20,16 +20,16 @@ export * from './murals.class.js'
 export * from './murals.schema.js'
 
 // A configure function that registers the service and its hooks via `app.configure`
-export const murals = (app) => {
+export const murals = (app, prefix='') => {
   // Register our service on the Feathers application
-  app.use(muralsPath, new MuralsService(getOptions(app)), {
+  app.use(prefix+muralsPath, new MuralsService(getOptions(app)), {
     // A list of all methods this service exposes externally
     methods: muralsMethods,
     // You can add additional custom events to be sent to clients here
     events: []
   })
   // Initialize hooks
-  app.service(muralsPath).hooks({
+  app.service(prefix+muralsPath).hooks({
     around: {
       all: [
         // schemaHooks.resolveExternal(muralsExternalResolver), 

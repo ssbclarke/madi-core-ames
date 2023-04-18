@@ -18,6 +18,9 @@ export class ObservationsService {
   async create(data, params) {
     
   }
+  async find(data,params){
+    return 'yes'
+  }
   
   // async convertMuralData(data, params){
 

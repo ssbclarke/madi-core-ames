@@ -1,7 +1,7 @@
 import { ObservationsService, getOptions } from './observations.class.js'
 
 export const observationsPath = 'observations'
-export const observationsMethods = ['create'] //['find', 'get', 'create', 'patch', 'remove']
+export const observationsMethods = ['create','find'] //['find', 'get', 'create', 'patch', 'remove']
 
 export * from './observations.class.js'
 

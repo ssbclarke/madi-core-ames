@@ -1,21 +1,23 @@
-import { app } from './app.js'
-import { logger } from './logger.js'
-import { api as v1 } from './services/v1/index.js'
+import { koa } from '@feathersjs/koa'
+import { feathers } from '@feathersjs/feathers'
+import { app as v1 } from './app.js'
+import { rest } from '@feathersjs/koa'
 
-const port = app.get('port')
-const host = app.get('host')
+const port = v1.get('port')
+const host = v1.get('host')
 
-// import and apply the subapp 
-app.use('/api/v1', v1)
+// const server = koa(feathers())
+// server.use('/api/v1', v1)
+// server.configure(rest())
 
-process.on('unhandledRejection', (reason, p) => logger.error('Unhandled Rejection at: Promise ', p, reason))
+// v1.setup()
 
-let server = app.listen(port).then(() => {
-  logger.info(`Feathers app listening on http://${host}:${port}`)
-})
-
-// run setup on the subapp
-v1.setup(server)
+// server.listen(port).then(() =>
+//   console.log('Feathers application started on http://%s:%d', host, port)
+// );
 
 
-export default app
+
+v1.listen(port).then(() =>
+    console.log('Feathers application started on http://%s:%d', host, port)
+);
