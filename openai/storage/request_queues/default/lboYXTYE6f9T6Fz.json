@@ -1,0 +1,9 @@
+{
+	"id": "lboYXTYE6f9T6Fz",
+	"json": "{\"id\":\"lboYXTYE6f9T6Fz\",\"url\":\"https://www.nytimes.com/2023/01/11/opinion/geoengineering-climate-change-solar.html\",\"loadedUrl\":\"https://www.nytimes.com/2023/01/11/opinion/geoengineering-climate-change-solar.html\",\"uniqueKey\":\"https://www.nytimes.com/2023/01/11/opinion/geoengineering-climate-change-solar.html\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2023-04-18T13:52:23.507Z\"}",
+	"method": "GET",
+	"orderNo": null,
+	"retryCount": 0,
+	"uniqueKey": "https://www.nytimes.com/2023/01/11/opinion/geoengineering-climate-change-solar.html",
+	"url": "https://www.nytimes.com/2023/01/11/opinion/geoengineering-climate-change-solar.html"
+}
