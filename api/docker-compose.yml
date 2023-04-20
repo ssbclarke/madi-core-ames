@@ -2,36 +2,36 @@ version: "3.8"
 
 services:
   ## This is the mock API available at port 8080
-  # api_mock:
-  #   image: stoplight/prism:4.2.6
-  #   volumes:
-  #     - "./api/specifications:/tmp"
-  #   ports:
-  #     - "8080:4010"
-  #   command: >
-  #     mock -m -p 4010 --host 0.0.0.0 "/tmp/api-specification.yml" -m
+  api_mock:
+    image: stoplight/prism:4.2.6
+    volumes:
+      - "./api/specifications:/tmp"
+    ports:
+      - "8080:4010"
+    command: >
+      mock -m -p 4010 --host 0.0.0.0 "/tmp/api-specification.yml" -m
 
   ## This is the real API available at port 3030
   ##   - This builds an image for the top level docker-compose
   ##     and may not be the same image as built under the /api folder directly
-  # api:
-  #   build: ./api
-  #   environment:
-  #     - NODE_CONFIG_ENV=mac-docker
-  #     - POSTGRES_PASSWORD=magical_password
-  #     - POSTGRES_USER=unicorn_user
-  #     - POSTGRES_DB=rainbow_database
-  #     - POSTGRES_HOST=database
-  #     - POSTGRES_PORT=5432
-  #     - PUSH_ENDPOINT=http://api:3030/
-  #     - PUBSUB_API_ENDPOINT=pubsub:8085
-  #   ports:
-  #     - "3030:3030"
-  #   networks:
-  #     - madi
-  #   depends_on:
-  #     database:
-  #       condition: service_healthy
+  api:
+    build: .
+    environment:
+      - NODE_CONFIG_ENV=mac-docker
+      - POSTGRES_PASSWORD=magical_password
+      - POSTGRES_USER=unicorn_user
+      - POSTGRES_DB=rainbow_database
+      - POSTGRES_HOST=database
+      - POSTGRES_PORT=5432
+      - PUSH_ENDPOINT=http://api:3030/
+      - PUBSUB_API_ENDPOINT=pubsub:8085
+    ports:
+      - "3030:3030"
+    networks:
+      - madi
+    depends_on:
+      database:
+        condition: service_healthy
 
   ## This is the postgres docker DB available at port 35432
   ##   - This only for local usage and has no bearing on CloudSQL
@@ -68,70 +68,6 @@ services:
       # this make the initial bucket state a local folder.  You cannot add directly.
       # uncomment this line to have docker manage a persistent folder for you.
       - ./dl/uploads:/storage
-
-
-  # dapp:
-  #   # image: dapp
-  #   # build: ./directus/app
-  #   # container_name: dapp
-  #   # ports:
-  #   #   - "8080:8080"
-  #   image: httpd:latest
-  #   container_name: dapp
-  #   environment:
-  #     API_URL: http://dapi:8055/
-  #   ports:
-  #     - '8080:80'
-  #   volumes:
-  #     - ./directus/app/dist:/usr/local/apache2/htdocs
-
-
-  directus: 
-    image: directus/directus:latest
-    ports:
-      - 8055:8055
-    volumes:
-      # If you want to load extensions from the host
-      - ./dl/extensions/dist:/directus/extensions
-      - ./dl/config:/directus/config
-      - ./dl/snapshots:/directus/snapshots
-        # to create a snapshot from a running container:
-        #   $ docker compose exec directus npx directus schema snapshot --yes ./snapshots/test.yaml
-    networks:
-      - madi
-    depends_on:
-      - cache
-      - database
-    environment:
-      KEY: 255d861b-5ea1-5996-9aa3-922530ec40b1
-      SECRET: 6116487b-cda1-52c2-b5b5-c8022c45e263
-
-      DB_CLIENT: pg
-      DB_HOST: database
-      DB_PORT: 5432
-      DB_DATABASE: rainbow_database
-      DB_USER: unicorn_user
-      DB_PASSWORD: magical_password
-
-      CACHE_ENABLED: "true"
-      CACHE_STORE: redis
-      CACHE_REDIS: redis://cache:6379
-
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: d1r3ctu5
-
-      EXTENSIONS_AUTO_RELOAD: "true"
-
-      STORAGE_LOCATIONS: gcs
-      STORAGE_GCS_DRIVER: gcs
-      STORAGE_GCS_ROOT: ""
-      STORAGE_GCS_HEALTHCHECK_THRESHOLD: 750
-      STORAGE_GCS_KEY_FILENAME: ./config/keyfile.json
-      STORAGE_GCS_BUCKET: sample-bucket
-      STORAGE_GCS_API_ENDPOINT: "http://storage:4443" # see the storage: service in this file
-      # Make sure to set this in production
-      # (see https://docs.directus.io/self-hosted/config-options#general)
-      # PUBLIC_URL: 'https://directus.example.com'
 
   cache:
     container_name: cache

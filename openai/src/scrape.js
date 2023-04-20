@@ -17,7 +17,7 @@ import metascraperVideo from 'metascraper-video';
 import metascraperLogoFavicon from 'metascraper-logo-favicon';
 import metascraperAuthor from 'metascraper-author';
 import metascraperAudio from 'metascraper-audio';
-import { runCrawler } from './js-render-scrape.js'
+import { runArchiveCrawler, runCrawler } from './js-render-scrape.js'
 
 export const getRobotsUrl = (url) => {
   const { protocol, host } = new URL(url);
@@ -54,8 +54,25 @@ export const getMetadata = async (url, html) => {
   return output;
 };
 
+function getTextData(raw, baseUrl){
+  return convert(raw, {
+    wordwrap: false,
+    selectors: [
+      { selector: 'a', options: { baseUrl, noAnchorUrl: true } },
+      { selector: 'img', options: { baseUrl } }
+    ]
+  });
+}
+function getUrlsData(text){
+    const urlRegex = /\[(http.*?)\]/gm;
+    return (text.match(urlRegex)||[]).map(u => u.slice(1, -1));
+}
+function textOkay(text){
+  return text.length > 1000
+}
+
 export const main = async (url, options={}) => {
-    const { getMeta = true, getText = true, getURLs = true } = options;
+    const { getMeta = true, getText = true, getURLs = true, useRP = false } = options;
     const { protocol, host } = new URL(url);
     const baseUrl = protocol + '//' + host;
     const robotsUrl = getRobotsUrl(url);
@@ -64,41 +81,44 @@ export const main = async (url, options={}) => {
   
     const isAllowed = robotsParser(robotsUrl, robotsTxt).isAllowed(url);
   
+    // const urlRP = useRP ? 'https://www.removepaywall.com/'+url.replace('://',':/') : url
+
     let raw;
     let meta;
     let text;
     let urls;
+    let status;
+    let archiveUrl = url
     if (isAllowed) {
-      raw = await getStaticHTML(url);
-      if (getMeta) {
-        meta = await getMetadata(url, raw);
-      }
-      if (getText) {
-        text = convert(raw, {
-          wordwrap: false,
-          selectors: [
-            { selector: 'a', options: { baseUrl, noAnchorUrl: true } },
-            { selector: 'img', options: { baseUrl } }
-          ]
-        });
-      }
-      if (getURLs) {
-        const urlRegex = /\[(http.*?)\]/gm;
-        urls = (text.match(urlRegex)||[]).map(u => u.slice(1, -1));
-      }
+        // attempt direct
+        raw   =                   await getStaticHTML(url);
+        text  = getText         ? getTextData(raw, baseUrl)   : undefined;
+        status = 'direct'
 
-
-      if(getText && text.length < 1000){
-        console.log('Text Length: ', text.length, '\n\n', text)
-        raw = await runCrawler([url])
-        if (getMeta) {
-          meta = await getMetadata(url, raw);
+        // if text is not okay, attempt archive.today
+        // this will not open any "Read more" options
+        if(!textOkay(text) && getText){
+          raw = await runCrawler(url);
+          text = getTextData(raw, baseUrl);
+          status = 'puppeteer'
+          if(!textOkay(text)){
+            // if empty, attempt archive.submit and wait
+            raw = await runArchiveCrawler(url)
+            text = getTextData(raw, baseUrl);
+            status = 'archive.direct'
+            if(!textOkay(text)){
+              // if empty, attempt archive.submit and wait
+              raw = await runArchiveSubmit(url)
+              text = getTextData(raw, baseUrl);
+              status = 'archive.submit'
+            }
+          }
         }
-        meta = await getMetadata(url, raw);
+
+
+        meta  = getMeta ? await getMetadata(url, raw) : undefined;
+        urls  = getURLs ? getUrlsData(text)           : undefined;    
         
-      }
-
-
     }
     return {
       url,

@@ -1,7 +1,7 @@
 import { PuppeteerCrawler } from 'crawlee';
 import puppeteerExtra from 'puppeteer-extra';
 import stealthPlugin from 'puppeteer-extra-plugin-stealth';
-
+let datastorage = null;
 
 puppeteerExtra.use(stealthPlugin());
 
@@ -44,6 +44,22 @@ const waitForDOMToSettle = (page, timeoutMs = 30000, debounceMs = 1000) =>
     timeoutMs,
     debounceMs
   );
+ 
+
+
+
+async function archiveCheck(page){
+  return await page.waitForSelector('center > #HEADER > table a[href="https://archive.today"]');
+  return await page.content()
+}
+  
+
+
+
+
+
+
+
 
 // Create an instance of the PuppeteerCrawler class - a crawler
 // that automatically loads the URLs in headless Chrome / Puppeteer.
@@ -53,7 +69,8 @@ const crawler = new PuppeteerCrawler({
         launcher: puppeteerExtra,
         launchOptions: {
             // Other puppeteer options work as usual
-            headless: true,
+            headless: false,
+            slowMo: 250,
         },
     },
 
@@ -62,32 +79,62 @@ const crawler = new PuppeteerCrawler({
 
     async requestHandler({ request, page, enqueueLinks, log }) {
         log.info(`Processing ${request.url}...`);
-        await page.setRequestInterception(true);
+        // await page.setRequestInterception(true);
+        // page.on('request', (req) => {
+        //     if(req.resourceType() == 'stylesheet' || req.resourceType() == 'font' || req.resourceType() == 'image'){
+        //         req.abort();
+        //     }
+        //     else {
+        //         req.continue();
+        //     }
+        // })
+        // if (await page.$('article') !== null) {
+        //   let article = await page.$('article')
+        //   datastorage = article.evaluate(el => el.textContent)
+        // }
+        // await page.waitForSelector('article');
 
-        page.on('request', (req) => {
-            if(req.resourceType() == 'stylesheet' || req.resourceType() == 'font' || req.resourceType() == 'image'){
-                req.abort();
-            }
-            else {
-                req.continue();
-            }
-        })
+        // await page.waitForSelector('main');
+        // await page.waitForSelector('article');
+        // await new Promise(r => setTimeout(r, 15000));
+
+        // ARCHIVE.IS SEARCH
+        // Go to the website 
+        // await page.goto(`https://archive.today/newest/${request.url}`);
+          // await page.waitForSelector('#row0')
+          // let archiveLink = await page.$eval('#row0 a', el => el.href)
+      
+          // await page.goto(archiveLink); 
+          await page.waitForSelector('center > #HEADER > table a[href="https://archive.today"]');
+          datastorage = await page.content()
+          console.log(datastorage)
+
+        return page.content();
         
-        await page.waitForSelector('body');
-
-        await waitForDOMToSettle(page);
-        return await page.content()
-
     },
-
+    errorHandler(context) {
+      console.log(context)
+      // context.log.error(JSON.stringify(context));
+    },
     failedRequestHandler({ request, log }) {
         log.error(`Request ${request.url} failed too many times.`);
     },
 });
 
-export async function runCrawler(urls){
-    await crawler.addRequests(urls);
-    return crawler.run()
+export async function runCrawler(url){
+    await crawler.addRequests([url]);
+    await crawler.run()
+    let output = datastorage
+    datastorage = null;
+    return output;
+}
+
+export async function runArchiveCrawler(url){
+  await crawler.addRequests([`https://archive.today/newest/${url}`]);
+  await crawler.run()
+  let output = datastorage
+  datastorage = null;
+  return output;
 }
 
 export default crawler
