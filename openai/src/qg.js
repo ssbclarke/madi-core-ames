@@ -1,13 +1,10 @@
 
 import { Configuration, OpenAIApi } from "openai"
 import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-import { JSONFile } from 'lowdb/node'
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { encode, decode } from 'gpt-3-encoder'
 
-const MIN_LENTH = 40
-const MAX_LENGTH = 500
+
 // import transformers from "@xenova/transformers";
 
 // import * as ort from 'onnxruntime-node';
@@ -39,35 +36,6 @@ let db
 
 
 
-/**
- * TEXT UTILITIES
- */
-function countTokens(text){
-    return encode(text).length
-}
-
-function checkLength(text){
-    return countTokens(text) >= MIN_LENTH && countTokens(text) <= MAX_LENGTH
-}
-
-function reduceLong(long_text, long_text_tokens = false, max_len = 590) {
-    if (!long_text_tokens) {
-        long_text_tokens = countTokens(long_text);
-    }
-    if (long_text_tokens > max_len) {
-        let sentences = long_text.replace("\n", " ").split(/\.(\s)?/); // split at period and optional space
-        let ntokens = 0;
-        for (let i = 0; i < sentences.length; i++) {
-            ntokens += 1 + countTokens(sentences[i]);
-            if (ntokens > max_len) {
-                return sentences.slice(0, i).join(". ") + ".";
-            }
-        }
-    }
-    return long_text;
-}
-
-
 
 
 
@@ -79,12 +47,10 @@ function reduceLong(long_text, long_text_tokens = false, max_len = 590) {
 /***
  * 
  */
-function addContext(line) {
-    db.context = df.title + "\n" + line.heading + "\n\n" + line.content
-    return db
-}
 
-async function getQuestions(context) {
+
+export async function getQuestions(context) {
+    // console.log(`\n GENERATING QUESTIONS FOR: `,context.slice(start+2,start+50))
     return openai.createCompletion({
         model: 'davinci-instruct-beta-v3',
         prompt: `Write questions based on the text below\n\nText: ${context}\nQuestions:\n1.`,
@@ -96,7 +62,9 @@ async function getQuestions(context) {
         stop: ["\n\n"]
     })
     .then(response => {
-        return response.data['choices'][0]['text'];
+        let questions = "1." + response.data['choices'][0]['text'];
+        // console.log(questions)
+        return questions
     })
     .catch(error => {
         console.log(error)
@@ -104,18 +72,38 @@ async function getQuestions(context) {
     })
 }
 
-async function getAnswers(row) {
+export async function getAnswers(context, questions) {
     return openai.createCompletion({
-            engine:"davinci-instruct-beta-v3",
-            prompt:`Write answer based on the text below\n\nText: ${row.context}\n\nQuestions:\n${row.questions}\n\nAnswers:\n1.`,
+            model:"davinci-instruct-beta-v3",
+            prompt:`Write answer based on the text below\n\nText: ${context}\n\nQuestions:\n${questions}\n\nAnswers:\n1.`,
             temperature:0,
             max_tokens:257,
             top_p:1,
             frequency_penalty:0,
-            presence_penalty:0
+            presence_penalty:0,
+            stop: ["\n\n"]
     })
     .then(response => {
-        return response.data['choices'][0]['text'];
+        let answers = "1." + response.data['choices'][0]['text'];
+        console.log(answers)
+        return answers
+    })
+    .catch(error => {
+        console.log(error)
+        return '';
+    })
+}
+
+
+
+export async function getEmbedding(input, model = "text-embedding-ada-002") {
+    return openai.createEmbedding({
+        model,
+        input
+    })
+    .then(response => {
+        // console.log(response)
+        return {embedding: response.data.data[0].embedding, tokens: response.data.usage.prompt_tokens}
     })
     .catch(error => {
         console.log(error)
@@ -128,45 +116,5 @@ async function getAnswers(row) {
 
 
 
-
-
-
-
-/**
- * DATABASE UTILITIES
- */
-
-// featch local data
-export async function fetchDB() {
-    const adapter = new JSONFile(file)
-    db = new Low(adapter)
-    await db.read()
-    console.log(db.data)
-    return db
-}
-
-export async function storeDBtoDisk() {
-    await db.write()
-}
-
-
-
-
-
-/**
- * DATA MODIFICATIONS
- * 
- */
-
-export async function appendQuestions(line) {
-    // line['questions'] = await getQuestions(line);
-    // line['questions'] = "1." + line.questions;
-    // console.log(line['questions']);
-    
-}
-export async function appendAnswers(line){
-    line['answers'] = await getAnswers(line);
-    line['answers'] = "1." + line.answers;
-}
 
 

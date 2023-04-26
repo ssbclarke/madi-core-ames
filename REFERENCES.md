@@ -117,3 +117,5 @@
     * [Got-Scraping use](https://www.npmjs.com/package/got-scraping)
     * [Proxy option ScrapeStack](https://scrapestack.com/product)
     * [Proxy option ProxiesAPI](https://proxiesapi.com/pricing.php)
+    * [Proxy option Crawlbase](https://crawlbase.com/)
+    * [Scraping Detection Research](https://help.apify.com/en/articles/1961361-several-tips-on-how-to-bypass-website-anti-scraping-protections)

@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "@extractus/article-extractor": "^7.2.14",
+    "@node-redis/search": "^1.0.5",
     "@xenova/transformers": "^1.1.1",
     "canvas": "^2.11.2",
     "crawlee": "^3.3.1",
@@ -30,7 +32,9 @@
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "puppeteer-extra-plugin-user-data-dir": "^2.4.1",
+    "redis": "^4.6.5",
     "robots-parser": "^3.0.1",
+    "sbd": "^1.0.19",
     "user-agents": "^1.0.1355"
   }
 }
