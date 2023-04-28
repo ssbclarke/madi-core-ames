@@ -8,7 +8,7 @@
     "dotenv": "^16.0.3",
     "gpt-3-encoder": "^1.1.4",
     "html-to-text": "^9.0.5",
-    "lowdb": "^5.1.0",
+    "lowdb": "^6.0.0",
     "metascraper": "^5.34.2",
     "metascraper-audio": "^5.34.2",
     "metascraper-author": "^5.34.2",

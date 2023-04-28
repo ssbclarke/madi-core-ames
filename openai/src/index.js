@@ -29,7 +29,7 @@ async function getText(url){
 }
 
 
-let core = JSON.parse(fs.readFileSync('test.json', 'utf-8'))
+// let core = JSON.parse(fs.readFileSync('test.json', 'utf-8'))
 let db = await readDB();
 
 
@@ -37,139 +37,86 @@ let db = await readDB();
 async function addObservation(url){
     // TODO url normalize function here
     let id = createHash('sha1').update(url).digest('hex')
-    let observation = db.chain.get('obsevations').find({id}).value()
+    let observation = db.chain.get('observations').find({id}).value()
     // check if id exists
     if(!observation){
-        // GET THE TEXT
-        let articleObj = await getText(url)
-        
         // STORE THE TEXT
-        db.get("observations")[id] = observation = articleObj
-        saveDB();
+        observation = await getText(url)
+        db.data["observations"].push({id, ...observation})
+        await saveDB();
     }
+    return id
 }
 
 async function addChunks(obsId){
-    let observation = db.chain.get('obsevations').find({id}).value()
+    let observation = db.chain.get('observations').find({id:obsId}).value()
     if(!observation){
         throw new Error("observation does not exist")
     }
-    let textSplits = splitText(core.articleObj.content)
+    let textSplits = splitText(observation.content)
     let o = optimizeSplits(textSplits)
 
 
 
     // STORE THE SPLITS
-    o.forEach(text=>{
+    return Promise.all(o.map(async text=>{
         let id = createHash('sha1').update(text).digest('hex');
         let chunk = db.chain.get('chunks').find({id}).value()
         if(!chunk){
-            db.get("chunks")[id] = {
+            chunk = {
+                id,
                 tokens: countTokens(text),
                 text,
             }
-            saveDB()
+            db.data["chunks"].push(chunk)
+            await saveDB()
         }
-    })
-}
 
-
-    if(!observation){
-        // SPLIT THE TEXT
-
-        // fs.writeFileSync('test.json',JSON.stringify(core, null, 2))
-    }
-    
-
-}
-
-
-
-if(!core.splits[0]?.embedding){
-    // CREATE EMBEDDING PER SPLIT
-    core.splits = await Promise.all(core.splits.map(async split=>{
-        if(!split.embedding){
-            let {embedding, tokens} = await getEmbedding(split.context)
-            split.embedding = embedding
-            split.embedding_tokens = tokens
+        if(!chunk.context){
+            let title = observation.title || ''
+            chunk.context = title + "\n\n" + chunk.text
+            await saveDB()
         }
-        return split
+
+        if(!chunk.questions_raw){
+            chunk.questions_raw = await getQuestions(chunk.context)
+            chunk.questions = chunk.questions_raw.split("\n")
+            await saveDB();
+        }
+
+        if(!chunk.answers_raw){
+            chunk.answers_raw = await getAnswers(chunk.context, chunk.questions_raw)
+            chunk.answers = chunk.answers_raw.split("\n")
+            await saveDB();
+        }
+        if(!chunk.embedding){
+            let {embedding, tokens} = await getEmbedding(chunk.text)
+            chunk.embedding = embedding
+            chunk.embedding_tokens = tokens
+            await saveDB();
+        }
+
+        add(obsId+":"+chunk.id, chunk.embedding)
+        return chunk
+
     }))
-    fs.writeFileSync('test.json',JSON.stringify(core, null, 2))
 }
 
-// ITERATE SPLITS AND GENERATE QUESTIONS
-if(!core.splits[0]?.questions_raw){
-    core.splits = await Promise.all(core.splits.map(async split=>{
-        let title = core.articleObj.title || ''
-        split.context =  title + "\n\n" + split.text
-        if(!split.questions_raw){
-            split.questions_raw = await getQuestions(split.context, title.length)
-        }
-        return split
-    }))
-    // fs.writeFileSync('test.json',JSON.stringify(core, null, 2))
-}
+let obsId = await addObservation(url)
+let chunks = await addChunks(obsId)
 
-
-// STORE QUESTIONS
-if(!core.splits[0]?.questions?.length>0){
-    core.splits = core.splits.map(split=>{
-        split.questions = split.questions_raw.split("\n")
-        return split
-    })
-    // fs.writeFileSync('test.json',JSON.stringify(core, null, 2))
-}
-
-// ITERATE QUESTIONS AND GENERATE ANSWERS
-if(!core.splits[0]?.answers_raw){
-    core.splits = await Promise.all(core.splits.map(async split=>{
-        if(!split.answers_raw){
-            split.answers_raw = await getAnswers(split.context, split.questions_raw)
-        }
-        return split
-    }))
-    // fs.writeFileSync('test.json',JSON.stringify(core, null, 2))
-}
-
-// STORE ANSWERS
-if(!core.splits[0]?.answers?.length>0){
-    core.splits = core.splits.map(split=>{
-        split.answers = split.answers_raw.split("\n")
-        return split
-    })
-    // fs.writeFileSync('test.json',JSON.stringify(core, null, 2))
-
-}
+console.log(chunks)
 
 //CREATE SEARCH EMBEDDING
-if(!core.query){
-    let { embedding:query} = await getEmbedding("Who was the director of the Sabin Center?")
-    core.query = query
-    fs.writeFileSync('test.json',JSON.stringify(core, null, 2))
+let query 
+try{
+    query = JSON.parse(fs.readFileSync('query.json', 'utf-8'))
+}catch(e){}
+if(!query){
+    let { embedding:query } = await getEmbedding("Who was the director of the Sabin Center?")
+    fs.writeFileSync('query.json',JSON.stringify(query))
 }
 
-// CREATE KEYS
-if(!core.splits[0]?.id){
-    core.splits = core.splits.map(split=>{
-        split.id = createHash('sha1').update(split.context).digest('hex');
-        return split
-    })
-    // STORE EMBEDDING IN VSS
-    
-    await Promise.all(core.splits.map(split=>{
-        return add(core.id+":"+split.id, split.embedding)
-    }))
-    await createIndex()
-}
-
-
-let results = await search(core.query)
-// console.log(results)
+let results = await search(query)
 console.log(JSON.stringify(results, null, 2));
-// client.quit();
-
-
-// fs.writeFileSync('test.json',JSON.stringify(core, null, 2))
-
 
