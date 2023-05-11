@@ -1,4 +1,5 @@
 {
+  "type":"module",
   "dependencies": {
     "@extractus/article-extractor": "^7.2.14",
     "@node-redis/search": "^1.0.5",

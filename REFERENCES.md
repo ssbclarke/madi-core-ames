@@ -31,6 +31,7 @@
     * [Portman](https://github.com/apideck-libraries/portman)
     * [Postman's own openAPI converter](https://github.com/postmanlabs/openapi-to-postman#using-the-converter-as-a-nodejs-module)
     * [OpenAPI generator](https://openapi-generator.tech/#try)
+    * [Discriminators](https://help.openai.com/en/articles/5528730-fine-tuning-a-classifier-to-improve-truthfulness)
 * Mural Automation
     * [Automatically sign in with Google using Puppeteer](https://marian-caikovski.medium.com/automatically-sign-in-with-google-using-puppeteer-cc2cc656da1c)
 * AutoGPT Options

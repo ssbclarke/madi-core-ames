@@ -40,7 +40,7 @@ export const init = async ()=>{
     })
     client.on('error', err => console.log('Redis Client Error', err));
     await client.connect();
-    redisIntervalId = setInterval(closeRedis, 500);
+    // redisIntervalId = setInterval(closeRedis, 500);
     return client
 }
 
@@ -48,7 +48,11 @@ export const init = async ()=>{
 
 
 export const add = async (id, embedding)=>{
-    return client.hSet(redisKey(id), { [VECTOR_NAME]: float32Buffer(embedding) })
+    try{
+        return client.hSet(redisKey(id), { [VECTOR_NAME]: float32Buffer(embedding) })
+    }catch(e){
+        console.log(e)
+    }
 }
 
 export const search = async (embedding)=>{
@@ -75,7 +79,7 @@ export const search = async (embedding)=>{
         RETURN: ['dist']
     })
     .then(r=>{
-        console.log('in the then')
+        // console.log('in the then')
         r.documents = r.documents.map(d=>{
             d.id = d.id.slice(PREFIX.length+1) //strips prefix
             return d
@@ -86,6 +90,8 @@ export const search = async (embedding)=>{
         console.log(e)
     })
 }
+
+
 
 export const createIndex = async()=>{
     // Create an index...
