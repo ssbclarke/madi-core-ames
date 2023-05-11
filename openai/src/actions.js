@@ -52,50 +52,9 @@ export async function askQuestion(question, answeringModel) {
   
 
 
-
-async function buildDiscriminatorPrompt(context, question, random=false, related=false){
-    if(random){
-        if(!related){
-            // search for random context not from same doc
-            let randomContext = searchRelated(context)
-            return { "prompt": randomContext + "\nQuestion: " + question.slice(2).trim() + "\n Related:", "completion": " no"}    
-        }else{
-            // search for related context not from same doc
-            let relatedContext = searchRelated(context)
-            return { "prompt": relatedContext + "\nQuestion: " + question.slice(2).trim() + "\n Related:", "completion": " no"}
-        }
-    }else{
-        // use the original context 
-        return { "prompt": context + "\nQuestion: " + question.slice(2).trim() + "\n Related:", "completion": " yes"}
-    }
-}
-
-async function buildQAPrompt(context, question, answer, random=false, related=false){
-    if(random){
-        if(!related){
-            // search for random context not from same doc
-            let randomContext = searchRelated(context)
-            return { "prompt": randomContext + "\nQuestion: " + question.slice(2).trim() + "\n Answer:", "completion": "  No appropriate information found to answer the question."}
-
-        }else{
-            // search for related context not from same doc
-            let relatedContext = searchRelated(context)
-            return { "prompt": relatedContext + "\nQuestion: " + question.slice(2).trim() + "\n Answer:", "completion": "  No appropriate information found to answer the question."}
-
-        }
-    }else{
-        // use the original context and answer the question
-        return { "prompt": context + "\nQuestion: " + question.slice(2).trim() + "\n Answer:", "completion": " " + answer.slice(2).trim()}
-    }
-}
-
-// model_discriminator = "curie:ft-openai-internal-2021-08-23-23-58-57"
-// model_qa = "curie:ft-openai-internal-2021-08-23-17-54-10"
-
-
 //* PARAMS
 // Discriminator    bool : True, Return yes or no if the question is answerable based on context
-// Random           int  : Number to add with an incorrect context instead of the right one
+// Random           bool : True, add prompt with an incorrect context instead of the right one
 // Related          bool : With Random=true, use a close context to make a harder question
 
 //* DISCRIMINATOR | RANDOM   | RELATED
@@ -109,6 +68,13 @@ async function buildQAPrompt(context, question, answer, random=false, related=fa
 //  false         | true     | true       Random  + question + answer="Sorry"
 //  false         | true     | false      Random  + question + answer="Sorry"
 //  false         | false    | --         Context + question + answer=answer
+
+
+
+
+// model_discriminator = "curie:ft-openai-internal-2021-08-23-23-58-57"
+// model_qa = "curie:ft-openai-internal-2021-08-23-17-54-10"
+
 
 
 // function create_fine_tuning_dataset(data, discriminator = false, n_negative = 1, add_related = false) {

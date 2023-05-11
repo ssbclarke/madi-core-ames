@@ -91,7 +91,7 @@ export const search = async (embedding)=>{
     })
 }
 
-
+export const search
 
 export const createIndex = async()=>{
     // Create an index...
