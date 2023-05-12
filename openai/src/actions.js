@@ -1,6 +1,5 @@
 import {store, getIdFromText} from './storage.js'
 import { search } from './search.js'
-import urls from './data/urls.json' assert { type: 'json' };
 import { getEmbedding, openai } from './qg.js'
 
 

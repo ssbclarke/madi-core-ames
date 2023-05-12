@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "drs:create-snapshot": "docker compose exec directus npx directus schema snapshot --yes ./snapshots/latest.yaml;  cp ./dl/snapshots/latest.yaml ./dl/snapshots/\"$(date \"+%F\")\"-snapshot-\"$(date \"+%s\")\".yaml;",
-    "drs:apply-snapshot": "docker compose exec directus npx directus schema apply --yes ./snapshots/latest.yaml"
+    "drs:apply-snapshot": "docker compose exec directus npx directus schema apply --yes ./snapshots/latest.yaml",
+    "openai:run": "node openai/src/index.js"
   },
   "repository": {
     "type": "git",

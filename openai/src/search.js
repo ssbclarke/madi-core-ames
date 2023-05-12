@@ -25,6 +25,7 @@ function redisKey(key) {
 function closeRedis() {
     // 2 core processes plus Redis and interval
     var minimumProcesses = 4;
+    console.log(process._getActiveHandles())
     if (process._getActiveHandles().length > minimumProcesses)
         return;
     clearInterval(redisIntervalId);
@@ -40,7 +41,7 @@ export const init = async ()=>{
     })
     client.on('error', err => console.log('Redis Client Error', err));
     await client.connect();
-    // redisIntervalId = setInterval(closeRedis, 500);
+    redisIntervalId = setInterval(closeRedis, 500);
     return client
 }
 
@@ -91,7 +92,6 @@ export const search = async (embedding)=>{
     })
 }
 
-export const search
 
 export const createIndex = async()=>{
     // Create an index...

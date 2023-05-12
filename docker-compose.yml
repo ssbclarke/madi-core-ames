@@ -79,11 +79,11 @@ services:
     volumes:
       - vss-data:/data
 
-  cache:
-    container_name: cache
-    image: redis:6
-    networks:
-      - madi
+  # cache:
+  #   container_name: cache
+  #   image: redis:6
+  #   networks:
+  #     - madi
 
 networks:
   madi:

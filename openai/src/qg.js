@@ -2,9 +2,10 @@
 import { Configuration, OpenAIApi } from "openai"
 import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import { RateLimiter } from "limiter-es6-compat";
+import { dirname } from 'node:path'
 
+const __dirname = dirname(fileURLToPath(import.meta.url))
 const limiter = new RateLimiter({ tokensPerInterval: 2000, interval: "minute" });
 
 // import transformers from "@xenova/transformers";
@@ -17,19 +18,15 @@ const limiter = new RateLimiter({ tokensPerInterval: 2000, interval: "minute" })
 // console.log(env)
 // console.log(transformers)
 
-dotenv.config()
+dotenv.config({
+    path: __dirname + `/../.env`
+})
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
 });
-console.log(process.env.OPENAI_API_KEY)
+// console.log(process.env.OPENAI_API_KEY)
 export const openai = new OpenAIApi(configuration); 
-
-
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const file = join(__dirname, 'db.json')
-let db
 
 
 // let embedder = await pipeline('embeddings', 'sentence-transformers/all-MiniLM-L6-v2')
