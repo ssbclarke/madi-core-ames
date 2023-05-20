@@ -24,8 +24,8 @@ function redisKey(key) {
 // close redis client connection if it's the last required process
 function closeRedis() {
     // 2 core processes plus Redis and interval
-    var minimumProcesses = 4;
-    console.log(process._getActiveHandles())
+    var minimumProcesses = 3;
+    // console.log(process._getActiveHandles())
     if (process._getActiveHandles().length > minimumProcesses)
         return;
     clearInterval(redisIntervalId);
@@ -41,7 +41,7 @@ export const init = async ()=>{
     })
     client.on('error', err => console.log('Redis Client Error', err));
     await client.connect();
-    redisIntervalId = setInterval(closeRedis, 500);
+    redisIntervalId = setInterval(closeRedis, 1000);
     return client
 }
 

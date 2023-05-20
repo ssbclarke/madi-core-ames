@@ -21,8 +21,10 @@
   "dependencies": {
     "@feathersjs/feathers": "^5.0.0-pre.38",
     "create-feathers": "^5.0.0-pre.38",
+    "langchain": "^0.0.78",
     "limiter": "^2.1.0",
     "limiter-es6-compat": "^2.1.2",
+    "nock": "^13.3.1",
     "serverless-http": "^3.1.1"
   }
 }

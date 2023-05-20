@@ -69,6 +69,13 @@ services:
       # uncomment this line to have docker manage a persistent folder for you.
       - ./dl/uploads:/storage
 
+  ui:
+    build: ./chatbot-ui-lite
+    ports:
+      - 3000:3000
+    environment:
+      - 'OPENAI_API_KEY='
+
   vss:  # vector-similarity-search
     image: redis/redis-stack:latest
     networks:

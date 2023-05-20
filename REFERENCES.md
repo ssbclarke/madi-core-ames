@@ -36,6 +36,16 @@
     * [Automatically sign in with Google using Puppeteer](https://marian-caikovski.medium.com/automatically-sign-in-with-google-using-puppeteer-cc2cc656da1c)
 * AutoGPT Options
     * [Relatedly: Scaffolding Literature Reviews with Existing Related Work Sections](https://www.youtube.com/watch?v=bJYviga1_d0)
+* Interface Options
+    * https://github.com/Yidadaa/ChatGPT-Next-Web
+    * https://github.com/wieslawsoltes/ChatGPT 
+    * https://github.com/ztjhz/BetterChatGPT
+    * https://github.com/AidanGuarniere/myChat 
+    * https://github.com/enricoros/big-agi 
+    * https://github.com/nemoteric/GPT-4-Chat-UI (very simple)
+
+
+
 * Unlisted
     * [PostgreSQL Graph Search Practices - 10 Billion-Scale Graph with Millisecond Response - Alibaba Cloud Community](https://www.alibabacloud.com/blog/postgresql-graph-search-practices---10-billion-scale-graph-with-millisecond-response_595039)
     * [[Project] pgANN Fast Approximate Nearest Neighbor (ANN) searches with a PostgreSQL database. : MachineLearning](https://www.reddit.com/r/MachineLearning/comments/dkwwrt/project_pgann_fast_approximate_nearest_neighbor/)

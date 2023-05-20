@@ -33,6 +33,8 @@ export async function askQuestion(question, answeringModel) {
     let query           = await store.queries.create({id:getIdFromText(question),question, embedding, embedding_tokens:tokens})
     let { documents }   = await search(embedding)
     let relatedChunks   = await Promise.all(documents.map(d=>store.chunks.get(store.chunks.splitKey(d.id).id)))
+    let sources         = await Promise.all(relatedChunks.map(async c=>(await store.observations.get(c.parent))?.url))
+    sources = [...new Set(sources)]
 
     let context = relatedChunks.map(c=>c.text).join("\n")
     const prompt = `${context}\nQuestion: ${question}\nAnswer:`;
@@ -45,8 +47,23 @@ export async function askQuestion(question, answeringModel) {
       n: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
-    //   stop: ['.', '\n']
-    }).then(response => response.data['choices'][0]['text'].trim())
+    }).then(response => ({
+            answer: response.data['choices'][0]['text'].trim(),
+            sources 
+        })
+    )
+}
+
+export async function manuallyAddObservationText(id, text, url) {
+    if(!id && !url){
+        throw new Error("Must provide id or url.");
+    }
+    if(!id && url){
+        id = getIdFromText(url)
+    }
+    await store.observations.patch(id,{content:text})
+    let chunks      = await store.observations.buildChunks(id)
+    return Promise.all(chunks.map(store.chunks.createVectors))
 }
   
 
