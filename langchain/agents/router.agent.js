@@ -1,50 +1,75 @@
-import { OpenAI } from "langchain/llms/openai";
 import { ChatOpenAI } from "langchain/chat_models/openai";
-import { LLMChain } from "langchain/chains";
-import { PromptTemplate } from "langchain/prompts";
-import { Calculator } from "langchain/tools/calculator";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { BufferMemory } from "langchain/memory"
-import { ConversationChain } from "langchain/chains"
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { loadSummarizationChain, AnalyzeDocumentChain } from "langchain/chains";
-// import db from './db.json' assert { type: 'json' }
 import { VectorDBQAChain } from "langchain/chains";
 import { WebBrowser } from "langchain/tools/webbrowser";
-import { StructuredChatAgent, ChatAgent, ChatConversationalAgent} from "langchain/agents";
-import { createClient, createCluster } from "redis";
-import { Document } from "langchain/document";
-import { RedisVectorStore } from "langchain/vectorstores/redis";
-import { ZeroShotAgent, AgentExecutor } from "langchain/agents";
-import { UnstructuredLoader } from "langchain/document_loaders/fs/unstructured";
-import * as cheerio from 'cheerio';
-import { HumanInputRun } from './human.tool.js'
+import { ChatConversationalAgent} from "langchain/agents";
+import { HumanInputRun } from '../tools/human.tool.js'
 import { ChatMessageHistory } from "langchain/memory";
-
-import {
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-  } from "langchain/prompts";
-import { RedisChatMessageHistory } from "langchain/stores/message/redis";
-
-import { InvestigationPrompt } from "./investigation.tool.js";
+import { InvestigationPrompt, InvestigationSelection } from "../tools/investigation.tool.js";
 import { SerpAPI, ChainTool } from "langchain/tools";
-import * as fs from "fs";
 import dotenv from 'dotenv'
+import { redisClient } from "../redis.js";
 import { AIChatMessage } from "langchain/schema";
+import { getInputValue } from "langchain/memory";
 
-dotenv.config();
+import { OpenAI } from "langchain/llms/openai";
+import { PromptTemplate } from "langchain/prompts";
+import { LLMChain } from "langchain/chains";
+import { ROUTER_PROMPT } from './router.prompts.js';
+import { Debug } from '../logger.js'
+const debug = Debug(import.meta.url)
 
-const client = createClient({
-    url: process.env.REDIS_URL ?? "redis://localhost:6379",
-});
-await client.connect();
 
 /**
- * @typedef {import("./types.js").Metadata} Metadata 
- * @typedef {import("./types.js").ServerResponse} ServerResponse
+ * @typedef {import("../types.js").Metadata} Metadata 
+ * @typedef {import("../types.js").ServerResponse} ServerResponse
  */
+
+
+
+/**
+ * @param {array} memoryArray
+ * @returns {object} - This should be a ChatHistory Object
+ */
+function establishMemory(memoryArray){
+    let memory = new BufferMemory({
+        chatHistory: new ChatMessageHistory(memoryArray),
+        memoryKey:'chat_history',
+        returnMessages: true,
+        
+    })
+    memory.saveContext = async function (inputValues, outputValues){
+        // this is purposefully done in sequence so they're saved in order
+        debug("using the new memory.saveContext")
+        await this.chatHistory.addUserMessage(getInputValue(inputValues, this.inputKey));
+        let output = getInputValue(outputValues, this.outputKey)
+        // this allows for a tuple output attached to the memory
+        if(Array.isArray(output) && typeof output[0] === 'string' && typeof output[1] === 'object'){
+            let message = new AIChatMessage(output[0])
+            message.metadata = output[1]
+            this.chatHistory.addMessage(message);
+        }else{
+            await this.chatHistory.addAIChatMessage(output[0]);
+
+        }
+    }
+    return memory
+}
+
+
+
+/**
+ * Router LLM
+ * The result is an object with a `text` property.  
+ */
+const routerModel = new OpenAI({ temperature: 0 });
+const routerPrompt = PromptTemplate.fromTemplate(ROUTER_PROMPT);
+const routerChain = new LLMChain({ llm: routerModel, prompt: routerPrompt });
+
+
+
 
 
 /**
@@ -56,24 +81,52 @@ await client.connect();
  * @param {Metadata} metadata
  * @returns {Promise<ServerResponse>}
  */
-export const flowPicker = async (input, {clientMemory, memId, flowKey}) =>{
-    switch(flowKey){
-        case "hello":
-            let output = "Hello! I'm Madi. How can I help you?"
-            return [ output, {}]
-            // {
-            //     memId,
-            //     flowKey:null,
-            //     serverMemory: [...clientMemory, new AIChatMessage(output)]
-            // }
-        case "investigation-prompt":
-            return InvestigationPrompt(input)
-            // return { output }
-        case "investigation-selected":
-
-        default:
-            return flowFinder(input, {clientMemory, memId})
+export const router = async (input, {clientMemory, memId, flowKey}) =>{
+    // The result is an object with a `text` property.
+    const routerKey = !!input ? await routerChain.call({ input }).then(result=>result?.text.trim().toLowerCase() || null) : null
+    
+    if(flowKey){
+        switch(flowKey){
+            case "hello":
+                let output = "Hello! I'm Madi. How can I help you?"
+                return [ output,
+                    {
+                        memId,
+                        flowKey:null,
+                        responseType: 'open',
+                        serverMemory: establishMemory([...clientMemory, new AIChatMessage(output)])
+                    }
+                ]
+                break;
+            default:
+                return flowFinder(input, {serverMemory: establishMemory(clientMemory), memId})
+        }
+    }else{
+        switch(routerKey){
+            case "hello":
+                let output = "Hello! I'm Madi. How can I help you?"
+                return [ output,
+                    {
+                        memId,
+                        flowKey:null,
+                        serverMemory: establishMemory([...clientMemory, new AIChatMessage(output)])
+                    }
+                ]
+                break;
+            case "investigation":
+                return InvestigationSelection(input, {serverMemory: establishMemory(clientMemory), memId})
+            case "scope":
+            case "web":
+            case "confluence":
+            case "investigation":
+            case "chat":
+            case "human":
+            case "investigation-selected":
+            default:
+                return flowFinder(input, {serverMemory: establishMemory(clientMemory), memId})
+        }
     }
+
 
 }
 
@@ -85,8 +138,8 @@ export const flowPicker = async (input, {clientMemory, memId, flowKey}) =>{
  * @param {Metadata} metadata
  * @returns {Promise<ServerResponse>}
  */
-export const flowFinder = async (input, {clientMemory, memId}) =>{
-    console.log("flowfinder")
+export const flowFinder = async (input, {serverMemory, memId}) =>{
+    debug("in the flowFinder function")
     const model = new ChatOpenAI({
         temperature: 0.1,
         openAIApiKey: process.env.OPENAI_API_KEY,
@@ -99,21 +152,21 @@ export const flowFinder = async (input, {clientMemory, memId}) =>{
     //       sessionTTL: 300,
     //     }),
     // });
-    const memory = new BufferMemory({
-        chatHistory: new ChatMessageHistory(clientMemory),
-        memoryKey:'chat_history',
-        returnMessages: true,
-    })
+    //     ) new BufferMemory({
+    //     chatHistory: new ChatMessageHistory(clientMemory),
+    //     memoryKey:'chat_history',
+    //     returnMessages: true,
+    // })
 
     const tools = [
         // new HumanInputRun({
         //     chat
         // }),
-        // new SerpAPI(process.env.SERPAPI_API_KEY, {
-        //     location: "Austin,Texas,United States",
-        //     hl: "en",
-        //     gl: "us",
-        // }),
+        new SerpAPI(process.env.SERPAPI_API_KEY, {
+            location: "Austin,Texas,United States",
+            hl: "en",
+            gl: "us",
+        }),
         // new Calculator(),
         // new ChainTool({
         //     name: "GeoEngineering",
@@ -127,24 +180,27 @@ export const flowFinder = async (input, {clientMemory, memId}) =>{
         //         "State of the Union QA - useful for when you need to ask questions about the most recent state of the union address.",
         //     chain: chain,
         // }),
-        await InvestigationTool(),
-        // new WebBrowser({ model, 
-        //     embeddings: new OpenAIEmbeddings(),
-        //     description: `useful for when you need to find something on or summarize a webpage. input should be a comma separated list of "ONE valid http URL including protocol","what you want to find on the page or empty string for a summary".`
-        //  })
+        new InvestigationPrompt(),
+        new WebBrowser({ model, 
+            embeddings: new OpenAIEmbeddings()
+         })
     ];
 
     const executor = await initializeAgentExecutorWithOptions(tools, model, {
         agentType: "chat-conversational-react-description",
-        memory,
-        verbose: true,
+        memory: serverMemory,
+        // verbose: true,
       });
 
     // const chain = new ConversationChain({llm:model, memory, outputKey:"MYOUTPUT"})
 
-    let {output, ...rest} = await executor.call({input})
+    let { output }  = await executor.call({input})
 
-    return [output, { serverMemory: memory, ...rest} ]
+    if (Array.isArray(output)){
+        return [output[0], { serverMemory, ...output[1]} ]
+    }else{
+        return [output, { serverMemory }]
+    }
 
 
 }

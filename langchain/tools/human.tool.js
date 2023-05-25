@@ -35,28 +35,30 @@
 //         """Use the Human tool asynchronously."""
 //         raise NotImplementedError("Human tool does not support async")
 
+//HUMAN: Useful for asking the user when you think you got stuck or you are not sure what to do next.
+// USER: "How can I inject investigations into purple reindeer?"
+// AI: HUMAN
+
 
 import { Tool } from "langchain/tools";
-        
+
 export class HumanInputRun extends Tool {
     name = "Human";
-    description = (
-        "Tool for setting metadata"
-    );
+    description = "You can ask a human for guidance when you think you got stuck or you are not sure what to do next. The input should be a question for the human.";
 
-    prompt = "You will help the human decide which investigation they are working on. You will present this list of options: {list}. The human must pick one. "
-    promptFunc = (prompt) => prompt;
-    inputFunc = (input) => input;
-    constructor(options){
+    // promptFunc = (prompt) => {console.log('\nASKING: ', prompt, '\n')};
+    // inputFunc = (input) => {console.log('in the input function')};
+    constructor(options={}){
         super();
-        this.chat = options.chat
         this.name = options.name || this.name
         this.description = options.description || this.description
+        this.returnDirect = true
+        this.modelName = 'gpt-3.5-turbo-0301'
     }
 
     async _call(input){
         try {
-            console.log('INPUT, input')
+            return input
           } catch (error) {
             return "I don't know how to do that.";
          }

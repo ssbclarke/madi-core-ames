@@ -1,7 +1,7 @@
 
 /**
  * @typedef Metadata
- * @type {object}
+ * @type {Object.<string, any>}
  * @property {object} [clientMemory] -
  * @property {object} [serverMemory] -
  * @property {string} [memId] -
@@ -9,6 +9,12 @@
  * @property {Object} [context] -
  * @property {string} [nextFlowKey] -
  */
+
+// /**
+//  * @typedef {[key:string]} Extendable
+//  * 
+//  * @typedef {MetadataBase & Extendable} Metadata
+//  */
 
 /**
  * @typedef {[string, Metadata]} ServerResponse
