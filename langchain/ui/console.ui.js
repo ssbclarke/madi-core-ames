@@ -34,13 +34,17 @@ const wordWrap = (str, max, br = '\n  ') => str.replace(
  * @param {Metadata} metadata
  * @returns {string}
  */
-export const displayAIResponse = async (message, {responseType, choices=[]})=>{
+export const displayAIResponse = async (message, metadata)=>{
+    let {responseType, choices=[],context={}} = metadata
     let userResponse = {answer:""}
     let promptOpts = {name:'answer', prefix:aiPrefix}
     let wrapMessage = (msg)=>wordWrap(message, 60, "\n"+spacePrefix)+"\n"+humanPrefix
+    Debug("INVESTIGATION")(context.investigation)
+    Debug("DOCUMENT")(context.currentDocument)
+    Debug("SCOPE")(context.scope)
     switch(responseType){
         case "list":
-            userResponse = await inquirer.prompt([{...promptOpts, message:aiColor(wrapMessage(message)), choices}])
+            userResponse = await inquirer.prompt([{...promptOpts, type:'list', message:aiColor(wrapMessage(message)), choices}])
             break;
         case "followup":  
             inquirer.prompt([{...promptOpts, message: wordWrap(message, 60, "\n"+spacePrefix)}])
@@ -52,7 +56,7 @@ export const displayAIResponse = async (message, {responseType, choices=[]})=>{
             userResponse = await inquirer.prompt([{...promptOpts, message:aiColor(wrapMessage(message))}])
             break;
     }
-    return userResponse?.answer
+    return [userResponse?.answer, metadata]
 } 
 
 
@@ -87,7 +91,7 @@ export const addMessageToHistory = (message, clientMemory, user="human")=>{
     clientMemory.push(added);
 }
 export const mergeMessageHistory = (clientMemory, serverMemory)=>{
-    Object.assign(clientMemory,serverMemory)
+    
     return clientMemory
 }
 

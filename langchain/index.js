@@ -13,7 +13,7 @@ import { redisClient } from './redis.js'
  */
 
 clearTerminal(); //clears terminal history so that run is clean.
-redisClient.connect() // connect but don't wait around
+await redisClient.connect() // connect but don't wait around
 
 
 /**
@@ -23,12 +23,18 @@ let clientMemory = [];
 let input = null;
 let flowKey = "hello";
 let context = {};
+let metadata = {
+    clientMemory,
+    flowKey,
+    context
+}
 
 while (true){
-        let [response, metadata] = await sendToBackend(input, {clientMemory, flowKey, context, memId})
-        flowKey = metadata?.nextFlowKey
-        mergeMessageHistory(clientMemory, metadata.serverMemory)        
-        input = await displayAIResponse(response, metadata)
+    let [response, metadata] = await sendToBackend(input, metadata)
+    flowKey = metadata?.nextFlowKey
+
+    // mergeMessageHistory(clientMemory, metadata.serverMemory)        
+    input = await displayAIResponse(response, metadata)
 }
 
 

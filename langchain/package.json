@@ -16,7 +16,7 @@
     "dotenv": "^16.0.3",
     "input-event": "^1.2.6",
     "inquirer": "^9.2.6",
-    "langchain": "^0.0.81",
+    "langchain": "^0.0.84",
     "node-redis": "^0.1.7",
     "redis": "^4.6.6"
   }

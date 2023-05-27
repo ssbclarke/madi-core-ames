@@ -44,7 +44,7 @@ import { Tool } from "langchain/tools";
 
 export class HumanInputRun extends Tool {
     name = "Human";
-    description = "You can ask a human for guidance when you think you got stuck or you are not sure what to do next. The input should be a question for the human.";
+    description = "You can ask a human for guidance when you think you got stuck or you are not sure what to do next. You should not ask if you can find this information through a web-browser request.";
 
     // promptFunc = (prompt) => {console.log('\nASKING: ', prompt, '\n')};
     // inputFunc = (input) => {console.log('in the input function')};

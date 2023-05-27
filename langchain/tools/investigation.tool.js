@@ -8,11 +8,18 @@ import { OpenAI } from "langchain/llms/openai";
 import { ChainTool, DynamicTool, Tool } from "langchain/tools";
 import * as dotenv from 'dotenv'
 import { Document } from "langchain/document";
+import { Debug } from '../logger.js'
+import { INVESTIGATION_PROMPT } from "./investigation.prompts.js";
+import { PromptTemplate } from "langchain/prompts";
+import { LLMChain } from "langchain/chains";
+const debug = Debug(import.meta.url)
 dotenv.config()
+
 /**
  * @typedef {import("../types.js").Metadata} Metadata 
  * @typedef {import("../types.js").ServerResponse} ServerResponse
  */
+
 
 const createInvestigationStore = async () => {
 
@@ -52,62 +59,41 @@ const createInvestigationStore = async () => {
 
 export const investigationVectorStore = await createInvestigationStore()
 
+/**
+ * Router LLM
+ * The result is an object with a `text` property.  
+ */
+const investigationModel = new OpenAI({ temperature: 0, maxTokens: 150});
+const investigationPrompt = PromptTemplate.fromTemplate(INVESTIGATION_PROMPT);
+const investigationChain = new LLMChain({ llm: investigationModel, prompt: investigationPrompt });
 
+export const InvestigationRouter = async (input, metadata)=>{
+    let response = !!input ? await investigationChain.call({ input }).then(result=>result?.text.trim() || null) : null
+    if(response.toLowerCase() === 'selection'){
+        return InvestigationPrompt(input, metadata)
+    }
+    return [response, {...metadata,nextFlowKey: null}]
+}
 
-// export const InvestigationPrompt = new DynamicTool({
-//         name: "Investigation",
-//         returnDirect: true,
-//         description: "Useful for determining which investigation the human is working on.",
-        
-//         /**
-//          * Overrides the function to respond with search results
-//          * @param {*} args 
-//          * @returns {Promise<ServerResponse>}
-//          */
-//         func: async (args) => {
-//             const investigations = await redisClient.ft.search('investigations', '*');
-//             const names = investigations?.documents.map(d=>{
-//                 let metadata = JSON.parse(`${d?.value?.metadata||""}`.split("\\-").join("-"))
-//                 return metadata.name
-//             })
-//             return {
-//                 output:`Which Investigation are you working on?`, //\n${names.map((text,i)=>(` ${i+1}. ${text}`)).join("\n")}`
-//                 //    
-//                     type: 'list',
-//                     choices: names,
-//                     nextFlowKey: 'investigation-step'
-//                 // }]
-//             }
-//         },
-//         call: async()=>{
-//             console.log('in the call')
-//         }
-//     })
-
-export class InvestigationPrompt extends Tool{
-
-        constructor(){
-            super();
-            this.name = "Investigation";
-            this.returnDirect= true;
-            this.description ="Useful for picking an investigation. Not meant for conversation. The input to this tool MUST be the user's input string exactly. The input cannot be blank. Response must strictly follow RESPONSE FORMAT INSTRUCTIONS.";
+/**
+ * Investigation Search
+ * The result is an object with a `text` property.  
+ */
+export const InvestigationPrompt = async (input, {clientMemory, memId, flowKey})=>{
+    debug('in the InvestigationPrompt call')
+    const investigations = await redisClient.ft.search('investigations', '*');
+    const names = investigations?.documents.map(d=>{
+    let metadata = JSON.parse(`${d?.value?.metadata||""}`.split("\\-").join("-"))
+        return metadata.name
+    })
+    return [
+        `Which Investigation are you working on?`, //\n${names.map((text,i)=>(` ${i+1}. ${text}`)).join("\n")}`
+        {
+            responseType: 'list',
+            choices: names,
+            nextFlowKey: 'investigation-selected'
         }
-        async _call(input){
-            debug('in the InvestigationPrompt call')
-            const investigations = await redisClient.ft.search('investigations', '*');
-            const names = investigations?.documents.map(d=>{
-                let metadata = JSON.parse(`${d?.value?.metadata||""}`.split("\\-").join("-"))
-                return metadata.name
-            })
-            return [
-                `Which Investigation are you working on?`, //\n${names.map((text,i)=>(` ${i+1}. ${text}`)).join("\n")}`
-                {
-                    type: 'list',
-                    choices: names,
-                    nextFlowKey: 'investigation-selected'
-                }
-            ]
-        }
+    ]
 }
 
 /**
@@ -120,7 +106,11 @@ export const InvestigationSelection = async (input, metadata)=>{
     return [
         `Great. You've selected: ${input}`, //\n${names.map((text,i)=>(` ${i+1}. ${text}`)).join("\n")}`
         {
-            investigation: input,
+            ...metadata,
+            context:{
+                ...metadata.context,
+                investigation: input,
+            },
             nextFlowKey: null
         }
     ]

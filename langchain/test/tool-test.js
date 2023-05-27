@@ -1,4 +1,4 @@
-import { HumanInputRun } from "./tools/human.tool.js";
+import { HumanInputRun } from "../tools/human.tool.js";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import dotenv from 'dotenv'

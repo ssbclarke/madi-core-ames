@@ -15,6 +15,9 @@ CATEGORY: SCOPE
 PROMPT: Can you search external sources?
 CATEGORY: SCOPE
 
+PROMPT: What investigation am I working on?
+CATEGORY: INVESTIGATION
+
 PROMPT: What is my name?
 CATEGORY: CHAT
 
@@ -62,6 +65,14 @@ Only respond with category and nothing else.
 The following are user prompts and their categories.
 
 ${ROUTER_EXAMPLES}
+
+Use the chat history to determine the appropriate context.  If you are talking about something in a chat, assume that the user is still working on that topic unless they specifically change it.  Here is the existing chat history.
+----
+CHAT_HISTORY: {chat_history}
+
+-----
+
+Remember, only repond with the category and nothing else.
 
 PROMPT: {input}
 CATEGORY:`;

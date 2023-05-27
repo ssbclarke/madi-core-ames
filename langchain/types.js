@@ -2,7 +2,7 @@
 /**
  * @typedef Metadata
  * @type {Object.<string, any>}
- * @property {object} [clientMemory] -
+ * @property {Array} [clientMemory] -
  * @property {object} [serverMemory] -
  * @property {string} [memId] -
  * @property {string} [flowKey] -
