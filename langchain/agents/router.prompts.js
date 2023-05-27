@@ -51,8 +51,6 @@ CATEGORY: CONFLUENCE
 PROMPT: What is your name?
 CATEGORY: CHAT
 
-PROMPT: What day is today?
-CATEGORY: WEB
 `;
 
 

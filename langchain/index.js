@@ -30,10 +30,19 @@ let metadata = {
 }
 
 while (true){
-    let [response, metadata] = await sendToBackend(input, metadata)
-    flowKey = metadata?.nextFlowKey
-
-    // mergeMessageHistory(clientMemory, metadata.serverMemory)        
+    let [response, newMetadata] = await sendToBackend(input, metadata)
+    /* should only pass the following and forget the rest
+    {
+        context: {}
+        flowKey: "key"
+        clientMemory: []
+    }
+    */
+    metadata = {
+        context:newMetadata.context,
+        flowKey:newMetadata.nextFlowKey,
+        clientMemory: newMetadata.clientMemory
+    }
     input = await displayAIResponse(response, metadata)
 }
 

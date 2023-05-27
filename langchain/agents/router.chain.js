@@ -8,7 +8,7 @@ import { ChatConversationalAgent} from "langchain/agents";
 import { HumanInputRun } from '../tools/human.tool.js'
 import { ChatMessageHistory } from "langchain/memory";
 import { InvestigationPrompt, InvestigationRouter, InvestigationSelection } from "../tools/investigation.tool.js";
-import { SerpAPI, ChainTool, GoogleCustomSearch } from "langchain/tools";
+import { SerpAPI, ChainTool } from "langchain/tools";
 import dotenv from 'dotenv'
 import { redisClient } from "../redis.js";
 import { AIChatMessage } from "langchain/schema";
@@ -21,9 +21,6 @@ import { ROUTER_PROMPT } from './router.prompts.js';
 import { Debug } from '../logger.js'
 import { ChatAgent } from "../tools/chat.tool.js";
 import { establishMemory } from '../memory/memory.js'
-import { FunctionTool } from "../tools/function.tool.js";
-import { WebBrowser } from "langchain/tools/webbrowser";
-import { GoogleCustomSearch } from "langchain/tools";
 
 const debug = Debug(import.meta.url)
 
@@ -41,25 +38,8 @@ const debug = Debug(import.meta.url)
  */
 const routerModel = new OpenAI({ temperature: 0 });
 const routerPrompt = PromptTemplate.fromTemplate(ROUTER_PROMPT);
-// const routerChain = new LLMChain({ llm: routerModel, prompt: routerPrompt });
-const routerTools = [
-    // new HumanInputRun({
-    //     chat
-    // }),
-    new Calculator(),
-    new GoogleCustomSearch({
-        apiKey:process.env.GOOGLE_SEARCH_API_KEY,
-        googleCSEId:process.env.GOOGLE_SEARCH_API_ID
-    }),
-    new InvestigationTool(),
-    new FunctionTool(),
-    new WebBrowser({ 
-        description: `useful for when you need to find something on or summarize a webpage when the user has provided a full link. input should be a comma separated list of "ONE valid http URL including protocol","what you want to find on the page or empty string for a summary".`,
-        model: new OpenAI(),
-        embeddings: new OpenAIEmbeddings()
-    })
-];
-    
+const routerChain = new LLMChain({ llm: routerModel, prompt: routerPrompt });
+
 
 
 /**
@@ -80,7 +60,43 @@ export const router = async (input, {clientMemory, memId, flowKey}) =>{
 
     // The result is an object with a `text` property.
     const routerKey = !!input ? await routerChain.call({ input, chat_history }).then(result=>result?.text.trim().toLowerCase() || null) : null
+    debug({routerKey})
+    if(flowKey){
+        switch(flowKey){
+            case "hello":
+                let output = "Hello! I'm Madi. How can I help you?"
+                return [ output,
+                    {
+                        memId,
+                        flowKey:null,
+                        responseType: 'open',
+                        clientMemory: [...clientMemory, new AIChatMessage(output)]
+                    }
+                ]
+                break;
+            case "investigation-selected":
+                return InvestigationSelection(input, {clientMemory, memId})
+            default:
+                return flowFinder(input, {clientMemory, memId})
+        }
+    }else{
+        switch(routerKey){
+            case "investigation":
+                return InvestigationRouter(input, {clientMemory, memId})
+            case "scope":
+            
+            case "confluence":
 
+            case "chat":
+            case "web":
+            case "human":
+                return ChatAgent(input, {clientMemory, memId})
+
+            
+            default:
+                return flowFinder(input, {clientMemory, memId})
+        }
+    }
 
 
 }
