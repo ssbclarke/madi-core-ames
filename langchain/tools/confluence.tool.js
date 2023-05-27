@@ -18,3 +18,15 @@ if (username && accessToken) {
       "You must provide a username and access token to run this example."
     );
   }
+
+
+
+let loader = new ConfluencePagesLoader({
+    baseUrl: "https://caas.gsfc.nasa.gov",
+    spaceKey: "CM",
+    username: process.env.CONFLUENCE_USERNAME,
+    accessToken: process.env.CONFLUENCE_ACCESS_TOKEN,
+    limit: 25
+})
+
+let results = await loader.load()
