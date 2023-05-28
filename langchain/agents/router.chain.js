@@ -7,7 +7,7 @@ import { WebBrowser } from "langchain/tools/webbrowser";
 import { ChatConversationalAgent} from "langchain/agents";
 import { HumanInputRun } from '../tools/human.tool.js'
 import { ChatMessageHistory } from "langchain/memory";
-import { InvestigationPrompt, InvestigationRouter, InvestigationSelection } from "../tools/investigation.tool.js";
+import { InvestigationPrompt, InvestigationRouter, InvestigationSelection } from "../tools/investigation/investigation.tool.js";
 import { SerpAPI, ChainTool } from "langchain/tools";
 import dotenv from 'dotenv'
 import { redisClient } from "../redis.js";
@@ -17,7 +17,7 @@ import { getInputValue } from "langchain/memory";
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import { LLMChain } from "langchain/chains";
-import { ROUTER_PROMPT } from './router.prompts.js';
+import { ROUTER_PROMPT } from './router.promptsOLD.js';
 import { Debug } from '../logger.js'
 import { ChatAgent } from "../tools/chat.tool.js";
 import { establishMemory } from '../memory/memory.js'

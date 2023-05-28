@@ -7,7 +7,7 @@ import { WebBrowser } from "langchain/tools/webbrowser";
 import { ChatConversationalAgent} from "langchain/agents";
 import { HumanInputRun } from '../tools/human.tool.js'
 import { ChatMessageHistory } from "langchain/memory";
-import { InvestigationPrompt, InvestigationSelection } from "../tools/investigation.tool.js";
+import { InvestigationPrompt, InvestigationSelection } from "./investigation/investigation.tool.js";
 import { SerpAPI, ChainTool } from "langchain/tools";
 import dotenv from 'dotenv'
 import { redisClient } from "../redis.js";

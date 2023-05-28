@@ -1,20 +1,9 @@
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { BufferMemory } from "langchain/memory"
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { VectorDBQAChain } from "langchain/chains";
-import { WebBrowser } from "langchain/tools/webbrowser";
-import { ChatConversationalAgent} from "langchain/agents";
-import { HumanInputRun } from '../tools/human.tool.js'
 import { ChatMessageHistory } from "langchain/memory";
-import { InvestigationPrompt, InvestigationSelection } from "../tools/investigation.tool.js";
-import { SerpAPI, ChainTool } from "langchain/tools";
-import dotenv from 'dotenv'
-import { redisClient } from "../redis.js";
-import { AIChatMessage } from "langchain/schema";
-import { getInputValue } from "langchain/memory";
 import { Debug } from '../logger.js'
-import { Calculator } from 'langchain/tools/calculator'
+
 
 const debug = Debug(import.meta.url)
 
@@ -39,20 +28,39 @@ export function establishMemory(memoryArray){
         memoryKey:'chat_history',
         returnMessages: true,
     })
-    memory.saveContext = async function (inputValues, outputValues){
+    // memory.saveContext = async function (inputValues, outputValues){
+    //     // this is purposefully done in sequence so they're saved in order
+    //     debug("using the new memory.saveContext")
+    //     await this.chatHistory.addUserMessage(getInputValue(inputValues, this.inputKey));
+    //     let output = getInputValue(outputValues, this.outputKey)
+    //     // this allows for a tuple output attached to the memory
+    //     if(Array.isArray(output) && typeof output[0] === 'string' && typeof output[1] === 'object'){
+    //         let message = new AIChatMessage(output[0])
+    //         message.metadata = output[1]
+    //         this.chatHistory.addMessage(message);
+    //     }else{
+    //         await this.chatHistory.addAIChatMessage(output[0]);
+
+    //     }
+    // }
+
+    // For LLMs, not chatbots
+    memory.saveContext = async function ({input}, {output}){
         // this is purposefully done in sequence so they're saved in order
         debug("using the new memory.saveContext")
-        await this.chatHistory.addUserMessage(getInputValue(inputValues, this.inputKey));
-        let output = getInputValue(outputValues, this.outputKey)
-        // this allows for a tuple output attached to the memory
-        if(Array.isArray(output) && typeof output[0] === 'string' && typeof output[1] === 'object'){
-            let message = new AIChatMessage(output[0])
-            message.metadata = output[1]
-            this.chatHistory.addMessage(message);
-        }else{
-            await this.chatHistory.addAIChatMessage(output[0]);
+        await this.chatHistory.addUserMessage(input[0]);
+        await this.chatHistory.addAIChatMessage(output);
 
-        }
+        // let message = new AIChatMessage(output[0])
+        // // this allows for a tuple output attached to the memory
+        // if(Array.isArray(output) && typeof output[0] === 'string' && typeof output[1] === 'object'){
+        //     let message = new AIChatMessage(output[0])
+        //     message.metadata = output[1]
+        //     this.chatHistory.addMessage(message);
+        // }else{
+        //     await this.chatHistory.addAIChatMessage(output[0]);
+
+        // }
     }
     return memory
 }

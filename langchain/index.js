@@ -20,7 +20,6 @@ await redisClient.connect() // connect but don't wait around
  * Initialization of client side state
  */
 let clientMemory = [];
-let input = null;
 let flowKey = "hello";
 let context = {};
 let metadata = {
@@ -28,6 +27,7 @@ let metadata = {
     flowKey,
     context
 }
+let input = await displayAIResponse("Hello! I'm Madi. How can I help you?", metadata)
 
 while (true){
     let [response, newMetadata] = await sendToBackend(input, metadata)

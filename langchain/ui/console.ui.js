@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 import inquirer from 'inquirer';
 import { HumanChatMessage, AIChatMessage, SystemChatMessage } from "langchain/schema";
-import { router } from '../agents/router.chain.js'
+import { router } from '../agents/router.agent.js'
 import chalk from 'chalk';
 import { Debug } from '../logger.js'
 const debug = Debug(import.meta.url)

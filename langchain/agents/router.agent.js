@@ -1,30 +1,28 @@
-import { ChatOpenAI } from "langchain/chat_models/openai";
-import { initializeAgentExecutorWithOptions } from "langchain/agents";
-import { BufferMemory } from "langchain/memory"
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { VectorDBQAChain } from "langchain/chains";
-import { WebBrowser } from "langchain/tools/webbrowser";
-import { ChatConversationalAgent} from "langchain/agents";
-import { HumanInputRun } from '../tools/human.tool.js'
-import { ChatMessageHistory } from "langchain/memory";
-import { InvestigationPrompt, InvestigationRouter, InvestigationSelection } from "../tools/investigation.tool.js";
-import { SerpAPI, ChainTool, GoogleCustomSearch } from "langchain/tools";
-import dotenv from 'dotenv'
-import { redisClient } from "../redis.js";
-import { AIChatMessage } from "langchain/schema";
-import { getInputValue } from "langchain/memory";
 
-import { OpenAI } from "langchain/llms/openai";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { GoogleCustomSearch } from "langchain/tools";
 import { PromptTemplate } from "langchain/prompts";
-import { LLMChain } from "langchain/chains";
-import { ROUTER_PROMPT } from './router.prompts.js';
+import { ROUTER_PROMPT } from './router.prompt.js';
 import { Debug } from '../logger.js'
-import { ChatAgent } from "../tools/chat.tool.js";
-import { establishMemory } from '../memory/memory.js'
 import { FunctionTool } from "../tools/function.tool.js";
 import { WebBrowser } from "langchain/tools/webbrowser";
-import { GoogleCustomSearch } from "langchain/tools";
-
+import {
+  LLMSingleActionAgent,
+  AgentActionOutputParser,
+  AgentExecutor,
+} from "langchain/agents";
+import { LLMChain } from "langchain/chains";
+import { OpenAI } from "langchain/llms/openai";
+import {
+  BaseStringPromptTemplate,
+  renderTemplate,
+} from "langchain/prompts";
+import { Calculator } from "langchain/tools/calculator";
+import * as dotenv from 'dotenv'
+import { BufferMemory } from "langchain/memory";
+import { establishMemory } from "../memory/memory.js";
+import { HumanTool, ChatTool } from "../tools/human.tool.js";
+dotenv.config()
 const debug = Debug(import.meta.url)
 
 
@@ -41,305 +39,167 @@ const debug = Debug(import.meta.url)
  */
 const routerModel = new OpenAI({ temperature: 0 });
 const routerPrompt = PromptTemplate.fromTemplate(ROUTER_PROMPT);
-// const routerChain = new LLMChain({ llm: routerModel, prompt: routerPrompt });
+const routerChain = new LLMChain({ llm: routerModel, prompt: routerPrompt });
 const routerTools = [
-    // new HumanInputRun({
-    //     chat
-    // }),
-    new Calculator(),
-    new GoogleCustomSearch({
-        apiKey:process.env.GOOGLE_SEARCH_API_KEY,
-        googleCSEId:process.env.GOOGLE_SEARCH_API_ID
-    }),
-    new InvestigationTool(),
-    new FunctionTool(),
-    new WebBrowser({ 
-        description: `useful for when you need to find something on or summarize a webpage when the user has provided a full link. input should be a comma separated list of "ONE valid http URL including protocol","what you want to find on the page or empty string for a summary".`,
-        model: new OpenAI(),
-        embeddings: new OpenAIEmbeddings()
-    })
+  new HumanTool({
+      model: routerModel
+  }),
+  new ChatTool({
+      model: routerModel
+  }),
+  new Calculator(),
+  new GoogleCustomSearch({
+    apiKey: process.env.GOOGLE_SEARCH_API_KEY,
+    googleCSEId: process.env.GOOGLE_SEARCH_API_ID
+  }),
+  // new InvestigationTool(),
+  new FunctionTool(),
+  new WebBrowser({
+    // @ts-ignore
+    description: `useful for when you need to find something on or summarize a webpage.  ONLY use when user input contains a full url or link. If there is no link, use the human tool to ask for one. input should be a comma separated list of "ONE valid http URL including protocol","what you want to find on the page or empty string for a summary".`,
+    model: new OpenAI(),
+    embeddings: new OpenAIEmbeddings()
+  })
 ];
-    
-
-
-/**
- * FlowPicker
- * This allows the clientside to direct the exact chain to use
- * chains are selected by passing in a FlowKey
- * If no key is provided it uses the flowFinder chain to select a tool or respond directly.
- * @param {string} input 
- * @param {Metadata} metadata
- * @returns {Promise<ServerResponse>}
- */
-export const router = async (input, {clientMemory, memId, flowKey}) =>{
-
-    if(!Array.isArray(clientMemory)) throw new Error('Client Memory must remain an array');
-
-
-    let chat_history = clientMemory.map(m=>m.text).join(" \n ")
-
-    // The result is an object with a `text` property.
-    const routerKey = !!input ? await routerChain.call({ input, chat_history }).then(result=>result?.text.trim().toLowerCase() || null) : null
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 // /**
-//  * flowFinder 
-//  * takes a generic input and attempts to find the appropriate tool or flow to start
+//  * FlowPicker
+//  * This allows the clientside to direct the exact chain to use
+//  * chains are selected by passing in a FlowKey
+//  * If no key is provided it uses the flowFinder chain to select a tool or respond directly.
 //  * @param {string} input 
 //  * @param {Metadata} metadata
 //  * @returns {Promise<ServerResponse>}
 //  */
-// export const flowFinder = async (input, {serverMemory, memId}) =>{
-//     debug("in the flowFinder function")
-//     const model = new ChatOpenAI({
-//         temperature: 0.1,
-//         openAIApiKey: process.env.OPENAI_API_KEY,
-//     })
-
-//     // looks up the memory from Redis
-//     // const memory = new BufferMemory({
-//     //     chatHistory: new RedisChatMessageHistory({
-//     //       sessionId: memId,
-//     //       sessionTTL: 300,
-//     //     }),
-//     // });
-//     //     ) new BufferMemory({
-//     //     chatHistory: new ChatMessageHistory(clientMemory),
-//     //     memoryKey:'chat_history',
-//     //     returnMessages: true,
-//     // })
-
-//     const tools = [
-//         // new HumanInputRun({
-//         //     chat
-//         // }),
-//         new SerpAPI(process.env.SERPAPI_API_KEY, {
-//             location: "Austin,Texas,United States",
-//             hl: "en",
-//             gl: "us",
-//         }),
-//         // new Calculator(),
-//         // new ChainTool({
-//         //     name: "GeoEngineering",
-//         //     description:
-//         //         "State of the Union QA - useful for when you need to ask questions about the most recent state of the union address.",
-//         //     chain: chain,
-//         // }),
-//         // new ChainTool({
-//         //     name: "GeoEngineering",
-//         //     description:
-//         //         "State of the Union QA - useful for when you need to ask questions about the most recent state of the union address.",
-//         //     chain: chain,
-//         // }),
-//         // new InvestigationPrompt(),
-//         new WebBrowser({ model, 
-//             embeddings: new OpenAIEmbeddings()
-//          })
-//     ];
+// export const routerAgent = async (input, {clientMemory, memId, flowKey}) =>{
 
 //     const executor = await initializeAgentExecutorWithOptions(tools, model, {
-//         agentType: "chat-conversational-react-description",
-//         memory: serverMemory,
-//         // verbose: true,
-//       });
+//         agentType: "zero-shot-react-description",
+//         verbose: true,
+//     });
 
-//     // const chain = new ConversationChain({llm:model, memory, outputKey:"MYOUTPUT"})
-
-//     let { output }  = await executor.call({input})
-
-//     if (Array.isArray(output)){
-//         return [output[0], { serverMemory, ...output[1]} ]
-//     }else{
-//         return [output, { serverMemory }]
-//     }
-
-
+//     return routerChain.call({ input, 
+//         chat_history
+//      })
 // }
 
 
 
-
-// const loadDB = async () => {
-
-//     let html = db.observations[0].content
-
-//     const $ = cheerio.load(html)
-//     const text = $('*').text();
-//     const splitter = new RecursiveCharacterTextSplitter({
-//         chunkSize: 1000
-//     })
-//     const metadata = { };
-//     const docs = await splitter.createDocuments([text], metadata);
-
-//     const embeddings = new OpenAIEmbeddings()
-
-//     /* Create the vectorstore */
-//     return RedisVectorStore.fromDocuments(
-//         docs,
-//         embeddings,
-//         {
-//             redisClient: client,
-//             indexName: "docs",
-//         }
-//     )
-
-//     const agent = ConversationalAgent.fromLLMAndTools(
-//         chat,
-//         tools
-//     );
-
-//     // This sets up the Agent executor to run the agent.  
-//     const executor = AgentExecutor.fromAgentAndTools({
-//         agent, 
-//         tools,
-//         memory: new BufferMemory({
-//             returnMessages: true,
-//             memoryKey: "chat_history",
-//             inputKey: "input",
-//         }),
-//         verbose:true
-//     })
-// }
+class CustomPromptTemplate extends BaseStringPromptTemplate {
 
 
-export const run = async () => {
-    process.env.LANGCHAIN_HANDLER = "langchain";
+  constructor(args) {
+    super({ inputVariables: args.inputVariables });
+    this.tools = args.tools;
+  }
 
-    const chat = new ChatOpenAI({})
-    const model = new ChatOpenAI({ temperature: 0 });
+  _getPromptType() {
+    throw new Error("Not implemented");
+  }
 
-    const vectorStore = await loadDB()
+  async format(values) {
 
-    /* Create the chain */
-    const chain = VectorDBQAChain.fromLLM(model, vectorStore);
+    let [input, metadata] = values.input;
+    let recent_chat_messages = values?.chat_history || [];
+    /** Construct the final template */
+    const tools = this.tools
+      .map((tool) => `${tool.name}: ${tool.description}`)
+      .join("\n");
+    const tool_names = this.tools.map((tool) => tool.name).join(", ");
 
-    const tools = [
-        new HumanInputRun({
-            chat
-        }),
-        new SerpAPI(process.env.SERPAPI_API_KEY, {
-            location: "Austin,Texas,United States",
-            hl: "en",
-            gl: "us",
-        }),
-        new Calculator(),
-        new ChainTool({
-            name: "GeoEngineering",
-            description:
-                "State of the Union QA - useful for when you need to ask questions about the most recent state of the union address.",
-            chain: chain,
-        }),
-        new ChainTool({
-            name: "GeoEngineering",
-            description:
-                "State of the Union QA - useful for when you need to ask questions about the most recent state of the union address.",
-            chain: chain,
-        }),
-        InvestigationTool,
-        new WebBrowser({ model, 
-            embeddings: new OpenAIEmbeddings(),
-            description: `useful for when you need to find something on or summarize a webpage. input should be a comma separated list of "ONE valid http URL including protocol","what you want to find on the page or empty string for a summary".`
-         })
-    ];
+    // INVESTIGATION: GeoEngineering
+    // SCOPE: internal
 
-    /* This gives the agent a name and purpose. */
-    // const prompt = StructuredChatAgent.createPrompt(tools, {
-    //     prefix: `Your name is MADI and you are an AI working for NASA.  Answer the following questions as best you can. You have access to the following tools:`,
-    //     suffix: `Begin! Reminder to always use the exact characters \`Final Answer\` when responding.`,
-    // });
-
-    // This creates the core Chain with the new prompts
-    // const llmChain = new LLMChain({
-    //     // prompt: ChatPromptTemplate.fromPromptMessages([
-    //     //     // new SystemMessagePromptTemplate(prompt)
-    //     // ]),
-    //     prompt,
-    //     llm: new ChatOpenAI({})
-    // });
-
-    // This sets up the Agent and tells it what tools it can use.
-    const agent = ChatConversationalAgent.fromLLMAndTools(
-        chat,
-        tools
+    const promptUnfilled = PromptTemplate.fromTemplate(ROUTER_PROMPT);
+    const intermediateSteps = values.intermediate_steps;
+    const agent_scratchpad = intermediateSteps.reduce(
+      (thoughts, { action, observation }) =>
+        thoughts +
+        [action.log, `\nObservation: ${observation}`, "Thought:"].join("\n"),
+      ""
     );
-
-    // This sets up the Agent executor to run the agent.  
-    const executor = AgentExecutor.fromAgentAndTools({
-        agent, 
-        tools,
-        memory: new BufferMemory({
-            returnMessages: true,
-            memoryKey: "chat_history",
-            inputKey: "input",
-        }),
-        verbose:true
+    recent_chat_messages=values?.chat_history.map(m=>{
+      let type = m._getType();
+      let text = m.text || "";
+      return type+": "+text
+    }).join("\n")
+    let recent_chat_summary='';
+    let context = Object.keys(metadata.context).map(k=>k.toUpperCase()+": "+metadata?.context[k]||"").join("\n");
+    const prompt = await promptUnfilled.format({
+      input,
+      tools,
+      tool_names,
+      recent_chat_summary,
+      recent_chat_messages,
+      context,
+      agent_scratchpad
     })
+    return prompt;
+  }
 
-    // const executor = await initializeAgentExecutorWithOptions(tools, model, {
-    //     agentType: "chat-conversational-react-description",
-    //     verbose: true,
-    // });
-    console.log("Loaded agent.");
+  partial(_values) {
+    throw new Error("Not implemented");
+  }
 
-    let metadata = {
-        investigation: null
-    }
-    const input0 = "I want to set metadata";
-    const result0 = await executor.call({ input: input0, metadata});
-
-
-    // const responseA = await chat.call([
-    //     new AIChatMessage(
-    //       "What investigation are you working on? Please enter:"+
-    //       "\nA. GeoEngineering"+
-    //       "\nB. Health & Wellness"+
-    //       "\ZC. Zero-Impact Aviation"
-    //     ),
-    // ]);
-
-    // const input0 = "A";
-
-
-    // const result0 = await executor.call({ input: input0 });
-  
-    console.log(`${result0.output}`);
-  
-
-
-
+  serialize() {
+    throw new Error("Not implemented");
+  }
 }
 
+class CustomOutputParser extends AgentActionOutputParser {
+  async parse(text) {
+    if (text.includes("Final Answer:")) {
+      const parts = text.split("Final Answer:");
+      const input = parts[parts.length - 1].trim();
+      const finalAnswers = { output: input };
+      return { log: text, returnValues: finalAnswers };
+    }
 
+    const match = /Action:(.*)\nAction Input:(.*)/s.exec(text);
+    if (!match) {
+      throw new Error(`Could not parse LLM output: ${text}`);
+    }
+
+    return {
+      tool: match[1].trim(),
+      toolInput: match[2].trim().replace(/^"+|"+$/g, ""),
+      log: text,
+    };
+  }
+
+  getFormatInstructions() {
+    throw new Error("Not implemented");
+  }
+}
+
+export const router = async (input, metadata) => {
+  const model = new OpenAI({ temperature: 0 });
+  const tools = routerTools
+
+  const llmChain = new LLMChain({
+    prompt: new CustomPromptTemplate({
+      tools,
+      inputVariables: ["input", "agent_scratchpad", "chat_history","context"],
+    }),
+    llm: model,
+  });
+
+  const agent = new LLMSingleActionAgent({
+    llmChain,
+    outputParser: new CustomOutputParser(),
+    stop: ["\nObservation"],
+  });
+  const executor = new AgentExecutor({
+    agent,
+    tools,
+    memory: establishMemory(metadata.clientMemory),
+    verbose:true
+  });
+
+
+  const {output} = await executor.call({ input });
+  return [output, metadata]
+};
 
