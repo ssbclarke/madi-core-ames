@@ -1,130 +1,92 @@
 import * as dotenv from 'dotenv'
-dotenv.config()
 import crypto from 'node:crypto'
-import { sendToBackend, mergeMessageHistory, displayAIResponse, clearTerminal } from './ui/console.ui.js'
-let memId = crypto.randomBytes(5).toString('hex');
+import { sendToBackend, displayAIResponse, clearTerminal } from './ui/console.ui.js'
 import { Debug } from './logger.js'
-const debug = Debug(import.meta.url)
 import { redisClient } from './redis.js'
+import { setupRecorder } from "nock-record";
 
 /**
  * @typedef {import("./types.js").Metadata} Metadata 
  * @typedef {import("./types.js").ServerResponse} ServerResponse
  */
 
+
+
+
+// // Common Initializations
+dotenv.config()
+const debug = Debug(import.meta.url)
+
+
+
+// Boot functions
 clearTerminal(); //clears terminal history so that run is clean.
 await redisClient.connect() // connect but don't wait around
+
+
+
 
 
 /**
  * Initialization of client side state
  */
+let memId = crypto.randomBytes(5).toString('hex');
 let clientMemory = [];
 let flowKey = "hello";
 let context = {};
 let metadata = {
     clientMemory,
     flowKey,
-    context
+    context,
+    memId
 }
-let input = await displayAIResponse("Hello! I'm Madi. How can I help you?", metadata)
 
-while (true){
-    let [response, newMetadata] = await sendToBackend(input, metadata)
+let message = await displayAIResponse("Hello! I'm Madi. How can I help you?", metadata)
+
+let i = 0
+let maxIterations = 10
+let enableRecording = true
+let enablePreBuild = true
+let inputs = [
+    "I want to select an investigation",
+    "I'm James. How are you today?",
+    "What can you do?",
+    "I want to add an article to my data.",
+    "https://www.nytimes.com/2023/05/29/business/debt-ceiling-agreement.html",
+    "Can you summarize the article I just gave you?"
+]
+
+
+while (i<maxIterations){
+    let finishRecording
+    if(enableRecording){
+        const record = setupRecorder({mode:"record"});
+        const { completeRecording } = await record(`${i}`.padStart(2,"0")+`_${inputs[i]}`.replace(/[^a-z0-9]/gi, '_').toLowerCase());
+        finishRecording = completeRecording
+        
+    }
+    if(enablePreBuild){
+        message = inputs[i] || message;
+    }
+
+    let [response, newMetadata] = await sendToBackend(message, metadata)
+
     /* should only pass the following and forget the rest
     {
         context: {}
         flowKey: "key"
         clientMemory: []
+        memId: ####
     }
     */
-    metadata = {
-        context:newMetadata.context,
-        flowKey:newMetadata.nextFlowKey,
-        clientMemory: newMetadata.clientMemory
+    message = await displayAIResponse(response, newMetadata)
+    
+    if(enableRecording){
+        finishRecording()
     }
-    input = await displayAIResponse(response, metadata)
+    i++;
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// while (unresolved) {
-//     let answer
-//     let output
-//     if(input){
-//         addMessageToHistory(input, 'human')
-//         let {response, serverMemory, inquiryType, choices} = await runChain(input, clientMemory, memId)
-//         clientMemory = [...serverMemory?.chatHistory?.messages]
-//         output = response?.output
-//     }
-//     switch(inquiryType){
-//         case "much":
-//             message = response.output
-//             answer = await inquirer.prompt([{name:'answer', type:'list', message, choices}])
-//             break;
-//         case "close":
-//             unresolved = false;
-//             break;
-//         case "open":
-//         default:
-//             answer = await inquirer.prompt([{name:'answer', message: (output ? output + "\n\nHow else can I help?\n\n": "How can I help?\n")}]);
-//             break;
-//     }
-//     input = answer?.answer || null;
-// }
-
-// const answerQuestion = async (question) => {
-//     // construct the prompt, with our question and the tools that the chain can use
-//     let prompt = promptTemplate.replace("${question}", question).replace(
-//       "${tools}",
-//       Object.keys(tools)
-//         .map((toolname) => `${toolname}: ${tools[toolname].description}`)
-//         .join("\n")
-//     );
-
-
-//     // allow the LLM to iterate until it finds a final answer
-//     while (true) {
-//       const response = await completePrompt(prompt);
-//       // add this to the prompt
-//       prompt += response;
-//       const action = response.match(/Action: (.*)/)?.[1];
-//       if (action) {
-//         // execute the action specified by the LLMs
-//         const actionInput = response.match(/Action Input: "?(.*)"?/)?.[1];
-//         const result = await tools[action.trim()].execute(actionInput);
-//         prompt += `Observation: ${result}\n`;
-//       } else {
-//         return response.match(/Final Answer: (.*)/)?.[1];
-//       }
-//     }
-// };
-
-// main loop - answer the user's questions
-
-// await redisClient.disconnect();
+// NEXT STEP IS TO MODIFY THE formatPrompt See chain/llm_chain.js
+// const promptValue = await this.prompt.formatPromptValue(valuesForPrompt);

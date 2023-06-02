@@ -1,0 +1,174 @@
+[
+    {
+        "scope": "https://api.openai.com:443",
+        "method": "POST",
+        "path": "/v1/completions",
+        "body": {
+            "model": "text-davinci-003",
+            "temperature": 0,
+            "max_tokens": 256,
+            "top_p": 1,
+            "frequency_penalty": 0,
+            "presence_penalty": 0,
+            "n": 1,
+            "best_of": 1,
+            "stream": false,
+            "prompt": [
+                "Given the user input below, extract the relevant url.  If there is no url return NO_URL_FOUND.\n\n-----------------\nI want to add this article to my data set https://www.reuters.com/markets/us/us-debt-ceiling-deal-face-its-first-test-congress-2023-05-30/\n"
+            ]
+        },
+        "status": 200,
+        "response": {
+            "id": "cmpl-7MKKUUckAQBH3ZvraR3B93GucLafX",
+            "object": "text_completion",
+            "created": 1685555718,
+            "model": "text-davinci-003",
+            "choices": [
+                {
+                    "text": "\nhttps://www.reuters.com/markets/us/us-debt-ceiling-deal-face-its-first-test-congress-2023-05-30/",
+                    "index": 0,
+                    "logprobs": null,
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 82,
+                "completion_tokens": 42,
+                "total_tokens": 124
+            }
+        },
+        "rawHeaders": [
+            "Date",
+            "Wed, 31 May 2023 17:55:21 GMT",
+            "Content-Type",
+            "application/json",
+            "Content-Length",
+            "361",
+            "Connection",
+            "close",
+            "access-control-allow-origin",
+            "*",
+            "Cache-Control",
+            "no-cache, must-revalidate",
+            "openai-model",
+            "text-davinci-003",
+            "openai-organization",
+            "nasa-379",
+            "openai-processing-ms",
+            "4004",
+            "openai-version",
+            "2020-10-01",
+            "strict-transport-security",
+            "max-age=15724800; includeSubDomains",
+            "x-ratelimit-limit-requests",
+            "3000",
+            "x-ratelimit-limit-tokens",
+            "250000",
+            "x-ratelimit-remaining-requests",
+            "2999",
+            "x-ratelimit-remaining-tokens",
+            "249487",
+            "x-ratelimit-reset-requests",
+            "20ms",
+            "x-ratelimit-reset-tokens",
+            "122ms",
+            "x-request-id",
+            "c48422ae30b0684a73bf409ae3d09caa",
+            "CF-Cache-Status",
+            "DYNAMIC",
+            "Server",
+            "cloudflare",
+            "CF-RAY",
+            "7d011643ceac29a9-ORD",
+            "alt-svc",
+            "h3=\":443\"; ma=86400"
+        ],
+        "responseIsBinary": false
+    },
+    {
+        "scope": "https://api.openai.com:443",
+        "method": "POST",
+        "path": "/v1/completions",
+        "body": {
+            "model": "text-davinci-003",
+            "temperature": 0,
+            "max_tokens": 256,
+            "top_p": 1,
+            "frequency_penalty": 0,
+            "presence_penalty": 0,
+            "n": 1,
+            "best_of": 1,
+            "stream": false,
+            "prompt": [
+                "You are an assistant and a large language model named Madi.  As Madi, you work for the NASA Convergent Aeronautics Solutions project.  \n\nYou are designed to be able to assist with a wide range of tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics.  Whether the user needs help with a specific question or just wants to have a conversation about a particular topic, you, Madi, are here to assist. However, above all else, all responses must adhere to the format of RESPONSE FORMAT INSTRUCTIONS.  \n\nYou must analyze the following text under SOURCE and respond to the user acccording to the RESPONSE FORMAT INSTRUCTIONS.  Do not make up information.  All information must be derived from the source, whether the source is wrong or not. \n\nRESPONSE FORMAT INSTRUCTIONS\n----------------------------\nUse the following format in your response:\n\nSummary: a 3-5 sentence summary of the source\nTitle: a 3-7 word title or headline that is specific about what is described in the source.\nQuote: A key line from the source that best reinforces the takeaway. This can be an attributed quote in the source or a section of the source itself. If it is a quote, it must be attributed correctly.\nProblem: the problem identified in the source.  If there is no problem, this can be blank.\nSolution: the solution to the problem proposed in the source.  If there is no problem or no solution, this can be blank.\nImage: a link to the key image in the source.  If there is no image, assistant should NOT create a link.\n\nSOURCE\n----------------------------\n<div><p>WASHINGTON, May 30 (Reuters) - Legislation brokered by President Joe Biden and House Speaker Kevin McCarthy to lift the $31.4 trillion U.S. debt ceiling and achieve new federal spending cuts passed an important hurdle late on Tuesday, advancing to the full House of Representatives for debate and an expected vote on passage on Wednesday.</p><p>The House Rules Committee voted 7-6 to approve the rules allowing debate by the full chamber. Two committee Republicans, Representatives Chip Roy and Ralph Norman, bucked their leadership by opposing the bill.</p><p>That vote underscored the need for Democrats to help pass the measure in the House, which is controlled by Republicans with a narrow 222-213 majority.</p><p>House passage would send the bill to the Senate. The measure needs congressional approval before June 5, when the Treasury Department could run out of funds to pay its debts for the first time in U.S. history.</p><p>If the Treasury Department cannot cover make all its payments, or if it was forced to prioritize payments, that could trigger economic chaos in the U.S. and global economies.</p><p>Biden and McCarthy have predicted they will get enough votes to pass the 99-page bill into law before the June 5 deadline.</p><p>The non-partisan budget scorekeeper for Congress on Tuesday said the legislation would reduce spending from its current projections by $1.5 trillion over 10 years beginning in 2024.</p><p>The Congressional Budget Office also said the measure, if enacted into law, would reduce interest on the public debt by $188 billion.</p><p>McCarthy called the bill the \"most conservative deal we've ever had.\"</p><p>Nevertheless, some of the House's most conservative Republicans who sought far deeper spending reductions were not persuaded and it was unclear how many Democrats McCarthy will need to win Wednesday's anticipated vote on passage.</p><p>All four Democrats on the Rules Committee voted against the bill, as they typically do on Republican-backed legislation. It was unclear whether that might influence other Democrats to do the same on Wednesday, even as Democratic Leader Hakeem Jeffries said his party would provide the support McCarthy needs.</p><p>Many Democrats in Congress did not want Biden to engage in budget-cutting negotiations with Republicans until they lifted their hold on enacting a debt limit bill.</p><h2>SENATE BATTLE AHEAD</h2><figure><figcaption>President Joe Biden shakes hands with House Speaker Kevin McCarthy of Calif., after the State of the Union address to a joint session of Congress at the Capitol, Tuesday, Feb. 7, 2023, in Washington.   Jacquelyn Martin/Pool via REUTERS/File Photo</figcaption></figure><p>White House Budget Director Shalanda Young, who was one of Biden's lead negotiators, urged Congress to pass the bill.</p><p>\"I want to be clear: This agreement represents a compromise, which means no one gets everything that they want and hard choices had to be made,\" Young told a news conference.</p><p>A Senate vote could possibly stretch into the weekend if lawmakers in that chamber try to slow its passage.</p><p>At least one senator, Republican Mike Lee, has said he may try to do so, and other Republicans have also expressed discomfort with some aspects of the deal.</p><p>The bill would suspend the U.S. debt limit through Jan. 1, 2025, allowing Biden and lawmakers to set aside the politically risky issue until after the November 2024 presidential election.</p><p>It would also cap some government spending over the next two years, speed up the permitting process for some energy projects, claw back unused COVID-19 funds, and introduce work requirements for food aid programs for some poor Americans.</p><p>In another win for Republicans, it would shift some funding away from the Internal Revenue Service, although the White House <a target=\"_blank\" href=\"https://www.reuters.com/markets/us/irs-funding-cut-wont-hurt-near-term-tax-collection-officials-say-2023-05-28/\">says</a> that should not undercut tax enforcement.</p><p>Biden can point to gains as well. The deal leaves his signature infrastructure and green-energy laws largely intact, and the spending cuts and work requirements are far less than Republicans had sought.</p><p>Republicans have argued that steep spending cuts are necessary to curb the growth of the national debt, which at $31.4 trillion is roughly equal to the annual output of the economy.</p><p>Interest payments on that debt are projected to eat up a growing share of the budget as an aging population pushes up health and retirement costs, according to government forecasts. The deal would not do anything to rein in those fast-growing programs.</p><p>Most of the savings would come by capping spending on domestic programs like housing, education, scientific research and other forms of <a target=\"_blank\" href=\"https://www.reuters.com/markets/us/us-debt-ceiling-focus-discretionary-spending-means-cuts-ahead-2023-05-24/\">\"discretionary\"</a> spending. Military spending would be allowed to increase over the next two years.</p><p>The debt-ceiling standoff prompted ratings agencies to warn that they <a target=\"_blank\" href=\"https://www.reuters.com/markets/us/fitch-puts-us-negative-credit-watch-2023-05-24/\">might downgrade</a> U.S. debt, which underpins the global financial system.</p><p>Markets have reacted <a target=\"_blank\" href=\"https://www.reuters.com/markets/us/debt-deal-could-boost-unloved-corners-us-stock-market-though-risks-loom-2023-05-28/\">positively</a> to the agreement so far.</p><p><span>Reporting by Moira Warburton, David Morgan, Richard Cowan, Steve Holland and Gram Slattery in Washington; Editing by Scott Malone, Mark Porter, Matthew Lewis, Gerry Doyle and Himani Sarkar</span></p><p>Our Standards: <a href=\"https://www.thomsonreuters.com/en/about-us/trust-principles.html\" target=\"_blank\">The Thomson Reuters Trust Principles.</a></p></div>\n\n----------------------------\nSummary:"
+            ]
+        },
+        "status": 200,
+        "response": {
+            "id": "cmpl-7MKMAmjobmBdtaO7b3WKqKv7nJXQV",
+            "object": "text_completion",
+            "created": 1685555822,
+            "model": "text-davinci-003",
+            "choices": [
+                {
+                    "text": " The House Rules Committee voted 7-6 to approve the rules allowing debate by the full chamber on a bill brokered by President Joe Biden and House Speaker Kevin McCarthy to lift the $31.4 trillion U.S. debt ceiling and achieve new federal spending cuts. The bill needs congressional approval before June 5, when the Treasury Department could run out of funds to pay its debts. The Congressional Budget Office said the legislation would reduce spending from its current projections by $1.5 trillion over 10 years.\nTitle: Debt Ceiling Bill Advances\nQuote: “The House Rules Committee voted 7-6 to approve the rules allowing debate by the full chamber.”\nProblem: The U.S. Treasury Department could run out of funds to pay its debts on June 5.\nSolution: The legislation would reduce spending from its current projections by $1.5 trillion over 10 years.\nImage: https://www.reuters.com/assets/pool/pool/2023/02/07/President-Joe-Biden-shakes-hands-with-House-Speaker-Kevin-McCarthy-of-Calif-after-the-State-of-the-Union-address-to-a-joint-session",
+                    "index": 0,
+                    "logprobs": null,
+                    "finish_reason": "length"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 1757,
+                "completion_tokens": 256,
+                "total_tokens": 2013
+            }
+        },
+        "rawHeaders": [
+            "Date",
+            "Wed, 31 May 2023 17:57:25 GMT",
+            "Content-Type",
+            "application/json",
+            "Transfer-Encoding",
+            "chunked",
+            "Connection",
+            "close",
+            "access-control-allow-origin",
+            "*",
+            "Cache-Control",
+            "no-cache, must-revalidate",
+            "openai-model",
+            "text-davinci-003",
+            "openai-organization",
+            "nasa-379",
+            "openai-processing-ms",
+            "23481",
+            "openai-version",
+            "2020-10-01",
+            "strict-transport-security",
+            "max-age=15724800; includeSubDomains",
+            "x-ratelimit-limit-requests",
+            "3000",
+            "x-ratelimit-limit-tokens",
+            "250000",
+            "x-ratelimit-remaining-requests",
+            "2999",
+            "x-ratelimit-remaining-tokens",
+            "249488",
+            "x-ratelimit-reset-requests",
+            "20ms",
+            "x-ratelimit-reset-tokens",
+            "122ms",
+            "x-request-id",
+            "6f9753c7e0d92f686b9b77edaca20242",
+            "CF-Cache-Status",
+            "DYNAMIC",
+            "Server",
+            "cloudflare",
+            "CF-RAY",
+            "7d0118d06ae0115a-ORD",
+            "alt-svc",
+            "h3=\":443\"; ma=86400"
+        ],
+        "responseIsBinary": false
+    }
+]

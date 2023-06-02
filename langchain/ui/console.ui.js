@@ -1,15 +1,14 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 import inquirer from 'inquirer';
-import { HumanChatMessage, AIChatMessage, SystemChatMessage } from "langchain/schema";
-import { router } from '../agents/router.agent.js'
+import { router } from '../agents/router.js'
 import chalk from 'chalk';
 import { Debug } from '../logger.js'
 const debug = Debug(import.meta.url)
 
 /**
- * @typedef {import("./types.js").Metadata} Metadata 
- * @typedef {import("./types.js").ServerResponse} ServerResponse
+ * @typedef {import("../types.js").Metadata} Metadata 
+ * @typedef {import("../types.js").ServerResponse} ServerResponse
  */
 
 let aiColor     = (msg)=>chalk.cyan(msg)
@@ -32,7 +31,7 @@ const wordWrap = (str, max, br = '\n  ') => str.replace(
  * 
  * @param {string} message 
  * @param {Metadata} metadata
- * @returns {string}
+ * @returns {Promise<string>}
  */
 export const displayAIResponse = async (message, metadata)=>{
     let {responseType, choices=[],context={}} = metadata
@@ -56,42 +55,42 @@ export const displayAIResponse = async (message, metadata)=>{
             userResponse = await inquirer.prompt([{...promptOpts, message:aiColor(wrapMessage(message))}])
             break;
     }
-    return [userResponse?.answer, metadata]
+    return Promise.resolve(userResponse?.answer)
 } 
 
 
 /**
  * Sends the relevant information from the client to the backend to the initial flow function
- * @param {string} input -
+ * @param {string} message -
  * @param {Metadata} metadata - the metadata passed between client and server
  * @return {Promise} response -
  */
-export const sendToBackend = async (input, {clientMemory, memId, flowKey, context})=>{  
+export const sendToBackend = async (message, {clientMemory, memId, flowKey, context})=>{  
     debug({memId, flowKey})
-    return router(input, {clientMemory, memId, flowKey, context})
+    return router(message, {clientMemory, memId, flowKey, context})
 }
 
 
 /**
- * Client Side Memory Mgmt
+ * Client Side Memory Mgmtå
  */
-export const addMessageToHistory = (message, clientMemory, user="human")=>{
-    let added
-    switch(user){
-        case 'ai':
-            added = new AIChatMessage(message)
-            break;
-        case 'system':
-            added = new SystemChatMessage(message)
-            break;
-        case 'human':
-        default:
-            added = new HumanChatMessage(message)
-    }
-    clientMemory.push(added);
-}
-export const mergeMessageHistory = (clientMemory, serverMemory)=>{
+// export const addMessageToHistory = (message, clientMemory, user="human")=>{
+//     let added
+//     switch(user){
+//         case 'ai':
+//             added = new AIChatMessage(message)
+//             break;
+//         case 'system':
+//             added = new SystemChatMessage(message)
+//             break;
+//         case 'human':
+//         default:
+//             added = new HumanChatMessage(message)
+//     }
+//     clientMemory.push(added);
+// }
+// export const mergeMessageHistory = (clientMemory, serverMemory)=>{
     
-    return clientMemory
-}
+//     return clientMemory
+// }
 

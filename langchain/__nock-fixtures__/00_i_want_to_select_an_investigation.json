@@ -1,0 +1,177 @@
+[
+    {
+        "scope": "https://api.openai.com:443",
+        "method": "POST",
+        "path": "/v1/completions",
+        "body": {
+            "model": "text-davinci-003",
+            "temperature": 0,
+            "max_tokens": 256,
+            "top_p": 1,
+            "frequency_penalty": 0,
+            "presence_penalty": 0,
+            "n": 1,
+            "best_of": 1,
+            "stop": [
+                "\nObservation"
+            ],
+            "stream": false,
+            "prompt": [
+                "You are an assistant and a large language model named Madi.  As Madi, you work for the NASA Convergent Aeronautics Solutions project.  \n\nYou are designed to be able to assist with a wide range of tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics.  Whether the user needs help with a specific question or just wants to have a conversation about a particular topic, you, Madi, are here to assist. However, above all else, all responses must adhere to the format of RESPONSE FORMAT INSTRUCTIONS.\n\nTOOLS\n------\nMadi can ask the user to use tools to look up information that may be helpful in answering the users original question. The tools the human can use are:\n\nclarify: useful for asking the user for more information to input into a tool, answer their question, or clarify their request. The final answer should be a question for the human.\nchat: useful when responding simply to conversational prompts. Input should never be blank. Input should be appropriate response to user's Question.\ninvestigation: useful for allowing the user to select, specify, or clarify an investigation topic. If the user mentions changing or picking an investigation, this is the right tool.  This will help the user pick and investigation from a list passed in later from memory.\nanalysis: useful for analyzing, summarizing, finding problems, solutions, quotes, and key images from a user-provided source.\n\nThe assistant must not describe or name the tools.\n\nRESPONSE FORMAT INSTRUCTIONS\n----------------------------\nUse the following format in your response:\n  \nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [clarify, chat, investigation, analysis]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\n\n\n\nSUMMARY OF CONVERSATION HISTORY\n--------------------\n\n\nRECENT CONVERSATION\n--------------------\n\n\nCONTEXT\n--------------------\n\n\nBegin! When required, use the information above from the RECENT CONVERSATION and CONTEXT to formulate an appropriate response.\n\nQuestion: I want to select an investigation\nThought:"
+            ]
+        },
+        "status": 200,
+        "response": {
+            "id": "cmpl-7MhjvuxxO9U5WtgoY8IOADO1ASMRE",
+            "object": "text_completion",
+            "created": 1685645707,
+            "model": "text-davinci-003",
+            "choices": [
+                {
+                    "text": " I need to help the user pick an investigation from a list\nAction: investigation\nAction Input: ",
+                    "index": 0,
+                    "logprobs": null,
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 523,
+                "completion_tokens": 21,
+                "total_tokens": 544
+            }
+        },
+        "rawHeaders": [
+            "Date",
+            "Thu, 01 Jun 2023 18:55:11 GMT",
+            "Content-Type",
+            "application/json",
+            "Content-Length",
+            "361",
+            "Connection",
+            "close",
+            "access-control-allow-origin",
+            "*",
+            "Cache-Control",
+            "no-cache, must-revalidate",
+            "openai-model",
+            "text-davinci-003",
+            "openai-organization",
+            "nasa-379",
+            "openai-processing-ms",
+            "3235",
+            "openai-version",
+            "2020-10-01",
+            "strict-transport-security",
+            "max-age=15724800; includeSubDomains",
+            "x-ratelimit-limit-requests",
+            "3000",
+            "x-ratelimit-limit-tokens",
+            "250000",
+            "x-ratelimit-remaining-requests",
+            "2999",
+            "x-ratelimit-remaining-tokens",
+            "249488",
+            "x-ratelimit-reset-requests",
+            "20ms",
+            "x-ratelimit-reset-tokens",
+            "122ms",
+            "x-request-id",
+            "cbf3f82d64a64af760f80cd9e2a084e2",
+            "CF-Cache-Status",
+            "DYNAMIC",
+            "Server",
+            "cloudflare",
+            "CF-RAY",
+            "7d09ab494ca12c7c-ORD",
+            "alt-svc",
+            "h3=\":443\"; ma=86400"
+        ],
+        "responseIsBinary": false
+    },
+    {
+        "scope": "https://api.openai.com:443",
+        "method": "POST",
+        "path": "/v1/completions",
+        "body": {
+            "model": "text-davinci-003",
+            "temperature": 0,
+            "max_tokens": 150,
+            "top_p": 1,
+            "frequency_penalty": 0,
+            "presence_penalty": 0,
+            "n": 1,
+            "best_of": 1,
+            "stream": false,
+            "prompt": [
+                "You are an AI Assistant named MADI.  You work for NASA. You only offer advice in line with NASA's mission of making the world better through innovation and exploration. You help the user understand the nature of the scientific investigation they are currently working on. You ALWAYS respond according to the RESPONSE FORMAT INSTRUCTIONS.  Here is the description of the current investigation:\n\nNAME: GeoEngineering\nSUMMARY: GeoEngineering is a term used for both carbon dioxide removal and solar radiation management, also called solar geoengineering, when applied at a planetary scale. However, they have very different geophysical characteristics which is why the Intergovernmental Panel on Climate Change no longer uses this overarching term. Carbon dioxide removal approaches are part of climate change mitigation. Solar geoengineering involves reflecting some sunlight (solar radiation) back to space. All forms of geoengineering are not a standalone solution to climate change, but need to be coupled with other forms of climate change mitigation. Another approach to geoengineering is to increase the Earth's thermal emittance through passive radiative cooling.\nCarbon dioxide removal is defined as \"Anthropogenic activities removing carbon dioxide (CO2) from the atmosphere and durably storing it in geological, terrestrial, or ocean reservoirs, or in products. It includes existing and potential anthropogenic enhancement of biological or geochemical CO2 sinks and direct air carbon dioxide capture and storage, but excludes natural CO2 uptake not directly caused by human activities. Some types of climate engineering are highly controversial due to the large uncertainties around effectiveness, side effects and unforeseen consequences. However, the risks of such interventions must be seen in the context of the trajectory of climate change without them.\n\nRESPONSE FORMAT INSTRUCTIONS: Answer any question the user has about the investigation.  If the user wants to change the investigation topic or mentions selecting a new or different topic for investigation you will ignore the user's question and respond with the word \"SELECTION\" and absolutely nothing else.  \n\nHere are several examples:\n\nUSER: What investigation am I working on?\nAI: You are working on the GeoEngineering investigation.\n\nUSER: Tell me about solar radiation management?\nAI: Solar radiation management involves reflecting some sunlight back into space.  \n\nUSER: I want to change my investigation.\nAI: SELECTION\n\nUSER: Can I swap investigations?\nAI: SELECTION\n\nUSER: Can I investigate something else?\nAI: SELECTION\n\nUSER: I want to pick a different investigation topic.\nAI: SELECTION.\n\nUSER: \nAI:"
+            ]
+        },
+        "status": 200,
+        "response": {
+            "id": "cmpl-7Mhk12eYUPLvCN64o9y31Xm9rMBxM",
+            "object": "text_completion",
+            "created": 1685645713,
+            "model": "text-davinci-003",
+            "choices": [
+                {
+                    "text": " SELECTION",
+                    "index": 0,
+                    "logprobs": null,
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 536,
+                "completion_tokens": 2,
+                "total_tokens": 538
+            }
+        },
+        "rawHeaders": [
+            "Date",
+            "Thu, 01 Jun 2023 18:55:15 GMT",
+            "Content-Type",
+            "application/json",
+            "Content-Length",
+            "273",
+            "Connection",
+            "close",
+            "access-control-allow-origin",
+            "*",
+            "Cache-Control",
+            "no-cache, must-revalidate",
+            "openai-model",
+            "text-davinci-003",
+            "openai-organization",
+            "nasa-379",
+            "openai-processing-ms",
+            "1520",
+            "openai-version",
+            "2020-10-01",
+            "strict-transport-security",
+            "max-age=15724800; includeSubDomains",
+            "x-ratelimit-limit-requests",
+            "3000",
+            "x-ratelimit-limit-tokens",
+            "250000",
+            "x-ratelimit-remaining-requests",
+            "2999",
+            "x-ratelimit-remaining-tokens",
+            "249700",
+            "x-ratelimit-reset-requests",
+            "20ms",
+            "x-ratelimit-reset-tokens",
+            "72ms",
+            "x-request-id",
+            "661a1ddc4208dabc2a84eb28619113a2",
+            "CF-Cache-Status",
+            "DYNAMIC",
+            "Server",
+            "cloudflare",
+            "CF-RAY",
+            "7d09ab6fcfc62237-ORD",
+            "alt-svc",
+            "h3=\":443\"; ma=86400"
+        ],
+        "responseIsBinary": false
+    }
+]

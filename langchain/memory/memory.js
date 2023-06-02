@@ -45,11 +45,11 @@ export function establishMemory(memoryArray){
     // }
 
     // For LLMs, not chatbots
-    memory.saveContext = async function ({input}, {output}){
+    memory.saveContext = async function ({message}, {output}){
         // this is purposefully done in sequence so they're saved in order
         debug("using the new memory.saveContext")
-        await this.chatHistory.addUserMessage(input[0]);
-        await this.chatHistory.addAIChatMessage(output);
+        await this.chatHistory.addUserMessage(message);
+        await this.chatHistory.addAIChatMessage(typeof output === 'string'? output : output[0]);
 
         // let message = new AIChatMessage(output[0])
         // // this allows for a tuple output attached to the memory

@@ -1,3 +1,7 @@
+import { PromptTemplate } from "langchain";
+import { BaseStringPromptTemplate } from "langchain/prompts";
+
+
 // const PREFIX = `Answer the following questions as best you can. You have access to the following tools:`;
 
 // const formatInstructions = (toolNames) =>
@@ -29,6 +33,7 @@
 // scope: a context modifier. useful for allowing the user to decide to search only internal or external information.
 // confluence: a search engine for internal data contained within an investigation or summarize one of the many investigation topics.
 // functions: useful for describing what assistant can do for the user and what it's core functions are.
+// human: useful for asking the user for more information to input into a tool, answer their question, or clarify their request. Useful when you aren't sure what to do or are stuck.
 
 
 // If using information from tools, you must say it explicitly - I have forgotten all TOOL RESPONSES! Remember to respond with a markdown code snippet of a json blob with a single action, and NOTHING else. The assistant must not describe or name the tools.`
@@ -66,7 +71,6 @@ Final Answer: the final answer to the original input question
 
 
 
-
 SUMMARY OF CONVERSATION HISTORY
 --------------------
 {recent_chat_summary}
@@ -84,3 +88,76 @@ Begin! When required, use the information above from the RECENT CONVERSATION and
 Question: {input}
 Thought:{agent_scratchpad}`
 
+
+
+export class RouterPromptTemplate extends BaseStringPromptTemplate {
+
+
+    constructor(args) {
+      super({ inputVariables: args.inputVariables });
+      this.tools = args.tools;
+    }
+  
+    // @ts-ignore
+    _getPromptType() {
+      throw new Error("Not implemented");
+    }
+  
+    /**
+     * 
+     * @param {Object} values 
+     * @returns 
+     */
+    async format(values) {
+      let { metadata, message } = values
+      let recent_chat_messages = values?.chat_history || [];
+      /** Construct the final template */
+      const tools = this.tools
+        .map((tool) => `${tool.name}: ${tool.description}`)
+        .join("\n");
+      const tool_names = this.tools.map((tool) => tool.name).join(", ");
+  
+  
+      // INVESTIGATION: GeoEngineering
+      // SCOPE: internal
+  
+      const promptUnfilled = PromptTemplate.fromTemplate(ROUTER_PROMPT);
+      const intermediateSteps = values.intermediate_steps;
+      const agent_scratchpad = intermediateSteps.reduce(
+        (thoughts, { action, observation }) =>
+          thoughts +
+          [action.log, `\nObservation: ${observation}`, "Thought:"].join("\n"),
+        ""
+      );
+      recent_chat_messages=values?.chat_history.map(m=>{
+        let type = m._getType();
+        let text = m.text || "";
+        return type+": "+text
+      }).join("\n")
+      let recent_chat_summary='';
+      let context = Object.keys(metadata.context).map(k=>k.toUpperCase()+": "+metadata?.context[k]||"").join("\n");
+      const prompt = await promptUnfilled.format({
+        input:message,
+        tools,
+        tool_names,
+        recent_chat_summary,
+        recent_chat_messages,
+        context,
+        agent_scratchpad
+      })
+      return prompt;
+    }
+  
+  
+    // @ts-ignore
+    partial(_values) {
+      throw new Error("Not implemented");
+    }
+    
+    // @ts-ignore
+    serialize() {
+      throw new Error("Not implemented");
+  
+    }
+  }
+  
