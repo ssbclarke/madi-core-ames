@@ -17,7 +17,7 @@
     "dotenv": "^16.0.3",
     "html-to-text": "^9.0.5",
     "input-event": "^1.2.6",
-    "inquirer": "9.1.0",
+    "inquirer": "^9.2.6",
     "langchain": "^0.0.90",
     "node-redis": "^0.1.7",
     "pg": "^8.11.0",

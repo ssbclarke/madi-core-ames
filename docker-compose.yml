@@ -83,7 +83,7 @@ services:
     ports:
       - 8000:8000
 
-  redis:  # vector-similarity-search
+  vss:  # vector-similarity-search
     image: redis/redis-stack:latest
     networks:
       - madi
@@ -91,7 +91,7 @@ services:
       - 6379:6379
       - 8001:8001 # Redis Insight at localhost:8001
     volumes:
-      - redis-data:/data
+      - vss-data:/data
 
   # cache:
   #   container_name: cache
@@ -104,5 +104,5 @@ networks:
 
 volumes:
   database-data:
-  # vss-data:
-  redis-data:
+  vss-data:
+  # redis-data:

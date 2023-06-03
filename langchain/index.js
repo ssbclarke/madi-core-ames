@@ -11,17 +11,25 @@ import { setupRecorder } from "nock-record";
  */
 
 
+import inquirer from 'inquirer';
 
 
-// // Common Initializations
+// // // Common Initializations
 dotenv.config()
 const debug = Debug(import.meta.url)
 
 
 
 // Boot functions
-clearTerminal(); //clears terminal history so that run is clean.
-await redisClient.connect() // connect but don't wait around
+try{
+    clearTerminal(); //clears terminal history so that run is clean.
+    await redisClient.connect()
+}catch(e){
+    console.log(e)
+}
+// .then(()=>{
+//     // debug("Client connected.");
+// }) // connect but don't wait around
 
 
 
@@ -40,6 +48,8 @@ let metadata = {
     context,
     memId
 }
+
+await inquirer.prompt({name:"yes", question: "hello!"})
 
 let message = await displayAIResponse("Hello! I'm Madi. How can I help you?", metadata)
 
