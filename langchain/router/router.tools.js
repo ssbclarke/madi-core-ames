@@ -21,6 +21,7 @@ export const routerCommonTools = [
         model: routerModel,
     }),
     new InvestigationTool(),
+    new FunctionTool(),
     new AnalysisTool()
   ];
 
@@ -32,8 +33,6 @@ export  const routerInvIsSetTools = [
       apiKey: process.env.GOOGLE_SEARCH_API_KEY,
       googleCSEId: process.env.GOOGLE_SEARCH_API_ID
     }),
-    new InvestigationTool(),
-    new FunctionTool(),
     new WebBrowser({
       // @ts-ignore
       description: `useful for when you need to find something on or summarize a webpage.  ONLY use when user input contains a full url or link. If there is no link, use the human tool to ask for one. input should be a comma separated list of "ONE valid http URL including protocol","what you want to find on the page or empty string for a summary". Final Answer should be acknowledgement of the user's request or a summary of the browswer response.`,

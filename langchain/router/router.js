@@ -8,8 +8,7 @@ import { establishMemory } from "../memory/memory.js";
 import { ZeroShotAgentOutputParser } from "langchain/agents";
 import { routerInvIsNotSetTools, routerCommonTools, routerInvIsSetTools } from "./router.tools.js";
 import { RouterActionAgent } from "./router.agent.js";
-
-
+import { RouterPromptTemplate } from './router.prompt.js';
 
 dotenv.config()
 const debug = Debug(import.meta.url)
@@ -36,7 +35,7 @@ export const router = async (message, metadata) => {
 
   const llmChain = new LLMChain({
     // @ts-ignore
-    prompt: new CustomPromptTemplate({
+    prompt: new RouterPromptTemplate({
       tools,
       inputVariables: ["input", "agent_scratchpad", "chat_history","context"],
     }),

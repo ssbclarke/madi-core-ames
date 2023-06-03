@@ -48,12 +48,13 @@ let maxIterations = 10
 let enableRecording = true
 let enablePreBuild = true
 let inputs = [
-    "I want to select an investigation",
-    "I'm James. How are you today?",
-    "What can you do?",
-    "I want to add an article to my data.",
-    "https://www.nytimes.com/2023/05/29/business/debt-ceiling-agreement.html",
-    "Can you summarize the article I just gave you?"
+    // "I'm James. How are you today?",
+    // "What can you do?",
+    // "I want to select an investigation",
+    // "I want to add an article to my data.",
+    // "https://www.nytimes.com/2023/05/29/business/debt-ceiling-agreement.html",
+    // "Can you summarize the article I just gave you?"
+    "I want you to summarize this article: https://www.nytimes.com/2023/05/29/business/debt-ceiling-agreement.html "
 ]
 
 
@@ -90,3 +91,5 @@ while (i<maxIterations){
 
 // NEXT STEP IS TO MODIFY THE formatPrompt See chain/llm_chain.js
 // const promptValue = await this.prompt.formatPromptValue(valuesForPrompt);
+
+

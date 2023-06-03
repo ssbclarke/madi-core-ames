@@ -1,4 +1,4 @@
-import { SequentialChain, LLMChain } from "langchain/chains";
+import { SequentialChain, LLMChain, AnalyzeDocumentChain, MapReduceDocumentsChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import { scraper } from "./playwright.loader.js";
@@ -8,6 +8,14 @@ import { Debug } from '../../logger.js'
 import { z } from "zod";
 import { BaseOutputParser } from "langchain/schema/output_parser";
 import { StructuredTool } from "langchain/tools";
+import { ANALYSIS_PROMPT, ROUTER_PROMPT, URL_PROMPT, SUMMARY_PROMPT} from "./analysis.prompt.js"
+import { loadSummarizationChain } from "langchain/chains";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { getEncoding } from '../../node_modules/langchain/dist/util/tiktoken.js'
+import { createHash } from 'crypto'
+import { addDocs } from "../store/add.js";
+// import { DEFAULT_PROMPT from "./stuff_prompts.js";
+// import { REFINE_PROMPT } from "./refine_prompts.js";}
 
 const debug = Debug(import.meta.url)
 const llm = new OpenAI({ temperature: 0 });
@@ -44,22 +52,15 @@ class DefaultChain extends BaseChain{
 /**
  * This Chain gets the relevant url out of an input.
  */
-const getUrlPromptTemplate = `Given the user input below, extract the relevant url.  If there is no url return NO_URL_FOUND.
-
------------------
-{userinput}
-
-`;
 class getUrlOutputParser extends BaseOutputParser{
     parse(input){
         return input.trim()
     }
     getFormatInstructions(){
-        throw new Error("Does not implement")
-        return ''
+        return ""
     }
 }
-const getUrlTemplate = new PromptTemplate({template: getUrlPromptTemplate, inputVariables: ["userinput"]});
+const getUrlTemplate = new PromptTemplate({template: URL_PROMPT, inputVariables: ["userinput"]});
 const getUrlChain = new LLMChain({
   llm,
   prompt: getUrlTemplate,
@@ -105,37 +106,104 @@ const getMetaValuesChain = new ParseChain({ //takes in stringified JSON and retu
 
 
 
-
-
 /**
- * This Chain performs text analysis and return information in the right structure
+ * This takes the full document, breaks it up into smaller docs and reduces the text until it can be summarized effectively.
  */
-const analysisTemplate = 
-`You are an assistant and a large language model named Madi.  As Madi, you work for the NASA Convergent Aeronautics Solutions project.  
+// class TrimChain extends DefaultChain{
+//     _call(values){
+//         let response = JSON.parse(values[this.inputVariables[0]])
+//         return Promise.resolve({[this.outputKey]:response[this.passField]})
+//     }
+// }
 
-You are designed to be able to assist with a wide range of tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics.  Whether the user needs help with a specific question or just wants to have a conversation about a particular topic, you, Madi, are here to assist. However, above all else, all responses must adhere to the format of RESPONSE FORMAT INSTRUCTIONS.  
+export function getIdFromText(text){
+    return createHash('sha1').update(text).digest('hex')
+}
+class TrimChain extends DefaultChain{
 
-You must analyze the following text under SOURCE and respond to the user acccording to the RESPONSE FORMAT INSTRUCTIONS.  Do not make up information.  All information must be derived from the source, whether the source is wrong or not. 
+    constructor(fields){
+        super(fields);
+        this.encodingName = fields?.encodingName ?? "cl100k_base";
+        this.allowedSpecial = fields?.allowedSpecial ?? [];
+        this.disallowedSpecial = fields?.disallowedSpecial ?? "all";
+    }
+    async _call(values, runManager){
 
-RESPONSE FORMAT INSTRUCTIONS
-----------------------------
-Use the following format in your response:
+        // this is where we create the custom chain
+        const model = new OpenAI({ temperature: 0 });
+        const combineDocsChain = loadSummarizationChain(model);
 
-Summary: a 3-5 sentence summary of the source
-Title: a 3-7 word title or headline that is specific about what is described in the source.
-Quote: A key line from the source that best reinforces the takeaway. This can be an attributed quote in the source or a section of the source itself. If it is a quote, it must be attributed correctly.
-Problem: the problem identified in the source.  If there is no problem, this can be blank.
-Solution: the solution to the problem proposed in the source.  If there is no problem or no solution, this can be blank.
-Image: a link to the key image in the source.  If there is no image, assistant should NOT create a link.
+        //split the docs
+        let splitter = RecursiveCharacterTextSplitter.fromLanguage("html", {
+            chunkSize: 4000,
+            chunkOverlap: 300,
+        })
+        let docs = await splitter.createDocuments([values[this.inputVariables[0]]])
 
-SOURCE
-----------------------------
-{fulltext}
 
-----------------------------
-Summary:`;
 
-const getAnalysisTemplate = new PromptTemplate({template: analysisTemplate, inputVariables: ["fulltext"]});
+
+        // get token length for each doc
+        let tokenizer = await getEncoding(this.encodingName || "cl100k_base");
+        docs.forEach(doc => {
+            const input_ids = tokenizer.encode(doc.pageContent, this.allowedSpecial || [], this.disallowedSpecial || []);
+            doc.metadata.tokens = input_ids.length
+            doc.metadata.hash = getIdFromText(doc.pageContent)
+        });
+
+        await addDocs(docs)
+        
+
+        const PROMPT_TOKENS = tokenizer.encode(SUMMARY_PROMPT, this.allowedSpecial || [], this.disallowedSpecial || []).length
+        // let summary_prompt: 
+        // store the docs
+        // await storeDocs()
+        let BUFFER = 50
+        let TOTAL_TOKENS = 4000 
+        let ANSWER_TOKENS = 500
+        // let mergeDocs = docs.reduce((store,doc,i)=>{
+
+        //     let newCount = doc.tokens;
+
+        //     let docsLength = TOTAL_TOKENS - newCount - ANSWER_TOKENS - BUFFER
+        // },[])
+        
+        
+
+
+        const chain = new AnalyzeDocumentChain({
+            combineDocumentsChain: combineDocsChain,
+        });
+        const res = await chain.call({
+            input_document: values.fulltext,
+        });
+
+        // if (!(this.inputKey in values)) {
+        //     throw new Error(`Document key ${this.inputKey} not found.`);
+        //   }
+        //   const { [this.inputKey]: doc, ...rest } = values;
+        //   const currentDoc = doc;
+        //   const currentDocs = await this.textSplitter.createDocuments([currentDoc]);
+        //   const newInputs = { input_documents: currentDocs, ...rest };
+        //   const result = await this.combineDocumentsChain.call(
+        //     newInputs,
+        //     runManager?.getChild()
+        //   );
+        // return result;
+        return {[this.outputKey]:res.text}
+    }
+}
+const getTrimTextChain = new TrimChain({ //takes in url and outputs stringified JSON
+    name: 'trimTextChain',
+    inputVariables: ["fulltext"],
+    outputKey: "trimtext",
+    encodingName: "cl100k_base"
+})
+
+
+
+
+const getAnalysisTemplate = new PromptTemplate({template: ANALYSIS_PROMPT, inputVariables: ["trimtext"]});
 const getAnalysisChain = new LLMChain({
   llm,
   prompt: getAnalysisTemplate,
@@ -147,70 +215,37 @@ const getAnalysisChain = new LLMChain({
 
 
 
+
+
+
+
+
 /**
  * These are the two types of chains for analyzing text
  */
 
 const askUrlAnalysisChain = new SequentialChain({
-    chains: [getUrlChain, getScrapedChain, getMetaValuesChain, getAnalysisChain],
+    chains: [getUrlChain, getScrapedChain, getMetaValuesChain, getTrimTextChain,
+        getAnalysisChain
+    ],
     inputVariables: ["userinput"],
     // Here we return multiple variables
-    outputVariables: ["url", "fulltext", "analysis","scrapedData"],
+    outputVariables: ["url", "fulltext", "trimtext", "scrapedData", "analysis", ],
     verbose: true,
 });
 
-const askTextAnalysisChain = new SequentialChain({
-    chains: [getAnalysisChain],
-    inputVariables: ["fulltext"],
-    // Here we return multiple variables
-    outputVariables: ["fulltext", "analysis"],
-    verbose: true,
-});
+// const askTextAnalysisChain = new SequentialChain({
+//     chains: [getAnalysisChain],
+//     inputVariables: ["fulltext"],
+//     // Here we return multiple variables
+//     outputVariables: ["fulltext", "trimtext", "analysis"],
+//     verbose: true,
+// });
 
 
 
 
 
-
-const routerTemplate = 
-`You are an assistant and a large language model named Madi.  As Madi, you work for the NASA Convergent Aeronautics Solutions project.  
-
-You are designed to be able to assist with a wide range of tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics.  Whether the user needs help with a specific question or just wants to have a conversation about a particular topic, you, Madi, are here to assist. However, above all else, all responses must adhere to the format of RESPONSE FORMAT INSTRUCTIONS.  
-
-You must analyze the following text under SOURCE and respond to the user acccording to the RESPONSE FORMAT INSTRUCTIONS.  Do not make up information.  All information must be derived from the source, whether the source is wrong or not. 
-
-RESPONSE FORMAT INSTRUCTIONS
-----------------------------
-Your response must be one of two options:
-
-TEXT: Useful for analyzing a full or a large portion of text provided by the user. No url is required in the SOURCE.
-URL: Useful for analyzing a source with a url that the user provided.  User must have provided a url in the SOURCE.
-
-If the user has not provided full text or a url for analysis, you should respond with a question for the user asking for the url or for the full text.
-
-
-EXAMPLES
-----------------------------
-User: I want to evaluate this article https://www.example.com/here-is-the-article
-AI: URL
-
-User: I want to evaluate the following text: House Speaker Kevin McCarthy to lift the $31.4 trillion U.S. debt ceiling and achieve new federal spending cuts passed an important hurdle late on Tuesday, advancing to the full House of Representatives for debate and an expected vote on passage on Wednesday.</p><p>The House Rules Committee voted 7-6 to approve the rules allowing debate by the full chamber. Two committee Republicans, Representatives Chip Roy and Ralph Norman, bucked their leadership by opposing the bill.</p><p>That vote underscored the need for Democrats to help pass the measure in the House, which is controlled by Republicans with a narrow 222-213 majority.</p><p>House passage would send the bill to the Senate. The measure needs congressional approval before June 5, when the Treasury Department could run out of funds to pay its debts for the first time in U.S. history.</p><p>If the Treasury Department cannot cover make all its payments, or if it was forced to prioritize payments, that could trigger economic chaos in the U.S. and global economies.</p><p>Biden and McCarthy have predicted they will get enough votes to pass the 99-page bill into law before the June 5 deadline.</p><p>The non-partisan budget scorekeeper for Congress on Tuesday said the legislation would reduce spending from its current projections by $1.5 trillion over 10 years beginning in 2024.</p><p>The Congressional Budget Office also said the measure, if enacted into law, would reduce interest on the public debt by $188 billion.
-AI: TEXT
-
-User: I want to evaluate an article.
-AI: I'm happy to help with that.  Can you provide the text or url from the article?
-
-User: I want to summarize some text.
-AI: I'm happy to help with that.  Can you provide the text or url from the text?
-
-User: Can you help me understand a news link.
-AI: I'm happy to help with that.  Can you provide the text or url from the text?
-
-
-SOURCE
-----------------------------
-User: {userinput}
-AI:`;
 
 
 
@@ -222,6 +257,7 @@ AI:`;
 // url                      -> WEB-BROWSER(text) -> ANALYSIS(data)
 // text                                          -> ANALYSIS(data)
 
+// @ts-ignore
 export class AnalysisTool extends StructuredTool{
     name = "analysis";
     description = "useful for analyzing, summarizing, finding problems, solutions, quotes, and key images from a user-provided source.";
@@ -229,7 +265,7 @@ export class AnalysisTool extends StructuredTool{
     // pick the right tool
     constructor(options={}){
         super(options)
-        this.schema = z.object({})
+        this.schema = z.any()
         Object.keys(options).map(k=>{
             this[k] = options.k
         })
@@ -243,28 +279,36 @@ export class AnalysisTool extends StructuredTool{
      */
 
     async _call(values){
-        const analysisRouterTemplate = new PromptTemplate({template: routerTemplate, inputVariables: ["userinput"]});
+        const analysisRouterTemplate = new PromptTemplate({template: ROUTER_PROMPT, inputVariables: ["userinput"]});
         const analysisRouterChain = new LLMChain({llm, prompt: analysisRouterTemplate });
         let routerResult = await analysisRouterChain.call({userinput:values})
         let output
-        switch(routerResult.text){
+        switch(routerResult.text.trim()){
             case 'URL':
-                output = askUrlAnalysisChain.call({userinput:values})
+                output = await askUrlAnalysisChain.call({userinput:values})
                 break;
-            case 'TEXT':
-                output = askTextAnalysisChain.call({userinput:values})
-                break;
+            // case 'TEXT':
+            //     output = await askTextAnalysisChain.call({userinput:values})
+            //     break;
             default:
                 output = routerResult.text.trim()
         }
+
 
         // this is where you modify the closure metadata object
         // this.metadataUpdate(response, metadata)
      
         // THIS IS WHERE YOU PARSE THE STRUCTURE FOR THE NECESSARY KEYS, THEN PASS AS STRINGIFIED JSON
-        return `{ action: "final answer", action_input: "" }`
+        return `{ action: "final answer", action_input: "${output}" }`
     }
 }
+
+
+
+
+
+
+
 
 
 

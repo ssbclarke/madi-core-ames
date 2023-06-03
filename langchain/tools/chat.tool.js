@@ -22,6 +22,11 @@ export class ChatTool extends Tool {
         this.schema = fields.schema || this.schema
     }
 
+    /**
+     * 
+     * @param {string} input 
+     * @returns {Promise<string>}
+     */
     async _call(input){
         try {
             return input

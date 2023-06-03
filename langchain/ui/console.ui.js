@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 import inquirer from 'inquirer';
-import { router } from '../agents/router.js'
+import { router } from '../router/router.js'
 import chalk from 'chalk';
 import { Debug } from '../logger.js'
 const debug = Debug(import.meta.url)
