@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config()
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { GoogleCustomSearch } from "langchain/tools";
 import { FunctionTool } from "../tools/function.tool.js";

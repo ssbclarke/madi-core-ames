@@ -14,6 +14,15 @@ import { PromptTemplate } from "langchain/prompts";
 import { LLMChain } from "langchain/chains";
 import { z } from "zod";
 import { CallbackManager } from "langchain/callbacks";
+import fs from 'fs'
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+async function readFileAsync(path) {
+    return fs.promises.readFile(__dirname +"/"+ path, "utf-8");
+}
 
 const debug = Debug(import.meta.url)
 dotenv.config()
@@ -26,8 +35,8 @@ dotenv.config()
 
 const createInvestigationStore = async () => {
 
-    // const splitter = new RecursiveCharacterTextSplitter()
-    // const splitDocs = await splitter.splitDocuments(docs);
+    // // const splitter = new RecursiveCharacterTextSplitter()
+    // // const splitDocs = await splitter.splitDocuments(docs);
     const embeddings = new OpenAIEmbeddings()
 
     let investigationVectorStore = new RedisVectorStore(
@@ -37,25 +46,32 @@ const createInvestigationStore = async () => {
             indexName: "investigations"
         }
     )
-    redisClient.on('ready',async ()=>{
+    redisClient.on('ready', async ()=>{
         let exists = await investigationVectorStore.checkIndexExists()
         if(!exists){
-            // @ts-ignore
-            const investigations = await import('../investigations.json', {assert:{type:"json"}})
-            let docs = investigations.default.map(({id, description, name})=>{
-                return new Document({
-                    pageContent: name+"\n"+description.slice(0,2000), 
-                    metadata:{name,id}
+            try{
+                let investigations = await readFileAsync('../../data/investigations.json')
+                investigations = JSON.parse(investigations)
+                investigations = Array.isArray(investigations) ? investigations : []
+                let docs = investigations.map(({id, description, name})=>{
+                    return new Document({
+                        pageContent: name+"\n"+description.slice(0,2000), 
+                        metadata:{name,id}
+                    })
                 })
-            })
-            investigationVectorStore = await RedisVectorStore.fromDocuments(
-                docs,
-                embeddings,
-                {
-                    redisClient,
-                    indexName: "investigations",
-                }
-            )
+                investigationVectorStore = await RedisVectorStore.fromDocuments(
+                    docs,
+                    embeddings,
+                    {
+                        redisClient,
+                        indexName: "investigations",
+                    }
+                )
+            }catch(e){
+                console.log(e)
+            }
+        
+
         }
     })
     return investigationVectorStore
@@ -102,6 +118,12 @@ export class InvestigationTool extends StructuredTool {
         // })
     }
 
+    /**
+     * 
+     * @param {string} arg 
+     * @param {array} callbacks 
+     * @returns {Promise<[string, Metadata]>}
+     */
     async call(arg, callbacks) {
         const parsed = await this.schema.parseAsync(arg);
         const callbackManager_ = await CallbackManager.configure(callbacks, this.callbacks, { verbose: this.verbose });
@@ -119,28 +141,12 @@ export class InvestigationTool extends StructuredTool {
         return result;
     }
 
-    // call(arg, callbacks) {
-    //     return super.call(typeof arg === "string" || !arg ? { input: arg } : arg, callbacks);
-    // }
-
-    // async call(values, callbacks) {
-    //     const arg = values?.toolInput || "" // this is different
-
-    //     const parsed = await this.schema.parseAsync(arg);
-    //     const callbackManager_ = await CallbackManager.configure(callbacks, this.callbacks, { verbose: this.verbose });
-    //     const runManager = await callbackManager_?.handleToolStart({ name: this.name }, typeof parsed === "string" ? parsed : JSON.stringify(parsed));
-    //     let result;
-        
-    //     try {
-    //         result = await this._call(parsed, runManager, ...values); // necessary for THIS additional ...args
-    //     }
-    //     catch (e) {
-    //         await runManager?.handleToolError(e);
-    //         throw e;
-    //     }
-    //     await runManager?.handleToolEnd(result);
-    //     return result;
-    // }
+    /**
+     * 
+     * @param {*} param0 
+     * @param {*} callbackManager 
+     * @returns {Promise<[string, Metadata]>
+     */
     async _call({actionInput, chat_history, message, metadata}, callbackManager){
         let response = await investigationChain.call({ input: actionInput }).then(result=>result?.text.trim() || null)
         if(response.toLowerCase() === 'selection'){

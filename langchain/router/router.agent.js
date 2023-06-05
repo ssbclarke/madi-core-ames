@@ -1,4 +1,5 @@
 import {  LLMSingleActionAgent } from "langchain/agents";
+import { setupRecorder } from "nock-record";
 
 
 export class RouterActionAgent extends LLMSingleActionAgent{
@@ -24,6 +25,11 @@ export class RouterActionAgent extends LLMSingleActionAgent{
     // Metadata is passed along in the result, whether or not the tool uses it
     async plan(steps, inputs, callbackManager) {
       let {chat_history, message, metadata} = inputs;
+
+      
+      const record = setupRecorder();
+      const { completeRecording } = await record(message);
+
   
       // this gets the action step itself as output = {text:"my output"}
       const output = await this.llmChain.call({
@@ -31,7 +37,8 @@ export class RouterActionAgent extends LLMSingleActionAgent{
           stop: this.stop,
           ...inputs,
       }, callbackManager);
-  
+      completeRecording()
+
       let original = await this.outputParser.parse(output[this.llmChain.outputKey], callbackManager)
     
       // @ts-ignore  
@@ -41,6 +48,7 @@ export class RouterActionAgent extends LLMSingleActionAgent{
       this.metadata = metadata
   
       let useObjectKey = this.useObjectKeys.includes(tool);
+
 
       // this is now what gets passed TO the tool
       // @ts-ignore

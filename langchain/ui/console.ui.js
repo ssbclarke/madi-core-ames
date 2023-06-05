@@ -17,7 +17,7 @@ let humanPrefix = chalk.yellow("User: ")
 let spacePrefix =             "       "
 
 
-// Clears the terminal
+// // Clears the terminal
 export const clearTerminal = () =>{
     process.stdout.write("\x1B[3J"); // clear the screen and scrollback buffer
     process.stdout.write("\x1B[1J\x1B[H"); // move the cursor to the top-left corner
@@ -69,28 +69,4 @@ export const sendToBackend = async (message, {clientMemory, memId, flowKey, cont
     debug({memId, flowKey})
     return router(message, {clientMemory, memId, flowKey, context})
 }
-
-
-/**
- * Client Side Memory Mgmtå
- */
-// export const addMessageToHistory = (message, clientMemory, user="human")=>{
-//     let added
-//     switch(user){
-//         case 'ai':
-//             added = new AIChatMessage(message)
-//             break;
-//         case 'system':
-//             added = new SystemChatMessage(message)
-//             break;
-//         case 'human':
-//         default:
-//             added = new HumanChatMessage(message)
-//     }
-//     clientMemory.push(added);
-// }
-// export const mergeMessageHistory = (clientMemory, serverMemory)=>{
-    
-//     return clientMemory
-// }
 

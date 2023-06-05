@@ -1,0 +1,91 @@
+[
+    {
+        "scope": "https://api.openai.com:443",
+        "method": "POST",
+        "path": "/v1/completions",
+        "body": {
+            "model": "text-davinci-003",
+            "temperature": 0,
+            "max_tokens": 256,
+            "top_p": 1,
+            "frequency_penalty": 0,
+            "presence_penalty": 0,
+            "n": 1,
+            "best_of": 1,
+            "stop": [
+                "\nObservation"
+            ],
+            "stream": false,
+            "prompt": [
+                "You are an assistant and a large language model named Madi.  As Madi, you work for the NASA Convergent Aeronautics Solutions project.  \n\nYou are designed to be able to assist with a wide range of tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics.  Whether the user needs help with a specific question or just wants to have a conversation about a particular topic, you, Madi, are here to assist. However, above all else, all responses must adhere to the format of RESPONSE FORMAT INSTRUCTIONS.\n\nTOOLS\n------\nMadi can ask the user to use tools to look up information that may be helpful in answering the users original question. The tools the human can use are:\n\nclarify: useful for asking the user for more information to input into a tool, answer their question, or clarify their request. The final answer should be a question for the human.\nchat: useful when responding simply to conversational prompts. Input should never be blank. Input should be appropriate response to user's Question.\ninvestigation: useful for allowing the user to select, specify, or clarify an investigation topic. If the user mentions changing or picking an investigation, this is the right tool.  This will help the user pick and investigation from a list passed in later from memory.\nfunctions: useful for describing what assistant can do for the user and what it's core functions are.\nanalysis: useful for analyzing, summarizing, finding problems, solutions, quotes, and key images from a user-provided source.\n\nThe assistant must not describe or name the tools.\n\nRESPONSE FORMAT INSTRUCTIONS\n----------------------------\nUse the following format in your response:\n  \nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [clarify, chat, investigation, functions, analysis]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\n\n\n\nSUMMARY OF CONVERSATION HISTORY\n--------------------\n\n\nRECENT CONVERSATION\n--------------------\n\n\nCONTEXT\n--------------------\n\n\nBegin! When required, use the information above from the RECENT CONVERSATION and CONTEXT to formulate an appropriate response.\n\nQuestion: I want you to summarize this article: https://www.nytimes.com/2023/05/29/business/debt-ceiling-agreement.html \nThought:"
+            ]
+        },
+        "status": 200,
+        "response": {
+            "id": "cmpl-7NXHBZeEn9HjrEV8Cm0yguvYzYCAu",
+            "object": "text_completion",
+            "created": 1685843813,
+            "model": "text-davinci-003",
+            "choices": [
+                {
+                    "text": " I need to analyze the article to summarize it\nAction: analysis\nAction Input: https://www.nytimes.com/2023/05/29/business/debt-ceiling-agreement.html",
+                    "index": 0,
+                    "logprobs": null,
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 578,
+                "completion_tokens": 45,
+                "total_tokens": 623
+            }
+        },
+        "rawHeaders": [
+            "Date",
+            "Sun, 04 Jun 2023 01:57:00 GMT",
+            "Content-Type",
+            "application/json",
+            "Content-Length",
+            "415",
+            "Connection",
+            "close",
+            "access-control-allow-origin",
+            "*",
+            "Cache-Control",
+            "no-cache, must-revalidate",
+            "openai-model",
+            "text-davinci-003",
+            "openai-organization",
+            "nasa-379",
+            "openai-processing-ms",
+            "6249",
+            "openai-version",
+            "2020-10-01",
+            "strict-transport-security",
+            "max-age=15724800; includeSubDomains",
+            "x-ratelimit-limit-requests",
+            "3000",
+            "x-ratelimit-limit-tokens",
+            "250000",
+            "x-ratelimit-remaining-requests",
+            "2999",
+            "x-ratelimit-remaining-tokens",
+            "249488",
+            "x-ratelimit-reset-requests",
+            "20ms",
+            "x-ratelimit-reset-tokens",
+            "122ms",
+            "x-request-id",
+            "d5c9cda105affadce1929249578cf4c3",
+            "CF-Cache-Status",
+            "DYNAMIC",
+            "Server",
+            "cloudflare",
+            "CF-RAY",
+            "7d1c8fdcba12633f-ORD",
+            "alt-svc",
+            "h3=\":443\"; ma=86400"
+        ],
+        "responseIsBinary": false
+    }
+]

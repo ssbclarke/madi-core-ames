@@ -14,19 +14,19 @@ dotenv.config()
 const debug = Debug(import.meta.url)
 
 
-/**
- * @typedef {import("../types.js").Metadata} Metadata 
- * @typedef {import("../types.js").ServerResponse} ServerResponse
- */
+// /**
+//  * @typedef {import("../types.js").Metadata} Metadata 
+//  * @typedef {import("../types.js").ServerResponse} ServerResponse
+//  */
 
 
 
-/**
- * 
- * @param {string} message 
- * @param {Metadata} metadata 
- * @returns {Promise<Array<string, Metadata>>}
- */
+// /**
+//  * 
+//  * @param {string} message 
+//  * @param {Metadata} metadata 
+//  * @returns {Promise<Array<string, Metadata>>}
+//  */
 export const router = async (message, metadata) => {
   const investigation = metadata?.context?.investigation || null
 

@@ -1,4 +1,4 @@
-import { redisClient } from "../../redis.js";
+import { redisClient } from "../redis.js";
 import { CSVLoader } from "langchain/document_loaders/fs/csv";
 import { RedisVectorStore } from "langchain/vectorstores/redis";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
@@ -8,7 +8,7 @@ import { OpenAI } from "langchain/llms/openai";
 import { ChainTool, DynamicTool, Tool, StructuredTool } from "langchain/tools";
 import * as dotenv from 'dotenv'
 import { Document } from "langchain/document";
-import { Debug } from '../../logger.js'
+import { Debug } from '../logger.js'
 import { ADD_PROMPT } from "./add.prompt.js";
 import { PromptTemplate } from "langchain/prompts";
 import { LLMChain } from "langchain/chains";
@@ -18,8 +18,8 @@ const debug = Debug(import.meta.url)
 dotenv.config()
 
 /**
- * @typedef {import("../../types.js").Metadata} Metadata 
- * @typedef {import("../../types.js").ServerResponse} ServerResponse
+ * @typedef {import("../types.js").Metadata} Metadata 
+ * @typedef {import("../types.js").ServerResponse} ServerResponse
  */
 
 

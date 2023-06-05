@@ -1,9 +1,16 @@
 import * as dotenv from 'dotenv'
 import crypto from 'node:crypto'
-import { sendToBackend, displayAIResponse, clearTerminal } from './ui/console.ui.js'
+import { 
+    sendToBackend, 
+    displayAIResponse, 
+    clearTerminal 
+} from './ui/console.ui.js'
 import { Debug } from './logger.js'
 import { redisClient } from './redis.js'
 import { setupRecorder } from "nock-record";
+import { TypeORMVectorStore } from 'langchain/vectorstores/typeorm'
+import { OpenAIEmbeddings } from 'langchain/embeddings';
+import nock from 'nock'
 
 /**
  * @typedef {import("./types.js").Metadata} Metadata 
@@ -11,26 +18,26 @@ import { setupRecorder } from "nock-record";
  */
 
 
-import inquirer from 'inquirer';
 
-
-// // // Common Initializations
-dotenv.config()
+// Common Initializations
 const debug = Debug(import.meta.url)
+
+// Initialize nock
+// const scope = nock('https://api.openai.com/v1/', { allowUnmocked: true })
+//     .persist() 
+//     .on('response', function(response) {
+//         console.log('Response:', response);
+//     })
+
+// let replays = nock.recorder.rec({
+//     output_objects: true,
+// })
 
 
 
 // Boot functions
-try{
-    clearTerminal(); //clears terminal history so that run is clean.
-    await redisClient.connect()
-}catch(e){
-    console.log(e)
-}
-// .then(()=>{
-//     // debug("Client connected.");
-// }) // connect but don't wait around
-
+clearTerminal(); //clears terminal history so that run is clean.
+await redisClient.connect()
 
 
 
@@ -49,13 +56,12 @@ let metadata = {
     memId
 }
 
-await inquirer.prompt({name:"yes", question: "hello!"})
 
 let message = await displayAIResponse("Hello! I'm Madi. How can I help you?", metadata)
 
 let i = 0
 let maxIterations = 10
-let enableRecording = true
+let enableRecording = false
 let enablePreBuild = true
 let inputs = [
     // "I'm James. How are you today?",
@@ -71,10 +77,9 @@ let inputs = [
 while (i<maxIterations){
     let finishRecording
     if(enableRecording){
-        const record = setupRecorder({mode:"record"});
+        const record = setupRecorder({mode:"dryrun"});
         const { completeRecording } = await record(`${i}`.padStart(2,"0")+`_${inputs[i]}`.replace(/[^a-z0-9]/gi, '_').toLowerCase());
-        finishRecording = completeRecording
-        
+        finishRecording = completeRecording   
     }
     if(enablePreBuild){
         message = inputs[i] || message;

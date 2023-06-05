@@ -13,13 +13,22 @@ import { loadSummarizationChain } from "langchain/chains";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { getEncoding } from '../../node_modules/langchain/dist/util/tiktoken.js'
 import { createHash } from 'crypto'
-import { addDocs } from "../store/add.js";
+// import { addDocs } from "../../storage/add.js";
+import { setupRecorder } from "nock-record";
+import { DocumentStore } from "../../storage/document.vectorstore.js";
+import { SourceStore } from "../../storage/source.store.js";
+import { getIdFromText, normalizeUrl } from "../../utils/text.js";
+import { promises as fs } from 'fs';
+import encoding from './cl100k_base.json' assert {type:"json"};
+import { Tiktoken } from "js-tiktoken/lite";
+
 // import { DEFAULT_PROMPT from "./stuff_prompts.js";
 // import { REFINE_PROMPT } from "./refine_prompts.js";}
 
 const debug = Debug(import.meta.url)
 const llm = new OpenAI({ temperature: 0 });
 dotenv.config()
+const enableStorage = true;
 
 /**
  * @typedef {import("../../types.js").Metadata} Metadata 
@@ -38,6 +47,7 @@ class DefaultChain extends BaseChain{
         this.chainName = fields.name ?? this.chainName;
         this.passField = fields.passField ?? this.outputKey;
         this.inputVariables = fields.inputVariables || [];
+        this.outputParser = fields.outputParser ?? this.outputParser;
     }
     get outputKeys() {return [this.outputKey];}
     _chainType(){ return this.chainName}
@@ -60,9 +70,32 @@ class getUrlOutputParser extends BaseOutputParser{
         return ""
     }
 }
+class UrlChain extends LLMChain{
+    
+    constructor(fields){
+        super(fields);
+        this.outputKey = fields.outputKey ?? this.outputKey;
+        this.chainName = fields.name ?? this.chainName;
+        this.passField = fields.passField ?? this.outputKey;
+        this.inputVariables = fields.inputVariables || [];
+        this.outputParser = fields.outputParser ?? this.outputParser;
+    }
+    // _call: BaseChain
+    // get inputKeys() {return this.inputVariables || []}
+    async _call(values, runManager){
+        debug("UrlChain._call")
+        const record = setupRecorder();
+        const { completeRecording } = await record('urlChain');
+        let response = await super._call(values,runManager)
+        completeRecording()
+        return response
+    }
+}
 const getUrlTemplate = new PromptTemplate({template: URL_PROMPT, inputVariables: ["userinput"]});
-const getUrlChain = new LLMChain({
+const getUrlChain = new UrlChain({
   llm,
+  name: 'UrlChain',
+  inputVariables: ["userinput"],
   prompt: getUrlTemplate,
   outputKey: "url",
   outputParser: new getUrlOutputParser()
@@ -75,7 +108,35 @@ const getUrlChain = new LLMChain({
  */
 class FetchChain extends DefaultChain{
     async _call({url}){
-        let response = await scraper(url)
+        debug("FetchChain._call")
+        // const record = setupRecorder();
+        // const { completeRecording } = await record('fetchChain');
+
+
+
+        let response
+        if(enableStorage){
+            // normalize the url
+            url = normalizeUrl(url)
+            // hash the url
+            let id = getIdFromText(url)
+            // fetch the url from the DB
+            let response = SourceStore.find({urlhash:id})
+            if(response.length === 0){
+                response = await scraper(url)
+                SourceStore.create(response)
+            }
+            // if(!exists) scrap
+                
+                // store the response
+            // 
+
+        }else{
+            response = await scraper(url)
+        }
+
+
+        // completeRecording()
         return {[this.outputKey]:JSON.stringify(response)}
     }
 }
@@ -93,6 +154,7 @@ const getScrapedChain = new FetchChain({ //takes in url and outputs stringified 
  */
 class ParseChain extends DefaultChain{
     _call(values){
+        debug("ParseChain._call")
         let response = JSON.parse(values[this.inputVariables[0]])
         return Promise.resolve({[this.outputKey]:response[this.passField]})
     }
@@ -116,9 +178,6 @@ const getMetaValuesChain = new ParseChain({ //takes in stringified JSON and retu
 //     }
 // }
 
-export function getIdFromText(text){
-    return createHash('sha1').update(text).digest('hex')
-}
 class TrimChain extends DefaultChain{
 
     constructor(fields){
@@ -141,23 +200,23 @@ class TrimChain extends DefaultChain{
         let docs = await splitter.createDocuments([values[this.inputVariables[0]]])
 
 
-
-
         // get token length for each doc
-        let tokenizer = await getEncoding(this.encodingName || "cl100k_base");
+        let tokenizer = new Tiktoken(encoding);
         docs.forEach(doc => {
             const input_ids = tokenizer.encode(doc.pageContent, this.allowedSpecial || [], this.disallowedSpecial || []);
             doc.metadata.tokens = input_ids.length
             doc.metadata.hash = getIdFromText(doc.pageContent)
+            doc.hash = doc.metadata.has
         });
 
-        await addDocs(docs)
+        // Store the docs in postgres
+        // let results = await PGStore.addDocuments(docs)
         
+        // const { completeRecording:cr2 } = await record('trimChain1');
 
         const PROMPT_TOKENS = tokenizer.encode(SUMMARY_PROMPT, this.allowedSpecial || [], this.disallowedSpecial || []).length
         // let summary_prompt: 
         // store the docs
-        // await storeDocs()
         let BUFFER = 50
         let TOTAL_TOKENS = 4000 
         let ANSWER_TOKENS = 500
@@ -178,6 +237,7 @@ class TrimChain extends DefaultChain{
             input_document: values.fulltext,
         });
 
+        // cr2()
         // if (!(this.inputKey in values)) {
         //     throw new Error(`Document key ${this.inputKey} not found.`);
         //   }
@@ -279,9 +339,14 @@ export class AnalysisTool extends StructuredTool{
      */
 
     async _call(values){
+        const record = setupRecorder();
+        const { completeRecording } = await record('analysisRouter');
+        debug("analysisTool._call")
         const analysisRouterTemplate = new PromptTemplate({template: ROUTER_PROMPT, inputVariables: ["userinput"]});
         const analysisRouterChain = new LLMChain({llm, prompt: analysisRouterTemplate });
         let routerResult = await analysisRouterChain.call({userinput:values})
+
+        completeRecording()
         let output
         switch(routerResult.text.trim()){
             case 'URL':

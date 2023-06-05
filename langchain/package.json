@@ -18,11 +18,15 @@
     "html-to-text": "^9.0.5",
     "input-event": "^1.2.6",
     "inquirer": "^9.2.6",
+    "js-tiktoken": "^1.0.6",
+    "knex": "^2.4.2",
     "langchain": "^0.0.90",
     "node-redis": "^0.1.7",
+    "normalize-url": "^8.0.0",
     "pg": "^8.11.0",
     "playwright": "^1.34.3",
     "redis": "^4.6.6",
+    "tiktoken": "^1.0.7",
     "typeorm": "^0.3.16"
   },
   "devDependencies": {
