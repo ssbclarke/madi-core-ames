@@ -19,9 +19,9 @@
         },
         "status": 200,
         "response": {
-            "id": "cmpl-7NXKtRhYNRcLqXXCC7Ezekk7QW49A",
+            "id": "cmpl-7OXAPDsf6fS4kXGhvlPfkLDodhPTd",
             "object": "text_completion",
-            "created": 1685844043,
+            "created": 1686081721,
             "model": "text-davinci-003",
             "choices": [
                 {
@@ -39,7 +39,7 @@
         },
         "rawHeaders": [
             "Date",
-            "Sun, 04 Jun 2023 02:00:43 GMT",
+            "Tue, 06 Jun 2023 20:02:02 GMT",
             "Content-Type",
             "application/json",
             "Content-Length",
@@ -55,7 +55,7 @@
             "openai-organization",
             "nasa-379",
             "openai-processing-ms",
-            "523",
+            "680",
             "openai-version",
             "2020-10-01",
             "strict-transport-security",
@@ -73,13 +73,13 @@
             "x-ratelimit-reset-tokens",
             "122ms",
             "x-request-id",
-            "9bc31cec1e6813401c793c74293e5673",
+            "5596460f76956c22334fe49f39e74483",
             "CF-Cache-Status",
             "DYNAMIC",
             "Server",
             "cloudflare",
             "CF-RAY",
-            "7d1c95756dcc2312-ORD",
+            "7d334029eb7d43d6-EWR",
             "alt-svc",
             "h3=\":443\"; ma=86400"
         ],

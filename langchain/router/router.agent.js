@@ -1,5 +1,5 @@
 import {  LLMSingleActionAgent } from "langchain/agents";
-import { setupRecorder } from "nock-record";
+import { setupRecorder } from "../utils/nockRecord.js";
 
 
 export class RouterActionAgent extends LLMSingleActionAgent{
@@ -27,16 +27,16 @@ export class RouterActionAgent extends LLMSingleActionAgent{
       let {chat_history, message, metadata} = inputs;
 
       
-      const record = setupRecorder();
+      const record = setupRecorder({mode:process.env.NOCK_MODE});
       const { completeRecording } = await record(message);
 
-  
       // this gets the action step itself as output = {text:"my output"}
       const output = await this.llmChain.call({
           intermediate_steps: steps,
           stop: this.stop,
           ...inputs,
       }, callbackManager);
+
       completeRecording()
 
       let original = await this.outputParser.parse(output[this.llmChain.outputKey], callbackManager)

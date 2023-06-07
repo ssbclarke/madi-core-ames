@@ -174,6 +174,7 @@ export class KnexVectorStore extends VectorStore {
                 return this.knex.schema.createTable(this.tableName,this.schema)
             }
         })
+
     }
     static async fromTexts(texts, metadatas, embeddings, dbConfig) {
         const docs = [];

@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv'
+dotenv.config()
 import crypto from 'node:crypto'
 import { 
     sendToBackend, 
@@ -7,32 +8,15 @@ import {
 } from './ui/console.ui.js'
 import { Debug } from './logger.js'
 import { redisClient } from './redis.js'
-import { setupRecorder } from "nock-record";
-import { TypeORMVectorStore } from 'langchain/vectorstores/typeorm'
-import { OpenAIEmbeddings } from 'langchain/embeddings';
-import nock from 'nock'
+import { setupRecorder } from "./utils/nockRecord.js";
 
 /**
  * @typedef {import("./types.js").Metadata} Metadata 
  * @typedef {import("./types.js").ServerResponse} ServerResponse
  */
 
-
-
 // Common Initializations
 const debug = Debug(import.meta.url)
-
-// Initialize nock
-// const scope = nock('https://api.openai.com/v1/', { allowUnmocked: true })
-//     .persist() 
-//     .on('response', function(response) {
-//         console.log('Response:', response);
-//     })
-
-// let replays = nock.recorder.rec({
-//     output_objects: true,
-// })
-
 
 
 // Boot functions
@@ -61,7 +45,6 @@ let message = await displayAIResponse("Hello! I'm Madi. How can I help you?", me
 
 let i = 0
 let maxIterations = 10
-let enableRecording = false
 let enablePreBuild = true
 let inputs = [
     // "I'm James. How are you today?",
@@ -76,11 +59,9 @@ let inputs = [
 
 while (i<maxIterations){
     let finishRecording
-    if(enableRecording){
-        const record = setupRecorder({mode:"dryrun"});
-        const { completeRecording } = await record(`${i}`.padStart(2,"0")+`_${inputs[i]}`.replace(/[^a-z0-9]/gi, '_').toLowerCase());
-        finishRecording = completeRecording   
-    }
+    const record = setupRecorder({mode:process.env.FLOW_NOCK_MODE});
+    const { completeRecording } = await record(`${i}`.padStart(2,"0")+`_${inputs[i]}`.replace(/[^a-z0-9]/gi, '_').toLowerCase());
+
     if(enablePreBuild){
         message = inputs[i] || message;
     }
@@ -97,9 +78,9 @@ while (i<maxIterations){
     */
     message = await displayAIResponse(response, newMetadata)
     
-    if(enableRecording){
-        finishRecording()
-    }
+
+    completeRecording()
+    
     i++;
 }
 
