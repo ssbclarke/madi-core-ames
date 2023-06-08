@@ -172,7 +172,7 @@ export const InvestigationPrompt = async (input, metadata)=>{
             ...metadata,
             responseType: 'list',
             choices: names,
-            // nextFlowKey: 'investigation-selected'
+            flowKey: 'investigation-confirmation'
         }
     ]
 }
@@ -181,18 +181,19 @@ export const InvestigationPrompt = async (input, metadata)=>{
  * 
  * @param {string} input 
  * @param {Metadata} metadata
- * @returns {Promise<ServerResponse>}
+ * @returns {Promise<Array<string, Metadata>>}
  */
-export const InvestigationSelection = async (input, metadata)=>{
+export const InvestigationConfirmation = async (input, metadata)=>{
     return [
-        `Great. You've selected: ${input}`, //\n${names.map((text,i)=>(` ${i+1}. ${text}`)).join("\n")}`
+        `Great. Your Investigation is now set to ${input}`, 
+        // @ts-ignore
         {
             ...metadata,
             context:{
                 ...metadata.context,
                 investigation: input,
             },
-            nextFlowKey: null
+            flowKey: null
         }
     ]
 }

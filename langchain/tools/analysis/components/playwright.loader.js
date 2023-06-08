@@ -1,6 +1,6 @@
 import { PlaywrightWebBaseLoader } from "langchain/document_loaders/web/playwright";
 import { extractFromHtml } from '@extractus/article-extractor'
-import { getIdFromText } from "../../utils/text.js";
+import { getIdFromText } from "../../../utils/text.js";
 import { promises as fs } from 'fs';
 
 
@@ -21,7 +21,7 @@ const loader = (options) => {
     )
 };
 
-export const scraper = async(url) => {
+export const playwrightScraper = async(url) => {
     let hash = getIdFromText(url);
     let page;
     let filename = `./__nock-fixtures__/pw_${hash}.json`
@@ -31,7 +31,27 @@ export const scraper = async(url) => {
     } catch (error) {
         if (error.code === 'ENOENT') {
             const docs = await loader({url}).load();
-            let result = await extractFromHtml(docs[0].pageContent, docs[0].metadata.source);
+            let result = await extractFromHtml(docs[0].pageContent, docs[0].metadata.source, {
+                allowedTags: [
+                    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                    'sup', 'sub',
+                    'div', 'p', 'article', 'blockquote', 'section',
+                    'pre', 'code',
+                    'ul', 'ol', 'li', 'dd', 'dl',
+                    'table', 'th', 'tr', 'td', 'thead', 'tbody', 'tfood',
+                    'fieldset', 'legend',
+                    'figure', 'figcaption', 'img',
+                    'br',
+                    'label',
+                    'abbr',
+                    'a',
+                  ],
+                  allowedAttributes: {
+                    a: ['href', 'title'],
+                    abbr: ['title'],
+                    img: ['src', 'alt', 'title']
+                  },
+            });
             await fs.writeFile(filename, JSON.stringify(result));
             return result;
 

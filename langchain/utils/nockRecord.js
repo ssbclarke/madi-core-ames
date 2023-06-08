@@ -1,6 +1,9 @@
 import { dirname, join } from "path";
 import nock from "nock";
 import * as stackTrace from "stack-trace";
+import Debug from "debug";
+const debug = Debug(import.meta.url)
+
 
 function parentPath() {
   const trace = stackTrace.get();
@@ -19,10 +22,10 @@ export function setupRecorder(options = {}) {
   nockBack.setMode(options.mode || "record");
   return (fixtureName, options = {}) =>
     nockBack(`${fixtureName}.json`, options).then(({ nockDone, context }) => {
-        console.log('\n\n\n\n\n********** STARTING ',fixtureName,'************\n\n\n\n\n')
+        debug(`Starting ${fixtureName}`)
         return {
             completeRecording: ()=>{
-                console.log('\n\n\n\n\n********** CLOSING ',fixtureName,'************\n\n\n\n\n')
+                debug(`Closing ${fixtureName}`)
                 nock.cleanAll();
                 nockDone();
             },

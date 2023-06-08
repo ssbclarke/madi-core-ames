@@ -4,6 +4,7 @@ import path from 'path';
 import chalk from 'chalk';
 import { fileURLToPath } from 'url';
 import {inspect} from 'util'
+import { parseBoolean } from './utils/boolean.js';
 let pad = 15
 let logPrefix = "Debug: "
 
@@ -16,9 +17,12 @@ export const uiDebug = (name,msg)=>{
 }
 
 export const Debug = (name, func=uiDebug) => (...args) => {
-    name = name.indexOf('file:///')>=0 ? fileURLToPath(name).split('/').pop().replace('.js','').toUpperCase().padEnd(pad,' ') : name.padEnd(pad,' ')
-    func = func ? func : (a)=>a 
-    console.log(func(name,...args))
+    if(parseBoolean(process.env.DEBUG)){
+        name = name.indexOf('file:///')>=0 ? fileURLToPath(name).split('/').pop().replace('.js','').toUpperCase().padEnd(pad,' ') : name.padEnd(pad,' ')
+        func = func ? func : (a)=>a 
+        console.log(func(name,...args))
+    }
+    
 }
 
 

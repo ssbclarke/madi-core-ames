@@ -96,7 +96,7 @@ export const flowPicker = async (input, {clientMemory, memId, flowKey}) =>{
  * @returns {Promise<ServerResponse>}
  */
 export const flowFinder = async (input, {serverMemory, memId}) =>{
-    console.log("flowfinder")
+    // console.log("flowfinder")
     const model = new ChatOpenAI({
         temperature: 0.1,
         openAIApiKey: process.env.OPENAI_API_KEY,

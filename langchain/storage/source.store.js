@@ -1,15 +1,13 @@
 // import { DataSource, EntitySchema } from "typeorm";
-import knex from 'knex';
+import * as knexPkg from 'knex';
 const { knex } = knexPkg.default; // workaround for typescript compatability 
 
 import * as dotenv from 'dotenv'
 dotenv.config()
-import { VectorStore } from "langchain/vectorstores";
-import { Document } from "langchain/document";
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { KnexVectorStore, KnexVectorStoreDocument } from './knex.js';
 import { getIdFromText, normalizeUrl } from '../utils/text.js';
-
+import { parseBoolean } from '../utils/boolean.js';
 
 export class KnexCustomStore extends KnexVectorStore{
     constructor(embeddings, fields){
@@ -95,6 +93,15 @@ export class KnexCustomStore extends KnexVectorStore{
 
     }
 
+    async patch(id, data, params={}){
+        const { select = '*' } = params;
+        data = this.filterColumns(data)
+        return this.knex
+            .table(this.tableName)
+            .where({id})
+            .update(data, select)
+    }
+
     async create(items){ // 
         let allowedKeys = Object.keys(this.columnInfo)
         if(!Array.isArray(items)){
@@ -148,7 +155,7 @@ const args = {
         },
         // acquireConnectionTimeout: 10000,
         // pool: { min: 0, max:7 },
-        debug: true,
+        debug: parseBoolean(process.env.VERBOSE),
         // type: "postgres",
         connection:{
             host: "localhost",
@@ -165,6 +172,7 @@ const args = {
             table.string('title')
             table.string('hash').unique()
             table.text('summary')
+            // TODO Links are meta links to the article and not nested HREFs
             table.specificType('links','text ARRAY')
             table.string('image')
             table.text('content')

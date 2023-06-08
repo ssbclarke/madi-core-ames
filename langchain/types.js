@@ -7,7 +7,6 @@
  * @property {string} [memId] -
  * @property {string} [flowKey] -
  * @property {Object} [context] -
- * @property {string} [nextFlowKey] -
  */
 
 // /**

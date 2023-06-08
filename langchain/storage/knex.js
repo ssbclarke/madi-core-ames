@@ -33,6 +33,7 @@ export class KnexVectorStoreDocument extends Document {
             writable: true,
             value: void 0
         });
+ 
     }
 }
 const defaultDocumentTableName = "documents";
@@ -88,18 +89,28 @@ export class KnexVectorStore extends VectorStore {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "columnInfo", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         this.tableName = fields.tableName || defaultDocumentTableName;
         this.filter = fields.filter;
         this.conflictColumn = fields.conflictColumn ?? this.conflictColumn
         this.upsert = fields.upsert ?? this.upsert
         this.schema = fields.schema ?? defaultSchema
+        this.columnInfo = {}
         // @ts-ignore
         this.knex = knex({
             client: 'pg',
             ...fields.connectionOptions
         })
     }
-
+    filterColumns(item){
+        let allowedKeys = Object.keys(this.columnInfo)
+        return Object.fromEntries(Object.entries(item).filter(([key, value]) => allowedKeys.includes(key)));
+    }
     static async fromDataSource(embeddings, fields) {
         const postgresqlVectorStore = new this(embeddings, fields);
         return postgresqlVectorStore;
@@ -174,6 +185,7 @@ export class KnexVectorStore extends VectorStore {
                 return this.knex.schema.createTable(this.tableName,this.schema)
             }
         })
+        this.columnInfo = await this.knex(this.tableName).columnInfo();
 
     }
     static async fromTexts(texts, metadatas, embeddings, dbConfig) {

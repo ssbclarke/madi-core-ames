@@ -20,6 +20,7 @@ import { LLMChain } from "langchain/chains";
 import { ROUTER_PROMPT } from './router.promptsOLD.js';
 import { Debug } from '../logger.js'
 import { ChatAgent } from "../tools/chat.tool.js";
+import { parseBoolean } from "../utils/boolean.js";
 import { establishMemory } from '../memory/memory.js'
 
 const debug = Debug(import.meta.url)
@@ -320,14 +321,14 @@ export const run = async () => {
             memoryKey: "chat_history",
             inputKey: "input",
         }),
-        verbose:true
+        verbose:parseBoolean(process.env.VERBOSE) && parseBoolean(process.env.DEBUG)
     })
 
     // const executor = await initializeAgentExecutorWithOptions(tools, model, {
     //     agentType: "chat-conversational-react-description",
     //     verbose: true,
     // });
-    console.log("Loaded agent.");
+    // console.log("Loaded agent.");
 
     let metadata = {
         investigation: null
@@ -350,7 +351,7 @@ export const run = async () => {
 
     // const result0 = await executor.call({ input: input0 });
   
-    console.log(`${result0.output}`);
+    // console.log(`${result0.output}`);
   
 
 

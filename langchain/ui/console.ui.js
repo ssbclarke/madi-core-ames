@@ -4,7 +4,9 @@ import inquirer from 'inquirer';
 import { router } from '../router/router.js'
 import chalk from 'chalk';
 import { Debug } from '../logger.js'
+import { wordWrap } from '../utils/text.js';
 const debug = Debug(import.meta.url)
+const UI_CHARS_PER_LINE = process.env.UI_CHARS_PER_LINE ?? 60
 
 /**
  * @typedef {import("../types.js").Metadata} Metadata 
@@ -23,9 +25,6 @@ export const clearTerminal = () =>{
     process.stdout.write("\x1B[1J\x1B[H"); // move the cursor to the top-left corner
 }
 
-const wordWrap = (str, max, br = '\n  ') => str.replace(
-    new RegExp(`(?![^\\n]{1,${max}}$)([^\\n]{1,${max}})\\s`, 'g'), '$1' + br
-);
 
 /**
  * 
@@ -37,7 +36,7 @@ export const displayAIResponse = async (message, metadata)=>{
     let {responseType, choices=[],context={}} = metadata
     let userResponse = {answer:""}
     let promptOpts = {name:'answer', prefix:aiPrefix}
-    let wrapMessage = (msg)=>wordWrap(message, 60, "\n"+spacePrefix)+"\n"+humanPrefix
+    let wrapMessage = (msg)=>wordWrap(message, 60, spacePrefix)+"\n"+humanPrefix
     Debug("INVESTIGATION")(context.investigation)
     Debug("DOCUMENT")(context.currentDocument)
     Debug("SCOPE")(context.scope)
@@ -46,7 +45,7 @@ export const displayAIResponse = async (message, metadata)=>{
             userResponse = await inquirer.prompt([{...promptOpts, type:'list', message:aiColor(wrapMessage(message)), choices}])
             break;
         case "followup":  
-            inquirer.prompt([{...promptOpts, message: wordWrap(message, 60, "\n"+spacePrefix)}])
+            inquirer.prompt([{...promptOpts, message: wordWrap(message, 60, spacePrefix)}])
             process.stdin.write("\n")
             userResponse = await inquirer.prompt([{...promptOpts, message: aiColor("How else can I help?"+"\n"+humanPrefix)}]);
             break;
@@ -67,6 +66,7 @@ export const displayAIResponse = async (message, metadata)=>{
  */
 export const sendToBackend = async (message, {clientMemory, memId, flowKey, context})=>{  
     debug({memId, flowKey})
+    if(!clientMemory) throw new Error(JSON.stringify(clientMemory))
     return router(message, {clientMemory, memId, flowKey, context})
 }
 

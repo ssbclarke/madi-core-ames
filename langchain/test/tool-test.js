@@ -2,7 +2,7 @@ import { HumanInputRun } from "../tools/clarify.tool.js";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import dotenv from 'dotenv'
-
+import { parseBoolean } from '../utils/boolean.js'
 dotenv.config()
 
 /**
@@ -27,7 +27,7 @@ export const testChain = async (input) =>{
 
     const executor = await initializeAgentExecutorWithOptions(tools, model, {
         agentType: "chat-conversational-react-description",
-        verbose: true,
+        verbose:parseBoolean(process.env.VERBOSE) && parseBoolean(process.env.DEBUG)
       });
 
     // const chain = new ConversationChain({llm:model, memory, outputKey:"MYOUTPUT"})

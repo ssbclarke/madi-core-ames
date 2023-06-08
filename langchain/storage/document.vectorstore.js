@@ -3,13 +3,11 @@ const { knex } = knexPkg.default; // workaround for typescript compatability
 
 import * as dotenv from 'dotenv'
 dotenv.config()
-import { VectorStore } from "langchain/vectorstores";
-import { Document } from "langchain/document";
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { KnexVectorStore, KnexVectorStoreDocument } from './knex.js';
-import encoding from './cl100k_base.json' assert {type:"json"};
-import { Tiktoken } from "js-tiktoken/lite";
 import { getIdFromText } from '../utils/text.js';
+import { parseBoolean } from '../utils/boolean.js';
+
 
 export class KnexCustomStore extends KnexVectorStore{
     constructor(embeddings, fields){
@@ -31,7 +29,7 @@ export class KnexCustomStore extends KnexVectorStore{
         const postgresqlVectorStore = new KnexCustomStore(embeddings, fields);
         return postgresqlVectorStore;
     }
-    async similaritySearchWithOffset(query, embedding, k, filter, offset=0){
+    async similaritySearchWithOffset(embedding, k, filter, offset=0){
         const embeddingString = `[${embedding.join(",")}]`;
         const _filter = filter ?? "{}";
         let documents = await this.knex
@@ -85,16 +83,26 @@ export class KnexCustomStore extends KnexVectorStore{
         }
     }
 
-    async find(filter, limit=10, select="*", skip=0){
-        return this.knex
-            .table(this.tableName)
+    async find(filter, limit=10, select="*", skip=0, sort={}){
+        let q = this.knex.table(this.tableName)
             .select(select)
             .where(filter)
             .limit(limit)
             .offset(skip)
+
+        Object.keys(sort).forEach(key => {
+            if(typeof sort[key] === 'object' && Array.isArray(sort[key]?.path)){
+                q = q.orderByRaw(`${key} #> Array[${sort[key].path.join(',')}] ${sort[key].type === 1 ? 'asc':'desc'} `)
+            }
+            q = q.orderBy(key, sort[key] === 1 ? 'asc' : 'desc');
+        });
+
+        return q
     }
 
-    async patch(id, data, {limit=10, select="*", skip=0}){
+    async patch(id, data, params={}){
+        const { select = '*' } = params;
+        data = this.filterColumns(data)
         return this.knex
             .table(this.tableName)
             .where({id})
@@ -195,7 +203,7 @@ const args = {
         },
         // acquireConnectionTimeout: 10000,
         // pool: { min: 0, max:7 },
-        debug: true,
+        debug: parseBoolean(process.env.VERBOSE),
         // type: "postgres",
         connection:{
             host: "localhost",

@@ -85,7 +85,7 @@ CONTEXT
 
 Begin! When required, use the information above from the RECENT CONVERSATION and CONTEXT to formulate an appropriate response.
 
-Question: {input}
+Question: {message}
 Thought:{agent_scratchpad}`
 
 
@@ -137,7 +137,7 @@ export class RouterPromptTemplate extends BaseStringPromptTemplate {
       let recent_chat_summary='';
       let context = Object.keys(metadata.context).map(k=>k.toUpperCase()+": "+metadata?.context[k]||"").join("\n");
       const prompt = await promptUnfilled.format({
-        input:message,
+        message,
         tools,
         tool_names,
         recent_chat_summary,

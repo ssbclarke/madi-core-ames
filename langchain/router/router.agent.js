@@ -27,8 +27,8 @@ export class RouterActionAgent extends LLMSingleActionAgent{
       let {chat_history, message, metadata} = inputs;
 
       
-      const record = setupRecorder({mode:process.env.NOCK_MODE});
-      const { completeRecording } = await record(message);
+      // const record = setupRecorder({mode:process.env.NOCK_MODE});
+      // const { completeRecording } = await record(message.replace(/[^a-z0-9]/gi, '_'));
 
       // this gets the action step itself as output = {text:"my output"}
       const output = await this.llmChain.call({
@@ -37,7 +37,7 @@ export class RouterActionAgent extends LLMSingleActionAgent{
           ...inputs,
       }, callbackManager);
 
-      completeRecording()
+      // completeRecording()
 
       let original = await this.outputParser.parse(output[this.llmChain.outputKey], callbackManager)
     

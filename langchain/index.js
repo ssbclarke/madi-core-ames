@@ -47,26 +47,27 @@ let i = 0
 let maxIterations = 10
 let enablePreBuild = true
 let inputs = [
-    // "I'm James. How are you today?",
-    // "What can you do?",
-    // "I want to select an investigation",
-    // "I want to add an article to my data.",
-    // "https://www.nytimes.com/2023/05/29/business/debt-ceiling-agreement.html",
-    // "Can you summarize the article I just gave you?"
-    "I want you to summarize this article: https://www.nytimes.com/2023/05/29/business/debt-ceiling-agreement.html "
+    "I'm James. How are you today?",
+    "What can you do?",
+    "I want to select an investigation",
+    "GeoEngineering",
+    "I want to add an article to my data.",
+    "https://www.nytimes.com/2023/05/29/business/debt-ceiling-agreement.html"
 ]
 
 
 while (i<maxIterations){
-    let finishRecording
+    // let finishRecording
     const record = setupRecorder({mode:process.env.FLOW_NOCK_MODE});
     const { completeRecording } = await record(`${i}`.padStart(2,"0")+`_${inputs[i]}`.replace(/[^a-z0-9]/gi, '_').toLowerCase());
 
     if(enablePreBuild){
         message = inputs[i] || message;
     }
+    process.stdin.write(message)
 
     let [response, newMetadata] = await sendToBackend(message, metadata)
+    completeRecording()
 
     /* should only pass the following and forget the rest
     {
@@ -76,11 +77,20 @@ while (i<maxIterations){
         memId: ####
     }
     */
-    message = await displayAIResponse(response, newMetadata)
-    
 
-    completeRecording()
-    
+    // message = async ()=>{
+    if(enablePreBuild){
+        let output = displayAIResponse(response, newMetadata)
+        process.stdin.write(message)
+        output.cancel()
+    }else{
+        message = await displayAIResponse(response, newMetadata)
+    }
+        // message = Promise.resolve(output)
+        // message = output
+    // }
+
+    Object.assign(metadata, newMetadata)
     i++;
 }
 
