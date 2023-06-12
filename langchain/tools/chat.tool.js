@@ -1,6 +1,6 @@
 import { Tool } from 'langchain/tools';
 import { Debug } from '../logger.js'
-
+import { parseBoolean } from '../utils/boolean.js';
 const debug = Debug(import.meta.url)
 
 
@@ -20,6 +20,7 @@ export class ChatTool extends Tool {
         this.description = fields.description || this.description
         this.returnDirect = true;
         this.schema = fields.schema || this.schema
+        this.verbose = parseBoolean(process.env.VERBOSE) && parseBoolean(process.env.DEBUG)
     }
 
     /**
