@@ -90,6 +90,48 @@ Thought:{agent_scratchpad}`
 
 
 
+
+
+function getChatHistory(values){
+  let recent_chat_messages = values?.chat_history || [];
+  recent_chat_messages=values?.chat_history.map(m=>{
+    let type = m._getType();
+    let text = m.text || "";
+    return type+": "+text
+  }).join("\n")
+  return recent_chat_messages
+}
+
+
+
+function getTools(values){
+  const tools = this.tools
+    .map((tool) => `${tool.name}: ${tool.description}`)
+    .join("\n");
+  const tool_names = this.tools.map((tool) => tool.name).join(", ");
+  return {tools, tool_names}
+}
+
+function getContext(values){
+  let { metadata } = values
+  return Object.keys(metadata.context).map(k=>k.toUpperCase()+": "+metadata?.context[k]||"").join("\n");
+}
+
+function getAgentScratchpad(values){
+  let { intermediate_steps } = values
+  return intermediate_steps.reduce(
+    (thoughts, { action, observation }) =>
+      thoughts +
+      [action.log, `\nObservation: ${observation}`, "Thought:"].join("\n"),
+    ""
+  );
+  
+}
+
+function getRecentChatSummary(chat_summary){
+  return ''
+}
+
 export class RouterPromptTemplate extends BaseStringPromptTemplate {
 
 
@@ -109,33 +151,16 @@ export class RouterPromptTemplate extends BaseStringPromptTemplate {
      * @returns 
      */
     async format(values) {
-      let { metadata, message } = values
-      let recent_chat_messages = values?.chat_history || [];
       /** Construct the final template */
-      const tools = this.tools
-        .map((tool) => `${tool.name}: ${tool.description}`)
-        .join("\n");
-      const tool_names = this.tools.map((tool) => tool.name).join(", ");
-  
-  
-      // INVESTIGATION: GeoEngineering
-      // SCOPE: internal
-  
+      let { message } = values
+      let recent_chat_messages = getChatHistory(values)
+      let { tools, tool_names } = getTools.bind(this)(values)
+      let context = getContext(values)
+      let agent_scratchpad = getAgentScratchpad(values)
+      let recent_chat_summary = getRecentChatSummary(recent_chat_messages)
+
+      // Get Prompt
       const promptUnfilled = PromptTemplate.fromTemplate(ROUTER_PROMPT);
-      const intermediateSteps = values.intermediate_steps;
-      const agent_scratchpad = intermediateSteps.reduce(
-        (thoughts, { action, observation }) =>
-          thoughts +
-          [action.log, `\nObservation: ${observation}`, "Thought:"].join("\n"),
-        ""
-      );
-      recent_chat_messages=values?.chat_history.map(m=>{
-        let type = m._getType();
-        let text = m.text || "";
-        return type+": "+text
-      }).join("\n")
-      let recent_chat_summary='';
-      let context = Object.keys(metadata.context).map(k=>k.toUpperCase()+": "+metadata?.context[k]||"").join("\n");
       const prompt = await promptUnfilled.format({
         message,
         tools,
@@ -157,7 +182,6 @@ export class RouterPromptTemplate extends BaseStringPromptTemplate {
     // @ts-ignore
     serialize() {
       throw new Error("Not implemented");
-  
     }
   }
   

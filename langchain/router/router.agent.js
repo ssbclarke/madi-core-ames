@@ -1,6 +1,6 @@
 import {  LLMSingleActionAgent } from "langchain/agents";
 import { setupRecorder } from "../utils/nockRecord.js";
-
+import { getIdFromText } from "../utils/text.js";
 
 export class RouterActionAgent extends LLMSingleActionAgent{
     constructor(fields){
@@ -26,18 +26,20 @@ export class RouterActionAgent extends LLMSingleActionAgent{
     async plan(steps, inputs, callbackManager) {
       let {chat_history, message, metadata} = inputs;
 
-      
-      // const record = setupRecorder({mode:process.env.NOCK_MODE});
-      // const { completeRecording } = await record(message.replace(/[^a-z0-9]/gi, '_'));
 
-      // this gets the action step itself as output = {text:"my output"}
-      const output = await this.llmChain.call({
-          intermediate_steps: steps,
-          stop: this.stop,
-          ...inputs,
-      }, callbackManager);
+      //NOCK START
+      const { completeRecording } = await setupRecorder()(`routerAgent_${message.replace(/[^a-z0-9]/gi, '_').slice(0,50)}_${getIdFromText(JSON.stringify(inputs))}`);  
+              
+        // this gets the action step itself as output = {text:"my output"}
+        const output = await this.llmChain.call({
+            intermediate_steps: steps,
+            stop: this.stop,
+            ...inputs,
+        }, callbackManager);
 
-      // completeRecording()
+      completeRecording()
+      //NOCK END
+
 
       let original = await this.outputParser.parse(output[this.llmChain.outputKey], callbackManager)
     

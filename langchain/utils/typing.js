@@ -1,21 +1,24 @@
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-export const typeOut = async (str,
-    thinkingDelay = 3000,
-    minTypingDelay = 200,
-    maxTypingDelay = 700,
-    prePause = 0,
-    splitByLetter= false
-) => {
+export const typeOut = async (str, options)=>{
+    
+    const {
+        thinkingDelay   = 3000,
+        minTypingDelay  = 200,
+        maxTypingDelay  = 700,
+        prePause        = 0,
+        splitByLetter   = false 
+    } = options;
+
     await delay(Math.random() * prePause);
+    
     for (const word of splitByLetter ? str.split("") : str.split(" ")) {
 
         const wordLength = word.length;
 
         let typingDelay = Math.floor(
-            Math.ceil(Math.random() * 1) * (maxTypingDelay - minTypingDelay) +
-            minTypingDelay
+            Math.ceil(Math.random() * 1) * (maxTypingDelay - minTypingDelay) + minTypingDelay
         );
 
         if (wordLength > 15) {
@@ -36,7 +39,10 @@ export const typeOut = async (str,
         }else{
             process.stdout.write(word + " ");
         }
-        await delay(Math.random() * typingDelay);
+        //ignore delay if word is empty
+        if(word.length !== 0){
+            await delay(Math.random() * typingDelay);
+        }
     }
 }
 

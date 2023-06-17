@@ -9,6 +9,7 @@ import { routerInvIsNotSetTools, routerCommonTools, routerInvIsSetTools } from "
 import { RouterActionAgent } from "./router.agent.js";
 import { RouterPromptTemplate } from './router.prompt.js';
 import { parseBoolean } from '../utils/boolean.js'
+
 dotenv.config()
 const debug = Debug(import.meta.url)
 
@@ -39,7 +40,7 @@ export const RouterExecutor = async (message, metadata) => {
       inputVariables: ["input", "agent_scratchpad", "chat_history","context"],
     }),
     // outputParser: new RouterChainParser(),
-    llm: new OpenAI({ temperature: 0 })
+    llm: new OpenAI({ temperature: 0 },{ basePath: process.env.basePath })
   });
 
   const agent = new RouterActionAgent({

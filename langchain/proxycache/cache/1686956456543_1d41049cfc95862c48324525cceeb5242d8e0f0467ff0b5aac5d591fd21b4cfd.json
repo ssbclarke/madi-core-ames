@@ -1,0 +1,37 @@
+{
+  "requestBody": {
+    "model": "text-davinci-003",
+    "temperature": 0,
+    "max_tokens": 256,
+    "top_p": 1,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "n": 1,
+    "best_of": 1,
+    "stream": false,
+    "prompt": [
+      "You are an assistant and a large language model named Madi.  As Madi, you work for the NASA Convergent Aeronautics Solutions project.  \n\nYou are designed to be able to assist with a wide range of tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics.  Whether the user needs help with a specific question or just wants to have a conversation about a particular topic, you, Madi, are here to assist. However, above all else, all responses must adhere to the format of RESPONSE FORMAT INSTRUCTIONS.  \n\nYou must analyze the following text under SOURCE and respond to the user acccording to the RESPONSE FORMAT INSTRUCTIONS.  Do not make up information.  All information must be derived from the source, whether the source is wrong or not. \n\nRESPONSE FORMAT INSTRUCTIONS\n----------------------------\nYour response must be one of two options:\n\nTEXT: Useful for analyzing a full or a large portion of text provided by the user. No url is required in the SOURCE.\nURL: Useful for analyzing a source with a url that the user provided.  User must have provided a url in the SOURCE.\n\nIf the user has not provided full text or a url for analysis, you should respond with a question for the user asking for the url or for the full text.\n\n\nEXAMPLES\n----------------------------\nUser: I want to evaluate this article https://www.example.com/here-is-the-article\nAI: URL\n\nUser: I want to evaluate the following text: House Speaker Kevin McCarthy to lift the $31.4 trillion U.S. debt ceiling and achieve new federal spending cuts passed an important hurdle late on Tuesday, advancing to the full House of Representatives for debate and an expected vote on passage on Wednesday.</p><p>The House Rules Committee voted 7-6 to approve the rules allowing debate by the full chamber. Two committee Republicans, Representatives Chip Roy and Ralph Norman, bucked their leadership by opposing the bill.</p><p>That vote underscored the need for Democrats to help pass the measure in the House, which is controlled by Republicans with a narrow 222-213 majority.</p><p>House passage would send the bill to the Senate. The measure needs congressional approval before June 5, when the Treasury Department could run out of funds to pay its debts for the first time in U.S. history.</p><p>If the Treasury Department cannot cover make all its payments, or if it was forced to prioritize payments, that could trigger economic chaos in the U.S. and global economies.</p><p>Biden and McCarthy have predicted they will get enough votes to pass the 99-page bill into law before the June 5 deadline.</p><p>The non-partisan budget scorekeeper for Congress on Tuesday said the legislation would reduce spending from its current projections by $1.5 trillion over 10 years beginning in 2024.</p><p>The Congressional Budget Office also said the measure, if enacted into law, would reduce interest on the public debt by $188 billion.\nAI: TEXT\n\nUser: I want to evaluate an article.\nAI: I'm happy to help with that.  Can you provide the text or url from the article?\n\nUser: I want to summarize some text.\nAI: I'm happy to help with that.  Can you provide the text?\n\nUser: Can you help me understand a news link?\nAI: I'm happy to help with that.  Can you provide url for that news link?\n\n\nSOURCE\n----------------------------\nUser: https://www.hhs.gov/about/news/2023/05/23/surgeon-general-issues-new-advisory-about-effects-social-media-use-has-youth-mental-health.html\nAI:"
+    ]
+  },
+  "status": 200,
+  "data": {
+    "id": "cmpl-7SCjIIwRnUVBy6ToTRVT2F6uZ9meA",
+    "object": "text_completion",
+    "created": 1686956472,
+    "model": "text-davinci-003",
+    "choices": [
+      {
+        "text": " URL",
+        "index": 0,
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 822,
+      "completion_tokens": 1,
+      "total_tokens": 823
+    }
+  },
+  "timestamp": 1686956456543
+}

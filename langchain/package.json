@@ -15,10 +15,13 @@
     "@inquirer/prompts": "^2.1.1",
     "@inquirer/type": "^1.1.0",
     "ansi-escapes": "^6.2.0",
+    "axios": "^1.4.0",
     "chalk": "^5.2.0",
     "cheerio": "^1.0.0-rc.12",
     "d3-dsv": "^2.0.0",
+    "dot-prop": "^8.0.0",
     "dotenv": "^16.0.3",
+    "express": "^4.18.2",
     "figures": "^5.0.0",
     "html-to-text": "^9.0.5",
     "input-event": "^1.2.6",
@@ -36,6 +39,7 @@
     "typeorm": "^0.3.16"
   },
   "devDependencies": {
+    "http-proxy-middleware": "^2.0.6",
     "nock-record": "^0.3.9"
   }
 }

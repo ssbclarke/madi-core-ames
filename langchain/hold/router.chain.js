@@ -7,7 +7,7 @@ import { WebBrowser } from "langchain/tools/webbrowser";
 import { ChatConversationalAgent} from "langchain/agents";
 import { ClarifyTool } from '../tools/clarify.tool.js'
 import { ChatMessageHistory } from "langchain/memory";
-import { InvestigationPrompt, InvestigationSelection } from "../tools/investigation/investigation.tool.js";
+import { InvestigationPrompt, InvestigationSelection } from "../features/investigation/investigation.tool.js";
 import { SerpAPI, ChainTool } from "langchain/tools";
 import dotenv from 'dotenv'
 import { redisClient } from "../redis.js";
@@ -37,7 +37,7 @@ const debug = Debug(import.meta.url)
  * Router LLM
  * The result is an object with a `text` property.  
  */
-const routerModel = new OpenAI({ temperature: 0 });
+const routerModel = new OpenAI({ temperature: 0 },{ basePath: process.env.basePath });
 const routerPrompt = PromptTemplate.fromTemplate(ROUTER_PROMPT);
 const routerChain = new LLMChain({ llm: routerModel, prompt: routerPrompt });
 

@@ -1,4 +1,4 @@
-GPT:		Good morning, James. How can I help?
+GPT:	Good morning, James. How can I help?
 
 USER: 	What can you do?
 
@@ -12,16 +12,16 @@ Search the CAS Discovery Confluence for particular investigations, problem promp
 Search some trusted external data sources
 Generate futurist scenarios based on my data
 
-USER:	I want to add a pdf
+<!-- USER:	I want to add a pdf -->
 
-GPT:	What investigation are you working on, X, Y, Z, G, or H?
+<!-- GPT:	What investigation are you working on, X, Y, Z, G, or H?
 
 USER: 	G.
 
 GPT:	Drag the file onto this page
 	Parsing
 	Uploading
-	Would you like a summary or a list of relevant elements?
+	Would you like a summary or a list of relevant elements? -->
 
 USER:	Yes, a list of relevant elements
 

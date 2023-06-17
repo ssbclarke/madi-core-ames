@@ -9,7 +9,7 @@ import { ChainTool, DynamicTool, Tool, StructuredTool } from "langchain/tools";
 import * as dotenv from 'dotenv'
 import { Document } from "langchain/document";
 import { Debug } from '../logger.js'
-import { ANALYSIS_PROMPT } from "../tools/analysis/analysis.prompt.js";
+import { ANALYSIS_PROMPT } from "../features/analysis/analysis.prompt.js";
 import { PromptTemplate } from "langchain/prompts";
 import { LLMChain } from "langchain/chains";
 import { z } from "zod";

@@ -5,7 +5,7 @@
  * @property {Array} [clientMemory] -
  * @property {object} [serverMemory] -
  * @property {string} [memId] -
- * @property {string} [flowKey] -
+ * @property {string} [routerKey] -
  * @property {Object} [context] -
  */
 

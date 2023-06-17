@@ -3,8 +3,8 @@ const { knex } = knexPkg.default; // workaround for typescript compatability
 
 import * as dotenv from 'dotenv'
 dotenv.config()
-import { OpenAIEmbeddings } from 'langchain/embeddings';
-import { KnexVectorStore, KnexVectorStoreDocument } from './knex.js';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+import { KnexVectorStore, KnexVectorStoreDocument } from '../utils/knex.js';
 import { getIdFromText } from '../utils/text.js';
 import { parseBoolean } from '../utils/boolean.js';
 
