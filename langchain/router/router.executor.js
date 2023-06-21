@@ -40,7 +40,7 @@ export const RouterExecutor = async (message, metadata) => {
       inputVariables: ["input", "agent_scratchpad", "chat_history","context"],
     }),
     // outputParser: new RouterChainParser(),
-    llm: new OpenAI({ temperature: 0 },{ basePath: process.env.basePath })
+    llm: new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH})
   });
 
   const agent = new RouterActionAgent({

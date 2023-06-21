@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "sand-convo-ch-27dc",
+  "private_key_id": "ac1d22c7742f4f938c23f0bd9f29ae1ea6b3019a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCdVcJueOvrLEwl\nc+pw1/BrItAweEHCs2mZC6FggItLp83npBIMemVMuHgkyfnrTE72Y2cI7RsaFfzy\nEZMfCWxwmSzh7qmIYVSKCuAjXsb1WDt0eH42ZklPh1eZIcXBeyPGvW3XEtcnOnGD\n5meUivwBtH+jRrOnIZCbkhxXVEQXrt/4xkU0wOuonVgtTwGFkrau09XQ+bsOo+ds\nNanS/AZeRuQdZRjF014N5XxQ9B3nC7l6esqikE4FVLrFAw5hpW5wX+VZXJw+P8RY\n+cZLCFFYhZoYGDNM5MXpHuuckNZbq5PLWU7YIffhZRQctpxnhH/TnmkqbC9T6Tqe\nVe6sUIkjAgMBAAECggEAK5AtT61HlUwkoVIhHbGMrf1rq6AAhUpr+KZRvoiZCQ+j\nYXn6TV4uYjnJelY6Tr5INsx7IOuVz3k7GkNnevZ/AgZHeR897bcVU0uDmAeMCy6s\n96jNOX7E2bJdvNavDM1tsH+OxDhBPmleOOk40NZSxJ4XoTvYTnRqt8iS9FMur2ea\n6F3ZHAuQOyJ1zEiWupfvVKI6grVvP53DGCtiSxg4GsdGwXj/qAU/AV9Y1qEzTA0B\nKBaVJU7KBYgAZsuQEBWSq/DzI0mTkac0xXy9LmPqXOdT8rXwE3+cIahVIUNGjoQR\njp07ixOVGn0zd8Z6D+dahy6Mc2n0brEYwExOrQsfYQKBgQDUOGjP7w6k7N6KpyIl\n+hn4tmy2J33RHpcIX0YNdHmqcB95NuJirOEBoJwkjEC0Vzyqktfu1SvmDYaFFXDi\nNMRtPhx+0t9ynkjzsjSSXjUp2p68cvywNE82fVAzxgsTVICiJI4onsg9cf1bAq4t\nJY2JPCD2WfunEIAc9kycNWc7OwKBgQC9ystPCqju3DYysdj1WGuYPPHX8/lVK5lf\n9+/Ue7SCbjR862xu7GGvba0x4AqLCTdarS1Z++R1OYwocQR9cPCnViiqRILD8l7z\n6UDOTgpOG31/Lbqb0iJjsoJbCunCqgTvwF+6+OPlvr47jokvQmVr0ejJJ4kNxTV9\nOypu+K17OQKBgF4FO9JbnAZPduzAzS08F8OLtrAg4OoD/m/UHeoaH0j2ccs3GKcU\n5n7dFDBQ/t2nBJahhg8m3FMIzP8rF57wN9IaQW+ipyJVpAZrfkUWfcE0PT1KSE8c\nbbe7XwwBAqkmt/Kd9Wljp10polBu6JHR4FnbjNL33LkQY2HxcNGIC1s/AoGBALz+\nLXh3SAQbm4jd2wtt0i7WOYnvdFDgyqlrLxKrYPQlI/VlRiQrFZdoovgwfq83LT0J\niEi78iLdfHllGbCEf9BSlsn+0SyotO80TgliYxamf1Dey52RIhefUfmxI1hqj+Hi\n8jEw2VgVmj+aT3eVKYO1kpaE3RCuWfZrrXS2A6LZAoGAbKJkCMAILZRVvQ5pVYYX\nK9HxjhQ0wngvKuBPkPpRtC23xKxFyvw0YFwxcYgtyTdB0lWxT2GlTR2MhPHRtUhS\nXcweBmMpc2tuVHtq1HMakfNBKg9ZbWQ4DNTDQlkieRg90fFGRpRee9jMG2yxhGf6\nT4X3ZBDo9JWadl/UsODTTGE=\n-----END PRIVATE KEY-----\n",
+  "client_email": "terraform-automation@sand-convo-ch-27dc.iam.gserviceaccount.com",
+  "client_id": "107329941219767247351",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/terraform-automation%40sand-convo-ch-27dc.iam.gserviceaccount.com"
+}

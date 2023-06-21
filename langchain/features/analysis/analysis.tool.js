@@ -19,7 +19,7 @@ import { SummarizeSourceChain } from "../../chains/summarizeSourceChain/summariz
 import { CategorizeSourceChain } from "../../chains/categorizeSource.chain.js"
 
 const debug = Debug(import.meta.url)
-const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.basePath });
+const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
 dotenv.config()
 
 /**

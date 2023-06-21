@@ -16,7 +16,7 @@ import { getIdFromText } from "../utils/text.js";
 const debug = Debug(import.meta.url)
 dotenv.config()
 
-const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.basePath });
+const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
 // const tagStore = await TagStore()
 const sourceStore = await SourceStore()
 

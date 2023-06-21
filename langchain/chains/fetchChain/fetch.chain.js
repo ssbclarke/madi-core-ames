@@ -5,13 +5,22 @@ import { Debug } from '../../logger.js'
 import { setupRecorder } from "../../utils/nockRecord.js";
 import { DocumentStore } from "../../storage/document.vectorstore.js";
 import { SourceStore } from "../../storage/source.store.js";
-import { Tiktoken } from "js-tiktoken/lite";
-import encoding from '../../utils/cl100k_base.json' assert {type:"json"};
-let tokenizer = new Tiktoken(encoding);
+// import { Tiktoken } from "js-tiktoken/lite";
+// import encoding from '../../utils/cl100k_base.json' assert {type:"json"};
+import { Tiktoken } from "tiktoken/lite";
+import cl100k_base from "tiktoken/encoders/cl100k_base.json" assert {type:"json"};
+
+let tokenizer = new Tiktoken(  
+    cl100k_base.bpe_ranks,
+    cl100k_base.special_tokens,
+    cl100k_base.pat_str);
+
+
+
 import { DefaultChain } from "../default.chain.js";
 
 const debug = Debug(import.meta.url)
-const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.basePath });
+const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
 dotenv.config()
 const enableStorage = true;
 const sourceStore = await SourceStore()

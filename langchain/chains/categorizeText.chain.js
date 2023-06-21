@@ -13,7 +13,7 @@ import { getProperty } from "dot-prop";
 const debug = Debug(import.meta.url)
 dotenv.config()
 
-const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.basePath });
+const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
 const tagStore = await TagStore()
 
 

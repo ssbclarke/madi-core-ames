@@ -84,7 +84,7 @@ export const investigationVectorStore = await createInvestigationStore()
  * Router LLM
  * The result is an object with a `text` property.  
  */
-const investigationModel = new OpenAI({ temperature: 0, maxTokens: 150}, { basePath: process.env.basePath });
+const investigationModel = new OpenAI({ temperature: 0, maxTokens: 150}, { basePath: process.env.BASE_PATH});
 const investigationPrompt = PromptTemplate.fromTemplate(INVESTIGATION_PROMPT);
 
 const investigationChain = new LLMChain({ llm: investigationModel, prompt: investigationPrompt });

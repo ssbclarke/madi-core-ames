@@ -28,7 +28,7 @@ export class RouterActionAgent extends LLMSingleActionAgent{
 
 
       //NOCK START
-      const { completeRecording } = await setupRecorder()(`routerAgent_${message.replace(/[^a-z0-9]/gi, '_').slice(0,50)}_${getIdFromText(JSON.stringify(inputs))}`);  
+      const { completeRecording } = await setupRecorder()(`routerAgent_${message.replace(/[^a-z0-9]/gi, '_').slice(0,50)}_${getIdFromText(JSON.stringify({chat_history, message}))}`);  
               
         // this gets the action step itself as output = {text:"my output"}
         const output = await this.llmChain.call({

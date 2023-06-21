@@ -10,7 +10,7 @@ import { DOC_ANALYSIS_PROMPT } from "./summarizeDocs.prompt.js";
 import { getIdFromText } from "../../utils/text.js";
 
 const debug = Debug(import.meta.url)
-const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.basePath });
+const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
 dotenv.config()
 const documentStore = await DocumentStore()
 

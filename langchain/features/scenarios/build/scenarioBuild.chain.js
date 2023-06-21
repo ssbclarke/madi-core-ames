@@ -21,7 +21,7 @@ export class ScenarioBuildChain extends LLMChain{
     super(fields)
     this.llm = new OpenAI(
       { temperature: fields.temperature ?? 1, verbose:fields.verbose ?? false, maxTokens:fields.tokens ?? 2000 },
-      { basePath: process.env.basePath }
+      { basePath: process.env.BASE_PATH}
     );
   }
 }

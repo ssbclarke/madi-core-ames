@@ -6,7 +6,9 @@ import { Debug } from './logger.js'
 import { redisClient } from './redis.js'
 import { setupRecorder } from "./utils/nockRecord.js";
 import { router } from './router/router.js'
+import { parseBoolean } from './utils/boolean.js'
 import * as proxyCache from './proxycache/proxycache.js'
+
 /**
  * @typedef {import("./types.js").Metadata} Metadata 
  * @typedef {import("./types.js").ServerResponse} ServerResponse
@@ -29,6 +31,15 @@ let metadata = {
     context,
     memId
 }
+
+if(parseBoolean(process.env.USE_PROXY)){
+    process.env.BASE_PATH  = `http://localhost:${process.env.PROXY_PORT}/v1`
+    proxyCache.initializeProxy()
+}else{
+    process.env.BASE_PATH  = 'https://api.openai.com/v1'
+}
+
+
 let i = 0
 let maxIterations = 10
 let enablePreBuild = true

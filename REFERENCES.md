@@ -45,7 +45,6 @@
     * https://github.com/nemoteric/GPT-4-Chat-UI (very simple)
 
 
-
 * Unlisted
     * [PostgreSQL Graph Search Practices - 10 Billion-Scale Graph with Millisecond Response - Alibaba Cloud Community](https://www.alibabacloud.com/blog/postgresql-graph-search-practices---10-billion-scale-graph-with-millisecond-response_595039)
     * [[Project] pgANN Fast Approximate Nearest Neighbor (ANN) searches with a PostgreSQL database. : MachineLearning](https://www.reddit.com/r/MachineLearning/comments/dkwwrt/project_pgann_fast_approximate_nearest_neighbor/)

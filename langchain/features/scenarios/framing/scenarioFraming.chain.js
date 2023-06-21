@@ -29,7 +29,7 @@ export class ScenarioFramingChain extends LLMChain{
         verbose: fields.verbose ?? false,
         maxTokens: fields.maxTokens ?? 2000 
       },
-      { basePath: process.env.basePath }
+      { basePath: process.env.BASE_PATH}
     );
   }
 }

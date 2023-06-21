@@ -11,7 +11,7 @@ import { StructuredOutputParser } from "langchain/output_parsers";
 import { parseBoolean } from '../../../utils/boolean.js'
 
 const debug = Debug(import.meta.url)
-const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.basePath });
+const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
 dotenv.config()
 
 const parser = StructuredOutputParser.fromNamesAndDescriptions({
@@ -41,7 +41,7 @@ export class ScenarioInputChain extends LLMChain{
     this.llm = new OpenAI(
       { temperature: 0, 
         verbose: parseBoolean(process.env.VERBOSE) && parseBoolean(process.env.DEBUG)},
-      { basePath: process.env.basePath }
+      { basePath: process.env.BASE_PATH}
     );
   }
 

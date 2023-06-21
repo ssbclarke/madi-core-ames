@@ -35,7 +35,7 @@ class getUrlOutputParser extends BaseOutputParser{
 export class UrlChain extends LLMChain{
     
     constructor(fields){
-        fields.llm = fields.llm ?? new OpenAI({ temperature: 0 },{ basePath: process.env.basePath });
+        fields.llm = fields.llm ?? new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
         fields.prompt = fields.promptTemplate ?? new PromptTemplate({
             template: URL_PROMPT, 
             inputVariables: fields.inputVariables

@@ -24,7 +24,7 @@ export class ScenarioLadderChain extends LLMChain{
         verbose:fields.verbose ?? false, 
         maxTokens:fields.tokens ?? 2000 
       },{ 
-        basePath: process.env.basePath 
+        basePath: process.env.BASE_PATH
       });
   }
 }

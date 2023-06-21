@@ -5,10 +5,21 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { setupRecorder } from "../utils/nockRecord.js";
 import { DocumentStore } from "../storage/document.vectorstore.js";
 import { wordWrap } from '../utils/text.js';
-import encoding from '../utils/cl100k_base.json' assert {type:"json"};
 import { DefaultChain } from "./default.chain.js";
-import { Tiktoken } from "js-tiktoken/lite";
-let tokenizer = new Tiktoken(encoding);
+// import { Tiktoken } from "js-tiktoken/lite";
+// let tokenizer = new Tiktoken(encoding);
+// import encoding from '../utils/cl100k_base.json' assert {type:"json"};
+
+
+import { Tiktoken } from "tiktoken/lite";
+import cl100k_base from "tiktoken/encoders/cl100k_base.json" assert {type:"json"};
+
+let tokenizer = new Tiktoken(  
+    cl100k_base.bpe_ranks,
+    cl100k_base.special_tokens,
+    cl100k_base.pat_str);
+
+
 
 const debug = Debug(import.meta.url)
 dotenv.config()

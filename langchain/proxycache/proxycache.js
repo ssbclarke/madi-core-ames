@@ -11,6 +11,8 @@ const __dirname = path.dirname(__filename);
 
 const debug = Debug(import.meta.url)
 const app = express();
+const port = process.env.PROXY_PORT || 8888;
+
 app.use(express.json());
 
 app.all('*', async (req, res) => {
@@ -57,4 +59,6 @@ app.all('*', async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log('Server started on port 3000...'));
+export const initializeProxy = async ()=>{
+  await app.listen(port, () => console.log(`ProxyCache Server started on port ${port}...`));
+}

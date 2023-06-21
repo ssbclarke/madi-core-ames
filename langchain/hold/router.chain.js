@@ -37,7 +37,7 @@ const debug = Debug(import.meta.url)
  * Router LLM
  * The result is an object with a `text` property.  
  */
-const routerModel = new OpenAI({ temperature: 0 },{ basePath: process.env.basePath });
+const routerModel = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
 const routerPrompt = PromptTemplate.fromTemplate(ROUTER_PROMPT);
 const routerChain = new LLMChain({ llm: routerModel, prompt: routerPrompt });
 
