@@ -1,0 +1,17 @@
+{
+  "requestBody": {
+    "prompt": "A shot from a scifi movie of a group of teenagers in a dark alley, illuminated by a single streetlight. One of the teenagers is wearing a mask and looking menacing and holding a bat. The scene is meant to evoke a sense of fear and danger. NO TEXT",
+    "n": 1,
+    "size": "256x256"
+  },
+  "status": 200,
+  "data": {
+    "created": 1687579599,
+    "data": [
+      {
+        "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-7PRww8QOHX8S0SgsXDuJkFKY/user-7unCnY2SY6YeNwHEW7OyGVMn/img-zK4tYxqdDoTIdHVcJB9hep2T.png?st=2023-06-24T03%3A06%3A39Z&se=2023-06-24T05%3A06%3A39Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-06-24T01%3A54%3A00Z&ske=2023-06-25T01%3A54%3A00Z&sks=b&skv=2021-08-06&sig=K/9q3GYu9OgDhsrQoLNq4prrIu%2B3ugQEB8Dp3v1P8s4%3D"
+      }
+    ]
+  },
+  "timestamp": "2023-06-24_04:06:04"
+}

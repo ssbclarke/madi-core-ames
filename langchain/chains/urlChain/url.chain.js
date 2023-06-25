@@ -2,7 +2,7 @@ import { LLMChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import * as dotenv from 'dotenv'
-import { Debug } from '../../logger.js'
+import { Debug } from '../../utils/logger.js'
 import { BaseOutputParser } from "langchain/schema/output_parser";
 import { URL_PROMPT } from "./url.prompt.js"
 import { setupRecorder } from "../../utils/nockRecord.js";
@@ -35,7 +35,7 @@ class getUrlOutputParser extends BaseOutputParser{
 export class UrlChain extends LLMChain{
     
     constructor(fields){
-        fields.llm = fields.llm ?? new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
+        fields.llm = fields.llm ?? new OpenAI({ temperature: 0 },{ basePath: process.env.PROXY_PATH});
         fields.prompt = fields.promptTemplate ?? new PromptTemplate({
             template: URL_PROMPT, 
             inputVariables: fields.inputVariables

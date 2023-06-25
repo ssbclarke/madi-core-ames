@@ -2,7 +2,7 @@ import { LLMChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import * as dotenv from 'dotenv'
-import { Debug } from '../../../logger.js'
+import { Debug } from '../../../utils/logger.js'
 import { setupRecorder } from "../../../utils/nockRecord.js";
 // import { DocumentStore } from "../../storage/document.vectorstore.js";
 import { DefaultChain } from "../../../chains/default.chain.js";
@@ -29,7 +29,7 @@ export class ScenarioFramingChain extends LLMChain{
         verbose: fields.verbose ?? false,
         maxTokens: fields.maxTokens ?? 2000 
       },
-      { basePath: process.env.BASE_PATH}
+      { basePath: process.env.PROXY_PATH}
     );
   }
 }

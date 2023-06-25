@@ -11,7 +11,7 @@ Trend:  {trend}
 
 FORMAT:
 -----------------
-Timeframe: Clearly establish the time period in which the scenario takes place. It could be a few decades into the future or even further ahead.
+Timeframe: Clearly establish the time period in which the scenario takes place. It could be a few decades into the future or even further ahead. It must be at least after 2050.
 Context: Set the societal, technological, and environmental context of the scenario. Consider how advancements or changes in these areas have shaped the world in which the problem arises.
 Core Problem: Identify the central issue or challenge that the scenario focuses on. It could be a specific technological development, social change, environmental crisis, or any other factor that creates significant problems for individuals or society as a whole.
 Cause and Effect: Explore the causes and consequences of the core problem. What factors or events led to the emergence of the problem, and how does it impact various aspects of society? Consider both immediate and long-term effects.

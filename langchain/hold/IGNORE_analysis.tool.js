@@ -1,4 +1,4 @@
-import { redisClient } from "../redis.js";
+import { redisClient } from "../utils/redis.js";
 import { CSVLoader } from "langchain/document_loaders/fs/csv";
 import { RedisVectorStore } from "langchain/vectorstores/redis";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
@@ -8,7 +8,7 @@ import { OpenAI } from "langchain/llms/openai";
 import { ChainTool, DynamicTool, Tool, StructuredTool } from "langchain/tools";
 import * as dotenv from 'dotenv'
 import { Document } from "langchain/document";
-import { Debug } from '../logger.js'
+import { Debug } from '../utils/logger.js'
 import { ANALYSIS_PROMPT } from "../features/analysis/analysis.prompt.js";
 import { PromptTemplate } from "langchain/prompts";
 import { LLMChain } from "langchain/chains";

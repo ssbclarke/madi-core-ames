@@ -1,6 +1,6 @@
 
 import * as dotenv from 'dotenv'
-import { Debug } from '../logger.js'
+import { Debug } from '../utils/logger.js'
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { setupRecorder } from "../utils/nockRecord.js";
 import { DocumentStore } from "../storage/document.vectorstore.js";

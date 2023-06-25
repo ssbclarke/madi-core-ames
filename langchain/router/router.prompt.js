@@ -140,9 +140,9 @@ export class RouterPromptTemplate extends BaseStringPromptTemplate {
       this.tools = args.tools;
     }
   
-    // @ts-ignore
+    // // @ts-ignore
     _getPromptType() {
-      throw new Error("Not implemented");
+      return 'router'
     }
   
     /**

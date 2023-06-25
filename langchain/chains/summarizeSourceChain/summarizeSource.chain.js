@@ -2,7 +2,7 @@ import { LLMChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import * as dotenv from 'dotenv'
-import { Debug } from '../../logger.js'
+import { Debug } from '../../utils/logger.js'
 import { DefaultChain } from "../default.chain.js";
 import { SOURCE_ANALYSIS_PROMPT } from "./summarizeSource.prompt.js";
 import { SourceStore } from "../../storage/source.store.js";

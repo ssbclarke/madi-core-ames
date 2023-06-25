@@ -2,7 +2,7 @@ import { ChatOpenAI } from "langchain/chat_models/openai";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { BufferMemory } from "langchain/memory"
 import { ChatMessageHistory } from "langchain/memory";
-import { Debug } from '../logger.js'
+import { Debug } from '../utils/logger.js'
 
 
 const debug = Debug(import.meta.url)

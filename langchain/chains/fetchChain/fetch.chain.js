@@ -1,7 +1,7 @@
 import { OpenAI } from "langchain/llms/openai";
 import { playwrightScraper } from "./playwright.loader.js";
 import * as dotenv from 'dotenv'
-import { Debug } from '../../logger.js'
+import { Debug } from '../../utils/logger.js'
 import { setupRecorder } from "../../utils/nockRecord.js";
 import { DocumentStore } from "../../storage/document.vectorstore.js";
 import { SourceStore } from "../../storage/source.store.js";
@@ -20,7 +20,7 @@ let tokenizer = new Tiktoken(
 import { DefaultChain } from "../default.chain.js";
 
 const debug = Debug(import.meta.url)
-const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
+const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.PROXY_PATH});
 dotenv.config()
 const enableStorage = true;
 const sourceStore = await SourceStore()

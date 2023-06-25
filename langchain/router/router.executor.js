@@ -1,4 +1,4 @@
-import { Debug } from '../logger.js'
+import { Debug } from '../utils/logger.js'
 import { AgentExecutor } from "langchain/agents";
 import { LLMChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
@@ -40,7 +40,7 @@ export const RouterExecutor = async (message, metadata) => {
       inputVariables: ["input", "agent_scratchpad", "chat_history","context"],
     }),
     // outputParser: new RouterChainParser(),
-    llm: new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH})
+    llm: new OpenAI({ temperature: 0 },{ basePath: process.env.PROXY_PATH})
   });
 
   const agent = new RouterActionAgent({

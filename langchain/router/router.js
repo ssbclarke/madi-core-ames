@@ -1,5 +1,5 @@
 
-import { Debug } from '../logger.js'
+import { Debug } from '../utils/logger.js'
 import * as dotenv from 'dotenv'
 import { RouterExecutor } from './router.executor.js';
 import { InvestigationRouter } from '../features/investigation/investigation.router.js';

@@ -8,7 +8,7 @@ import { ROUTER_PROMPT } from "./analysis.prompt.js"
 
 import { parseBoolean } from '../../utils/boolean.js';
 import { setupRecorder } from "../../utils/nockRecord.js";
-import { Debug } from '../../logger.js'
+import { Debug } from '../../utils/logger.js'
 import { analysisStringifier } from './analysis.toString.js';
 
 import { SplitFromHTMLChain } from '../../chains/splitHTML.chain.js'
@@ -19,7 +19,7 @@ import { SummarizeSourceChain } from "../../chains/summarizeSourceChain/summariz
 import { CategorizeSourceChain } from "../../chains/categorizeSource.chain.js"
 
 const debug = Debug(import.meta.url)
-const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
+const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.PROXY_PATH});
 dotenv.config()
 
 /**

@@ -11,8 +11,10 @@ import { InvestigationTool } from '../features/investigation/investigation.tool.
 import { AnalysisTool } from "../features/analysis/analysis.tool.js";
 import { ChatTool } from "../tools/chat.tool.js";
 import { ScenarioTool } from '../features/scenarios/scenario.tool.js';
+import { GapTool } from '../features/gaps/gaps.tool.js';
+import { BiasTool } from '../features/bias/bias.tool.js';
 
-const routerModel = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
+const routerModel = new OpenAI({ temperature: 0 },{ basePath: process.env.PROXY_PATH});
 
 // always available
 export const routerCommonTools = [
@@ -25,6 +27,8 @@ export const routerCommonTools = [
     new InvestigationTool(),
     new FunctionTool(),
     new AnalysisTool(),
+    GapTool,
+    BiasTool,
     ScenarioTool
   ];
 
@@ -41,7 +45,7 @@ export  const routerInvIsSetTools = [
       description: `useful for when you need to find something on or summarize a webpage.  ONLY use when user input contains a full url or link. If there is no link, use the human tool to ask for one. input should be a comma separated list of "ONE valid http URL including protocol","what you want to find on the page or empty string for a summary". Final Answer should be acknowledgement of the user's request or a summary of the browswer response.`,
       model: new OpenAI({
         maxTokens: 1000
-      },{ basePath: process.env.BASE_PATH}),
+      },{ basePath: process.env.PROXY_PATH}),
       embeddings: new OpenAIEmbeddings()
     })
   ]

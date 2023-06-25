@@ -3,10 +3,15 @@ import { ScenarioInputChain } from './inputs/scenarioInput.chain.js'
 import { ScenarioFramingChain } from "./framing/scenarioFraming.chain.js";
 import { ScenarioLadderChain } from "./ladder/scenarioLadder.chain.js";
 import { ScenarioBuildChain } from "./build/scenarioBuild.chain.js";
+import { ScenarioImagePromptChain, ScenarioImages } from "./images/images.chain.js";
 import { setupRecorder } from "../../utils/nockRecord.js";
 import { getIdFromText } from "../../utils/text.js";
 import { SourceStore } from "../../storage/source.store.js";
 import { parseBoolean } from "../../utils/boolean.js";
+import * as proxycache from '../../proxycache/proxycache.js'
+import * as dotenv from 'dotenv'
+dotenv.config()
+
 
 // let sourceStore = await SourceStore();
 
@@ -24,7 +29,7 @@ export const ScenarioTool = new DynamicTool({
 
 
       //NOCK START
-      const { completeRecording } = await setupRecorder()(`ScenarioLadder_${getIdFromText(input)}`);  
+      // const { completeRecording } = await setupRecorder()(`ScenarioLadder_${getIdFromText(input)}`);  
               
         let inputChain = new ScenarioInputChain({
           outputKey:'inputs',
@@ -36,7 +41,7 @@ export const ScenarioTool = new DynamicTool({
         let framingChain = new ScenarioFramingChain({
           outputKey:'framing',
           temperature:1,
-          tokens: 2000,
+          tokens: 1300,
           verbose: parseBoolean(process.env.VERBOSE) && parseBoolean(process.env.DEBUG)
         });
         let { framing } = await framingChain.call({ trend, need, capability, additional_frames:"", additional_instructions:"" })
@@ -44,28 +49,40 @@ export const ScenarioTool = new DynamicTool({
         let ladderChain = new ScenarioLadderChain({
           outputKey:'ladder',
           temperature:1,
-          tokens: 2000,
+          tokens: 2500,
           verbose: parseBoolean(process.env.VERBOSE) && parseBoolean(process.env.DEBUG)
         });
         let { ladder } = await ladderChain.call({ framing, trend, need, capability, additional_frames:"", additional_instructions:"" })
 
-      completeRecording()
+      // completeRecording()
       //NOCK END
 
 
-        const { completeRecording:cr2 } = await setupRecorder()(`ScenarioNarrative_${getIdFromText(ladder)}`);  
+        // const { completeRecording:cr2 } = await setupRecorder()(`ScenarioNarrative_${getIdFromText(ladder)}`);  
 
         let buildChain = new ScenarioBuildChain({
           outputKey:'narrative',
           temperature:1,
-          tokens: 2000,
+          tokens: 2500,
           verbose: parseBoolean(process.env.VERBOSE) && parseBoolean(process.env.DEBUG)
         });
         let { narrative } = await buildChain.call({ framing, trend, need, capability, ladder, additional_frames:"", additional_instructions:"" })
 
-        cr2();
+        // cr2();
 
-        return narrative
+        let imagePromptChain = new ScenarioImagePromptChain({
+          outputKey:'imageprompts',
+          temperature:1,
+          tokens: 300,
+          verbose: parseBoolean(process.env.VERBOSE) && parseBoolean(process.env.DEBUG)
+        })
+
+        const { imageprompts }= await imagePromptChain.call({ narrative });
+ 
+
+        const imageLinks = await ScenarioImages(JSON.parse(imageprompts))
+
+        return narrative + `\n\n### Images:\n\n${imageLinks.join('')}`
 
     }
 })

@@ -2,7 +2,7 @@ import { LLMChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import * as dotenv from 'dotenv'
-import { Debug } from '../../../logger.js'
+import { Debug } from '../../../utils/logger.js'
 import { SCENARIO_LADDER_PROMPT } from "./scenarioLadder.prompt.js";
 
 
@@ -24,7 +24,7 @@ export class ScenarioLadderChain extends LLMChain{
         verbose:fields.verbose ?? false, 
         maxTokens:fields.tokens ?? 2000 
       },{ 
-        basePath: process.env.BASE_PATH
+        basePath: process.env.PROXY_PATH
       });
   }
 }

@@ -1,0 +1,17 @@
+{
+  "requestBody": {
+    "prompt": "A shot from a scifi movie. A dark and dystopian cityscape, with a giant eye in the sky, representing the global surveillance system. The eye is glowing red and scanning the city. The shot is in black and white, with a stark contrast between light and dark. The camera is a Sony Alpha 7R III, ISO 100, f/2.8, 1/125 sec. NO TEXT",
+    "n": 1,
+    "size": "256x256"
+  },
+  "status": 200,
+  "data": {
+    "created": 1687640989,
+    "data": [
+      {
+        "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-7PRww8QOHX8S0SgsXDuJkFKY/user-7unCnY2SY6YeNwHEW7OyGVMn/img-SaYDocyfQo97ZwlApKwrDJM9.png?st=2023-06-24T20%3A09%3A49Z&se=2023-06-24T22%3A09%3A49Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-06-24T01%3A51%3A19Z&ske=2023-06-25T01%3A51%3A19Z&sks=b&skv=2021-08-06&sig=X30P31wKuJcHPL3Qgo9XPD2UWQxHvJAjP6A5bEUUIP0%3D"
+      }
+    ]
+  },
+  "timestamp": "2023-06-24_21:09:11"
+}

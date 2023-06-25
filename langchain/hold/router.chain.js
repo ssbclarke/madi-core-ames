@@ -10,7 +10,7 @@ import { ChatMessageHistory } from "langchain/memory";
 import { InvestigationPrompt, InvestigationSelection } from "../features/investigation/investigation.tool.js";
 import { SerpAPI, ChainTool } from "langchain/tools";
 import dotenv from 'dotenv'
-import { redisClient } from "../redis.js";
+import { redisClient } from "../utils/redis.js";
 import { AIChatMessage } from "langchain/schema";
 import { getInputValue } from "langchain/memory";
 
@@ -18,7 +18,7 @@ import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import { LLMChain } from "langchain/chains";
 import { ROUTER_PROMPT } from './router.promptsOLD.js';
-import { Debug } from '../logger.js'
+import { Debug } from '../utils/logger.js'
 import { ChatAgent } from "../tools/chat.tool.js";
 import { parseBoolean } from "../utils/boolean.js";
 import { establishMemory } from '../memory/memory.js'
@@ -37,7 +37,7 @@ const debug = Debug(import.meta.url)
  * Router LLM
  * The result is an object with a `text` property.  
  */
-const routerModel = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
+const routerModel = new OpenAI({ temperature: 0 },{ basePath: process.env.PROXY_PATH});
 const routerPrompt = PromptTemplate.fromTemplate(ROUTER_PROMPT);
 const routerChain = new LLMChain({ llm: routerModel, prompt: routerPrompt });
 

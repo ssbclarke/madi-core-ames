@@ -1,4 +1,4 @@
-import { redisClient } from "../../redis.js";
+import { redisClient } from "../../utils/redis.js";
 import { CSVLoader } from "langchain/document_loaders/fs/csv";
 import { RedisVectorStore } from "langchain/vectorstores/redis";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
@@ -8,7 +8,7 @@ import { OpenAI } from "langchain/llms/openai";
 import { ChainTool, DynamicTool, Tool, StructuredTool } from "langchain/tools";
 import * as dotenv from 'dotenv'
 import { Document } from "langchain/document";
-import { Debug } from '../../logger.js'
+import { Debug } from '../../utils/logger.js'
 import { INVESTIGATION_PROMPT } from "./investigation.prompts.js";
 import { PromptTemplate } from "langchain/prompts";
 import { LLMChain } from "langchain/chains";
@@ -84,7 +84,7 @@ export const investigationVectorStore = await createInvestigationStore()
  * Router LLM
  * The result is an object with a `text` property.  
  */
-const investigationModel = new OpenAI({ temperature: 0, maxTokens: 150}, { basePath: process.env.BASE_PATH});
+const investigationModel = new OpenAI({ temperature: 0, maxTokens: 150}, { basePath: process.env.PROXY_PATH});
 const investigationPrompt = PromptTemplate.fromTemplate(INVESTIGATION_PROMPT);
 
 const investigationChain = new LLMChain({ llm: investigationModel, prompt: investigationPrompt });
@@ -131,7 +131,7 @@ export class InvestigationTool extends StructuredTool {
         const runManager = await callbackManager_?.handleToolStart({ name: this.name }, typeof parsed === "string" ? parsed : JSON.stringify(parsed));
         let result;
         try {
-            result = await this._call(parsed, runManager);
+            result = await this._call(parsed);
         }
         catch (e) {
             await runManager?.handleToolError(e);
@@ -144,23 +144,22 @@ export class InvestigationTool extends StructuredTool {
 
     /**
      * 
-     * @param {*} param0 
-     * @param {*} callbackManager 
+     * @param {string} actionInput
      * @returns {Promise<[string, Metadata]>
      */
-    async _call({actionInput, chat_history, message, metadata}, callbackManager){
+    async _call(actionInput){
 
         //NOCK START
-        const { completeRecording } = await setupRecorder()(`InvestigationTool_${getIdFromText(message)}`);  
-            let response = await investigationChain.call({ input: actionInput }).then(result=>result?.text.trim() || null)
-        completeRecording()
+        // const { completeRecording } = await setupRecorder()(`InvestigationTool_${getIdFromText(message)}`);  
+        let response = await investigationChain.call({ input: actionInput }).then(result=>result?.text.trim() || null)
+        // completeRecording()
         //NOCK END
 
 
         if(response.toLowerCase() === 'selection'){
-            return InvestigationPicker(actionInput, metadata)
+            return InvestigationPicker(actionInput, this.metadata)
         }
-        return [response, metadata]; //only works because of return direct setting.
+        return [response, this.metadata]; //only works because of return direct setting.
     }
 }
 
@@ -176,11 +175,11 @@ export const InvestigationPicker = async (input, metadata)=>{
         return (JSON.parse(`${d?.value?.metadata||""}`.split("\\-").join("-"))).name
     })
     return [
-        `Which Investigation are you working on?`, //\n${names.map((text,i)=>(` ${i+1}. ${text}`)).join("\n")}`
+        `Which Investigation are you working on? \n${names.map((text,i)=>(` ${i+1}. ${text}`)).join("\n")}`,
         {
             ...metadata,
-            responseType: 'list',
-            choices: names,
+            // responseType: 'list',
+            // choices: names,
             routerKey: 'investigation_confirmation'
         }
     ]

@@ -1,0 +1,17 @@
+{
+  "requestBody": {
+    "prompt": "A photo of a computer monitor with the WDHD platform open, showing a map of the world with different countries highlighted in different colors. The colors represent the different levels of regulation and monitoring of social media use. The photo is taken from a low angle, giving the viewer a sense of the power and importance of the platform. Shot with Sony Alpha 7R III, ISO 100, 24mm, f/2.8. NO TEXT",
+    "n": 1,
+    "size": "256x256"
+  },
+  "status": 200,
+  "data": {
+    "created": 1687579526,
+    "data": [
+      {
+        "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-7PRww8QOHX8S0SgsXDuJkFKY/user-7unCnY2SY6YeNwHEW7OyGVMn/img-odghRpoxCrDTqSbBLmM40HYl.png?st=2023-06-24T03%3A05%3A26Z&se=2023-06-24T05%3A05%3A26Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-06-24T01%3A51%3A34Z&ske=2023-06-25T01%3A51%3A34Z&sks=b&skv=2021-08-06&sig=QkZSK3ufufkew%2BIAaYV0yNPw7j/Lp2uv6IF%2BoOyMjNY%3D"
+      }
+    ]
+  },
+  "timestamp": "2023-06-24_04:04:50"
+}

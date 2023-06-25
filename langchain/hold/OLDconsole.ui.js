@@ -4,7 +4,7 @@ import inquirer from 'inquirer';
 import { typeOut } from '../utils/typing.js';
 import { router } from '../router/router.js'
 import chalk from 'chalk';
-import { Debug } from '../logger.js'
+import { Debug } from '../utils/logger.js'
 import { wordWrap } from '../utils/text.js';
 // import Prompt from 'inquirer/lib/prompts/base.js';
 const debug = Debug(import.meta.url)

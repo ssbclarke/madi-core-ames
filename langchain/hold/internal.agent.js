@@ -10,10 +10,10 @@ import { ChatMessageHistory } from "langchain/memory";
 import { InvestigationPrompt, InvestigationSelection } from "../tools/investigation.tool.js";
 import { SerpAPI, ChainTool } from "langchain/tools";
 import dotenv from 'dotenv'
-import { redisClient } from "../redis.js";
+import { redisClient } from "../utils/redis.js";
 import { AIChatMessage } from "langchain/schema";
 import { getInputValue } from "langchain/memory";
-import { Debug } from '../logger.js'
+import { Debug } from '../utils/logger.js'
 const debug = Debug(import.meta.url)
 
 

@@ -1,7 +1,7 @@
 import { dirname, join } from "path";
 import nock from "nock";
 import * as stackTrace from "stack-trace";
-import { Debug } from '../logger.js'
+import { Debug } from './logger.js'
 import { getIdFromText } from "./text.js";
 import { parseBoolean } from "./boolean.js";
 const debug = Debug(import.meta.url)

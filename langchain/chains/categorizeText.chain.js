@@ -2,7 +2,7 @@ import { LLMChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import * as dotenv from 'dotenv'
-import { Debug } from '../logger.js'
+import { Debug } from '../utils/logger.js'
 import { setupRecorder, recordOptions } from "../utils/nockRecord.js";
 import { DocumentStore } from "../storage/document.vectorstore.js";
 import { DefaultChain } from "./default.chain.js";
@@ -13,7 +13,7 @@ import { getProperty } from "dot-prop";
 const debug = Debug(import.meta.url)
 dotenv.config()
 
-const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
+const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.PROXY_PATH});
 const tagStore = await TagStore()
 
 

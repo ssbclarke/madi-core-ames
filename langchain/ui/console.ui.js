@@ -4,7 +4,7 @@ dotenv.config()
 import { typeOut } from '../utils/typing.js';
 import { router } from '../router/router.js'
 import chalk from 'chalk';
-import { Debug } from '../logger.js'
+import { Debug } from '../utils/logger.js'
 import { wordWrap } from '../utils/text.js';
 import input from './input.inquirer.js';
 import select from './select.inquirer.js';

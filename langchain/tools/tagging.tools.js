@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'
 import { SequentialChain, LLMChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
-import { Debug } from '../logger.js'
+import { Debug } from '../utils/logger.js'
 import { z } from "zod";
 import { StructuredTool } from "langchain/tools";
 import { ROUTER_PROMPT } from "./analysis.prompt.js"
@@ -17,7 +17,7 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { TagStore } from '../storage/tag.store.js';
 
 const debug = Debug(import.meta.url)
-const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.BASE_PATH});
+const llm = new OpenAI({ temperature: 0 },{ basePath: process.env.PROXY_PATH});
 dotenv.config()
 
 /**

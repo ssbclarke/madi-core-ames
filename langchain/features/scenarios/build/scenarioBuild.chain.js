@@ -2,7 +2,7 @@ import { LLMChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
 import { PromptTemplate } from "langchain/prompts";
 import * as dotenv from 'dotenv'
-import { Debug } from '../../../logger.js'
+import { Debug } from '../../../utils/logger.js'
 import { setupRecorder } from "../../../utils/nockRecord.js";
 import { SCENARIO_BUILD_PROMPT } from "./scenarioBuild.prompt.js";
 
@@ -21,7 +21,7 @@ export class ScenarioBuildChain extends LLMChain{
     super(fields)
     this.llm = new OpenAI(
       { temperature: fields.temperature ?? 1, verbose:fields.verbose ?? false, maxTokens:fields.tokens ?? 2000 },
-      { basePath: process.env.BASE_PATH}
+      { basePath: process.env.PROXY_PATH}
     );
   }
 }
