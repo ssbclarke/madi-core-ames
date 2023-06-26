@@ -83,7 +83,7 @@ CONTEXT
 --------------------
 {context}
 
-Begin! When required, use the information above from the RECENT CONVERSATION and CONTEXT to formulate an appropriate response.
+Begin! When required, use the information above from the RECENT CONVERSATION and CONTEXT to formulate an appropriate response. Make sure to pay attention to the most recent question of the human when evaluating the new question.
 
 Question: {message}
 Thought:{agent_scratchpad}`

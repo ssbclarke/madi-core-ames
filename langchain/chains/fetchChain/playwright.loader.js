@@ -2,7 +2,10 @@ import { PlaywrightWebBaseLoader } from "langchain/document_loaders/web/playwrig
 import { extractFromHtml } from '@extractus/article-extractor'
 import { getIdFromText } from "../../utils/text.js";
 import { promises as fs } from 'fs';
-
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 const loader = (options) => {
@@ -24,7 +27,7 @@ const loader = (options) => {
 export const playwrightScraper = async(url) => {
     let hash = getIdFromText(url);
     let page;
-    let filename = `./__nock-fixtures__/pw_${hash}.json`
+    let filename = `./cache/pw_${hash}.json`
     try {
         page = await fs.readFile(filename, 'utf8');
     } catch (error) {
@@ -51,7 +54,7 @@ export const playwrightScraper = async(url) => {
                     img: ['src', 'alt', 'title']
                   },
             });
-            await fs.writeFile(filename, JSON.stringify(result));
+            await fs.writeFile(__dirname+"/"+filename, JSON.stringify(result));
             return result;
 
         } else {

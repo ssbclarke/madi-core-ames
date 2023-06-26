@@ -23,13 +23,21 @@ const scenarioImagesPrompt = new PromptTemplate({
 class ImageParser extends BaseOutputParser{
 
   getFormatInstructions(){return ''}
-
+  
   async parse(raw){
-    const regex = new RegExp(/(.*)Realistic:(.*)ELEMENT:(.*)Artistic:(.*)ELEMENT:(.*)Scifi:(.*)/gms)
-    let matches = regex.exec(raw);
-    const realistic  = matches[2].trim();
-    const artistic   = matches[4].trim();
-    const scifi      = matches[6].trim();
+    const regexR = new RegExp(/(.*)Realistic:(.*?)(ELEMENT:|$)/gms)
+    const regexA = new RegExp(/(.*)Artistic:(.*?)(ELEMENT:|$)/gms)
+    const regexS = new RegExp(/(.*)Scifi:(.*?)(ELEMENT:|$)/gms)
+
+    let matchesR = regexR.exec(raw);
+    let matchesA = regexA.exec(raw);
+    let matchesS = regexS.exec(raw);
+
+    const realistic = matchesR[2].trim();
+    const artistic = matchesA[2].trim();
+    const scifi = matchesS[2].trim();
+
+
     return JSON.stringify({realistic, artistic, scifi})
 
   }

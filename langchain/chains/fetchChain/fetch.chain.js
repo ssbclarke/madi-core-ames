@@ -49,7 +49,7 @@ export class FetchChain extends DefaultChain{
                 ...scrapeResult,
                 // type: 'web',
                 // source: scrapeResult.source,
-                // published: scrapeResult.published,
+                published: new Date(scrapeResult.published).toISOString(),
                 metadata:{
                     tokens: tokenizer.encode(scrapeResult.content).length,
                     // links: scrapeResult.links,

@@ -93,7 +93,7 @@ const investigationChain = new LLMChain({ llm: investigationModel, prompt: inves
 // @ts-ignore
 export class InvestigationTool extends StructuredTool {
     name = "investigation";
-    description = "useful for allowing the user to select, specify, or clarify an investigation topic. If the user mentions changing or picking an investigation, this is the right tool.  This will help the user pick and investigation from a list passed in later from memory.";
+    description = "useful for allowing the user to select an investigation as context. You should only use this tool the user mentions changing or picking an investigation topic.  Do NOT use this tool for searching, lookup information, answering questions. This tool MUST be limited to a very specific request to select an investigation topic.";
 
     constructor(options={}){
         super();
@@ -120,27 +120,27 @@ export class InvestigationTool extends StructuredTool {
     }
 
     /**
-     * 
-     * @param {string} arg 
-     * @param {array} callbacks 
-     * @returns {Promise<[string, Metadata]>}
-     */
-    async call(arg, callbacks) {
-        const parsed = await this.schema.parseAsync(arg);
-        const callbackManager_ = await CallbackManager.configure(callbacks, this.callbacks, { verbose: this.verbose });
-        const runManager = await callbackManager_?.handleToolStart({ name: this.name }, typeof parsed === "string" ? parsed : JSON.stringify(parsed));
-        let result;
-        try {
-            result = await this._call(parsed);
-        }
-        catch (e) {
-            await runManager?.handleToolError(e);
-            throw e;
-        }
+    //  * 
+    //  * @param {string} arg 
+    //  * @param {array} callbacks 
+    //  * @returns {Promise<[string, Metadata]>}
+    //  */
+    // async call(arg, callbacks) {
+    //     const parsed = await this.schema.parseAsync(arg);
+    //     const callbackManager_ = await CallbackManager.configure(callbacks, this.callbacks, { verbose: this.verbose });
+    //     const runManager = await callbackManager_?.handleToolStart({ name: this.name }, typeof parsed === "string" ? parsed : JSON.stringify(parsed));
+    //     let result;
+    //     try {
+    //         result = await this._call(parsed);
+    //     }
+    //     catch (e) {
+    //         await runManager?.handleToolError(e);
+    //         throw e;
+    //     }
         
-        await runManager?.handleToolEnd(result[0]); // this is required for the tuple response
-        return result;
-    }
+    //     await runManager?.handleToolEnd(result[0]); // this is required for the tuple response
+    //     return result;
+    // }
 
     /**
      * 

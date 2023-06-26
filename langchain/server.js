@@ -12,7 +12,7 @@ import { parseBoolean } from './utils/boolean.js';
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
 import Convert from 'ansi-to-html';
-
+import merge from 'deepmerge'
 
 /**
  * @typedef {import("./types.js").Metadata} Metadata 
@@ -53,10 +53,11 @@ let inputs = [
     "Health & Wellness",
     "Which categories need more research?",
     "What categories are biased too positively or too negatively?",
+    "What do you know about emergency medical drones?",
+    "Web",
     "I want to add an article to my data.",
-    "https://www.hhs.gov/about/news/2023/05/23/surgeon-general-issues-new-advisory-about-effects-social-media-use-has-youth-mental-health.html",
-    "Can you generate a scenario based on that article?",
-    "Remind me, what investigation am I working on?"
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8605877/",
+    "Can you generate a scenario based on that article?"
 ]
 
 if(parseBoolean(process.env.USE_PROXY)){
@@ -74,7 +75,7 @@ if(parseBoolean(process.env.USE_PROXY)){
  * @return {Promise} response -
  */
 export const sendToBackend = async (message, { clientMemory, memId, routerKey, context }) => {
-    debug({ memId, routerKey })
+    debug({ memId, routerKey, context })
     if (!clientMemory) throw new Error(JSON.stringify(clientMemory))
     return router(message, { clientMemory, memId, routerKey, context })
 }
@@ -105,7 +106,7 @@ app.all('/*', async (req, res) => {
     // aiMessage = convert.toHtml(aiMessage); // 
     // TODO: fix this so that html can be sent from the backend.
     // console.log('returning ', aiMessage)
-    Object.assign(metadata, newMetadata)
+    metadata = merge(metadata, newMetadata, {arrayMerge:(d,s)=>s})
 
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Content-Type', 'text/event-stream');

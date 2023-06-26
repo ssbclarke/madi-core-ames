@@ -50,6 +50,7 @@ export class CategorizeSourceChain extends DefaultChain{
 
 
         let source
+        
         if(typeof sourceJson === 'string'){
             source = JSON.parse(sourceJson)
         }
@@ -57,39 +58,41 @@ export class CategorizeSourceChain extends DefaultChain{
             source = JSON.parse(sourceJson[this.inputVariables[0]])
         }
 
-        let text = source.summary || ''
 
-        //NOCK START
-        const { completeRecording } = await setupRecorder()(`categorizeSourceChain_${getIdFromText(text)}`);
-            let {
-                categories,
-                subcategories,
-                needs,
-                ilities
-            } = await categorizeText(text, this.embeddings)
-        completeRecording();
-        //NOCK END
+        if(!source.metadata?.category){
+            let text = source.summary || ''
 
-        const getName = (doc)=>{
-            return getProperty(doc, "[0].metadata.name")
+            //NOCK START
+            const { completeRecording } = await setupRecorder()(`categorizeSourceChain_${getIdFromText(text)}`);
+                let {
+                    categories,
+                    subcategories,
+                    needs,
+                    ilities
+                } = await categorizeText(text, this.embeddings)
+            completeRecording();
+            //NOCK END
+
+            const getName = (doc)=>{
+                return getProperty(doc, "[0].metadata.name")
+            }
+
+            source.metadata.category = getName(categories[0])
+            source.metadata.subcategories = getName(subcategories[0])
+            source.metadata.need = getName(needs[0])
+            source.metadata.ility = getName(ilities[0])
+
+            source.metadata.tags = [
+                source.metadata.category,
+                source.metadata.subcategories,
+                source.metadata.need,
+                source.metadata.ility, 
+            ].filter(t=>!!t);
+
+            
+
+            source = (await sourceStore.patch(source.id, source))[0]
         }
-
-        source.metadata.category = getName(categories[0])
-        source.metadata.subcategories = getName(subcategories[0])
-        source.metadata.need = getName(needs[0])
-        source.metadata.ility = getName(ilities[0])
-
-        source.metadata.tags = [
-            source.metadata.category,
-            source.metadata.subcategories,
-            source.metadata.need,
-            source.metadata.ility, 
-        ].filter(t=>!!t);
-
-        
-
-        source = (await sourceStore.patch(source.id, source))[0]
-
         return {
             [this.outputKey]:JSON.stringify(source)
         }

@@ -109,7 +109,7 @@ const askUrlAnalysisChain = new SequentialChain({
 // @ts-ignore
 export class AnalysisTool extends StructuredTool{
     name = "analysis";
-    description = "useful for analyzing, summarizing, finding problems, solutions, quotes, and key images from a user-provided source.";
+    description = "useful for summarizing or adding an article to the data. For this tool to work, the user MUST ABSOLUTELY provide a very long, multi-sentence input OR the user must provide a URL in the question.";
 
     // pick the right tool
     constructor(options={}){
@@ -140,6 +140,9 @@ export class AnalysisTool extends StructuredTool{
             case 'URL':
                 let analyzed = (await askUrlAnalysisChain.call({userinput:values}))[askUrlAnalysisChain.outputVariables[0]]
                 let {metadata} = JSON.parse(analyzed)
+                if(metadata.actors){
+                    metadata.actors = metadata.actors.join(', ')
+                }
                 output = analysisStringifier(metadata)
                 break;
             case 'TEXT':

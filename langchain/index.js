@@ -8,7 +8,7 @@ import { setupRecorder } from "./utils/nockRecord.js";
 import { router } from './router/router.js'
 import { parseBoolean } from './utils/boolean.js'
 import * as proxyCache from './proxycache/proxycache.js'
-
+import merge from 'deepmerge'
 /**
  * @typedef {import("./types.js").Metadata} Metadata 
  * @typedef {import("./types.js").ServerResponse} ServerResponse
@@ -41,7 +41,7 @@ if(parseBoolean(process.env.USE_PROXY)){
 
 
 let i = 0
-let maxIterations = 10
+let maxIterations = 20
 let enablePreBuild = true
 let enableAutoRespond = true
 let inputs = [
@@ -51,10 +51,11 @@ let inputs = [
     "Health & Wellness",
     "Which categories need more research?",
     "What categories are biased too positively or too negatively?",
+    "What do you know about emergency medical drones?",
+    "Web",
     "I want to add an article to my data.",
-    "https://www.hhs.gov/about/news/2023/05/23/surgeon-general-issues-new-advisory-about-effects-social-media-use-has-youth-mental-health.html",
-    "Can you generate a scenario based on that article?",
-    "Remind me, what investigation am I working on?"
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8605877/",
+    "Can you generate a scenario based on that article?"
 ]
 
 
@@ -83,7 +84,7 @@ await redisClient.connect()
  * @return {Promise} response -
  */
 export const sendToBackend = async (message, { clientMemory, memId, routerKey, context }) => {
-    debug({ memId, routerKey })
+    debug({ memId, routerKey, context })
     if (!clientMemory) throw new Error(JSON.stringify(clientMemory))
     return router(message, { clientMemory, memId, routerKey, context })
 }
@@ -99,7 +100,7 @@ while (i<maxIterations){
         message = inputs[i] || message;
     }
 
-    // if(i>8){
+    // if(i>7){
     //     console.log('here')
     // }
 
@@ -117,7 +118,6 @@ while (i<maxIterations){
     */
     i++;
     message = await UI.displayAndCapture(AIresponse, newMetadata, enableAutoRespond?inputs[i]:null)
-    Object.assign(metadata, newMetadata)
-
+    metadata = merge(metadata, newMetadata, {arrayMerge:(d,s)=>s})
 }
 

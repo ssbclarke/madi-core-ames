@@ -3,6 +3,8 @@ import { Debug } from '../utils/logger.js'
 import * as dotenv from 'dotenv'
 import { RouterExecutor } from './router.executor.js';
 import { InvestigationRouter } from '../features/investigation/investigation.router.js';
+import { SearchRouter } from '../features/search/search.tool.js';
+import merge from 'deepmerge'
 dotenv.config()
 const debug = Debug(import.meta.url)
 
@@ -28,6 +30,10 @@ export const router = async (message, incomingMetadata={}) => {
       output = await InvestigationRouter(message, incomingMetadata)
       break;
     }
+    case 'search': {
+      output = await SearchRouter(message, incomingMetadata)
+      break;
+    }
     default: {
       output = await RouterExecutor(message, incomingMetadata)
       
@@ -40,7 +46,8 @@ export const router = async (message, incomingMetadata={}) => {
    * ALWAYS RETURNS A TUPLE
    */
   if(Array.isArray(output)){
-    return [output[0],Object.assign(incomingMetadata, output[1])]
+    let newMetadata = merge(incomingMetadata, output[1], {arrayMerge:(d,s)=>s})
+    return [output[0], newMetadata]
   }
   if(typeof output === "string"){
     return [output, incomingMetadata]
