@@ -1,4 +1,4 @@
-import { PromptTemplate } from "langchain";
+import { PromptTemplate } from "langchain/prompts";
 import { BaseStringPromptTemplate } from "langchain/prompts";
 
 

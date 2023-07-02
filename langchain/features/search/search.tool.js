@@ -1,19 +1,11 @@
 import { DynamicTool } from "langchain/tools";
 import { setupRecorder } from "../../utils/nockRecord.js";
 import { getIdFromText } from "../../utils/text.js";
-import { SourceStore } from "../../storage/source.store.js";
 import { parseBoolean } from "../../utils/boolean.js";
-import { PromptTemplate } from "langchain/prompts";
-import { LLMChain } from "langchain/chains";
 import * as dotenv from 'dotenv'
-// import { SEARCH_PROMPT } from "./search.prompt.js";
-import { DataSource } from "typeorm";
 import { OpenAI } from "langchain/llms/openai";
-import { SqlDatabase } from "langchain/sql_db";
-import { SqlDatabaseChain } from "langchain/chains";
-import { OpenAIEmbeddings } from "langchain/embeddings";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { GoogleCustomSearch } from "langchain/tools";
-import { WebBrowser } from "langchain/tools/webbrowser";
 import levenshtein from "fast-levenshtein";
 dotenv.config()
 

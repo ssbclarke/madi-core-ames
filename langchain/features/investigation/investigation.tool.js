@@ -1,32 +1,24 @@
 import { redisClient } from "../../utils/redis.js";
-import { CSVLoader } from "langchain/document_loaders/fs/csv";
 import { RedisVectorStore } from "langchain/vectorstores/redis";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { VectorDBQAChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
-import { ChainTool, DynamicTool, Tool, StructuredTool } from "langchain/tools";
-import * as dotenv from 'dotenv'
 import { Document } from "langchain/document";
 import { Debug } from '../../utils/logger.js'
 import { INVESTIGATION_PROMPT } from "./investigation.prompts.js";
 import { PromptTemplate } from "langchain/prompts";
 import { LLMChain } from "langchain/chains";
+import { StructuredTool } from "langchain/tools"
 import { z } from "zod";
-import { CallbackManager } from "langchain/callbacks";
 import fs from 'fs'
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import { setupRecorder } from "../../utils/nockRecord.js";
-import { getIdFromText } from "../../utils/text.js";
 async function readFileAsync(path) {
     return fs.promises.readFile(__dirname +"/"+ path, "utf-8");
 }
 
 const debug = Debug(import.meta.url)
-dotenv.config()
 
 /**
  * @typedef {import("../../types.js").Metadata} Metadata 
@@ -35,7 +27,6 @@ dotenv.config()
 
 
 const createInvestigationStore = async () => {
-
     // // const splitter = new RecursiveCharacterTextSplitter()
     // // const splitDocs = await splitter.splitDocuments(docs);
     const embeddings = new OpenAIEmbeddings()

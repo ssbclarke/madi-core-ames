@@ -1,15 +1,11 @@
-import { LLMChain } from "langchain/chains";
 import { OpenAI } from "langchain/llms/openai";
-import { PromptTemplate } from "langchain/prompts";
 import * as dotenv from 'dotenv'
 import { Debug } from '../utils/logger.js'
 import { setupRecorder, recordOptions } from "../utils/nockRecord.js";
-import { DocumentStore } from "../storage/document.vectorstore.js";
 import { DefaultChain } from "./default.chain.js";
 import { TagStore } from "../storage/tag.store.js";
-import { Embeddings, OpenAIEmbeddings } from "langchain/embeddings";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { z } from 'zod'
-import { getProperty } from "dot-prop";
 const debug = Debug(import.meta.url)
 dotenv.config()
 

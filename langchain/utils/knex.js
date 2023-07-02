@@ -3,7 +3,7 @@ import knex from 'knex';
 
 import * as dotenv from 'dotenv'
 dotenv.config()
-import { VectorStore } from "langchain/vectorstores";
+import { VectorStore } from "langchain/vectorstores/base";
 import { Document } from "langchain/document";
 
 

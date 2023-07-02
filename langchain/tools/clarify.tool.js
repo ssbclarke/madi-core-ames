@@ -3,7 +3,7 @@
 // AI: HUMAN
 
 
-import { OpenAI } from "langchain";
+import { OpenAI } from "langchain/llms/openai";
 import { Tool } from "langchain/tools";
 export class ClarifyTool extends Tool {
     name = "clarify";
