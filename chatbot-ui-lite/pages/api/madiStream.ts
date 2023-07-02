@@ -5,7 +5,7 @@ export const MadiStream = async (messages: Message[]) => {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
-  const res = await fetch("http://localhost:3030/v1/chat/completions", {
+  const res = await fetch(`http://${process.env.API_HOST}:${process.env.API_PORT}/v1/chat/completions`, {
     headers: {
       "Content-Type": "application/json",
     //   Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
