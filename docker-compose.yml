@@ -55,33 +55,6 @@ services:
       timeout: 5s
       retries: 5
 
-  storage:
-    image: fsouza/fake-gcs-server
-    ports:
-      - "5050:4443"
-    command: -scheme http
-    # replace the above with this line to make file storage temporary
-    # command: -scheme http -backend memory
-    networks:
-      - madi
-    volumes:
-      # this make the initial bucket state a local folder.  You cannot add directly.
-      # uncomment this line to have docker manage a persistent folder for you.
-      - ./dl/uploads:/storage
-
-  ui:
-    build: ./chatbot-ui-lite
-    ports:
-      - 3000:3000
-    environment:
-      - 'OPENAI_API_KEY='
-
-  unstructured:
-    image: quay.io/unstructured-io/unstructured-api:latest
-    networks:
-      - madi
-    ports:
-      - 8000:8000
 
   vss:  # vector-similarity-search
     image: redis/redis-stack:latest
@@ -92,6 +65,59 @@ services:
       - 8001:8001 # Redis Insight at localhost:8001
     volumes:
       - vss-data:/data
+
+  langchain:
+    build: ./langchain
+    networks:
+      - madi
+    ports:
+      - 3030:3030 
+    environment:
+      - POSTGRES_HOST=database
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=unicorn_user
+      - POSTGRES_PASSWORD=magical_password
+      - POSTGRES_DB=rainbow_database
+      - REDIS_PORT=6379
+      - REDIS_HOST=vss
+      - PORT=3030
+    depends_on:
+      database:
+        condition: service_healthy
+
+
+  # storage:
+  #   image: fsouza/fake-gcs-server
+  #   ports:
+  #     - "5050:4443"
+  #   command: -scheme http
+  #   # replace the above with this line to make file storage temporary
+  #   # command: -scheme http -backend memory
+  #   networks:
+  #     - madi
+  #   volumes:
+  #     # this make the initial bucket state a local folder.  You cannot add directly.
+  #     # uncomment this line to have docker manage a persistent folder for you.
+  #     - ./dl/uploads:/storage
+
+  ui:
+    build: ./chatbot-ui-lite
+    networks:
+      - madi
+    ports:
+      - 3000:3000 # Redis Insight at localhost:8001
+    environment:
+      - API_PORT=3030
+      - API_HOST=langchain
+
+  # unstructured:
+  #   image: quay.io/unstructured-io/unstructured-api:latest
+  #   networks:
+  #     - madi
+  #   ports:
+  #     - 8000:8000
+
+
 
   # cache:
   #   container_name: cache
