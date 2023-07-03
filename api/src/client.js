@@ -1,6 +1,12 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/client.html
 import { feathers } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
+import { uploadsClient } from './services/uploads/uploads.shared.js'
+
+import { userClient } from './services/users/users.shared.js'
+
+import { madiClient } from './services/madi/madi.shared.js'
+
 import { sourcesClient } from './services/sources/sources.shared.js'
 
 import { tagsClient } from './services/tags/tags.shared.js'
@@ -31,6 +37,12 @@ export const createClient = (connection, authenticationOptions = {}) => {
   client.configure(tagsClient)
 
   client.configure(sourcesClient)
+
+  client.configure(madiClient)
+
+  client.configure(userClient)
+
+  client.configure(uploadsClient)
 
   return client
 }

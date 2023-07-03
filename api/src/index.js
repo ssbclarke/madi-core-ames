@@ -1,5 +1,6 @@
 import { app } from './app.js'
 import { logger } from './logger.js'
+import { initializeProxy as openaiProxy } from './proxycache/openai.proxy.js'
 
 const port = app.get('port')
 const host = app.get('host')
@@ -9,3 +10,5 @@ process.on('unhandledRejection', (reason) => logger.error('Unhandled Rejection %
 app.listen(port).then(() => {
   logger.info(`Feathers app listening on http://${host}:${port}`)
 })
+
+openaiProxy(4000,"openai");
