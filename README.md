@@ -2,11 +2,12 @@
 **DNS**: _xxx.nasa.gov_ <br/>
 **SHORTNAME**: _xxx_
 
-[![Quality Gate Status]()]()
 
 ___________
 ## Getting Started
-The service is composed of three major components, a frontend interface, a Node API on a PostgresDB, and a Langchain Pipeline server.  Currently, the interface is connected _directly_ to the langchain pipeline for demo purposes.
+The service is composed of three major components, a frontend interface, a Node API on a PostgresDB, and a Langchain Pipeline server. 
+
+> Currently, the interface is connected _*directly*_ to the langchain pipeline for demo purposes.
 
 The tool set is as follows:
  - FeathersJS in NodeJS
@@ -15,6 +16,8 @@ The tool set is as follows:
  - Redis / Vector Storage (temporary, should be deleted)
  - Langchain in NodeJS
  - Blob Storage in GCS / local folder
+
+
 
 
 ### Folder Structure
@@ -54,6 +57,12 @@ That will initiate a docker postgres volume (persistence). If you want to wipe a
 
 To refresh all the images, from root run: `docker-compose up --force-recreate --build`
 
+##### Trying it out
+
+Visit http://localhost:3030 to see the interface.  
+
+
+
 
 ## Contributing to the API Code
 
@@ -70,7 +79,7 @@ To refresh all the images, from root run: `docker-compose up --force-recreate --
 6. Test the api at the port specified in the launching logs (probably port 3030)
 
 ## The Architecture
-- Architecture Diagrams: https://app.mural.co/t/nasa4590/m/nasa4590/1699385860129/36b18cb256133b55459a4dc8f619b97f2717f660?sender=u4ab490edf45746f4d4197588
+- TO BE Architecture Diagrams: https://app.mural.co/t/nasa4590/m/nasa4590/1699385860129/36b18cb256133b55459a4dc8f619b97f2717f660?sender=u4ab490edf45746f4d4197588
 - Architecture Documentation: see ./ARCHITECTURE.md
 
 
