@@ -1,10 +1,15 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{js,ts,jsx,tsx}'],
-  plugins: [require('daisyui')],
-  safelist: [
-    {
-      pattern: /bg-(primary|secondary|accent|info|warning|error)/,
-      variants: ['hover', 'focus'],
-    },
-  ],
+  content: ["./app/**/*.{js,ts,jsx,tsx}", "./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+  daisyui:{
+    themes:[
+      "light",
+      "dark",
+      "night",
+    ]
+  },
+  theme: {
+    extend: {}
+  },
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
 };

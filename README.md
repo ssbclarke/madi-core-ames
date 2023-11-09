@@ -6,12 +6,16 @@
 
 ___________
 ## Getting Started
-The service is composed of three major components, a frontend interface, a Node API on a PostgresDB, and a document parser and classifier,.
+The service is composed of three major components, a frontend interface, a Node API on a PostgresDB, and a Langchain Pipeline server.  Currently, the interface is connected _directly_ to the langchain pipeline for demo purposes.
 
 The tool set is as follows:
  - FeathersJS in NodeJS
  - Docker / CloudRun
  - PostgreSQL / CloudSQL
+ - Redis / Vector Storage (temporary, should be deleted)
+ - Langchain in NodeJS
+ - Blob Storage in GCS / local folder
+
 
 ### Folder Structure
 The code is stored as described below.
@@ -20,11 +24,22 @@ The code is stored as described below.
 ├── api
 │   ├── specifications (OpenAPI specification and Mock Server Dockerfile)
 │   ├── ...
-│   ├── src (Feathers Application)
+│   └── src (Feathers Application)
+├── .cicd
+│   └── docker
+│       └── ... (where we store CICD related docker compose files)
 ├── docker-compose.yml (Full service Docker setup)
-└── terraform
+├── plugins
+│   ├── ... 
+│   └── cas_langchain (Langchain based Pipeline of CAS specific code)
+├── interface
+│   ├── ... 
+│   └── components (Primary elements based on chat-lite-ui open sources options)
+├── storage
+│   └── uploads (local space for storage that is used for stateful testing of mock GCS server)
+└── terraform (TBD, in the terraform branch)
     ├── ... (service level terraform)
-    └── root-terraform (Project/Network terraform)
+    └── root-terraform (Project/Network terraform) 
 ```
 
 
@@ -37,34 +52,26 @@ To start the service, from the root folder, run: `docker-compose up`
 
 That will initiate a docker postgres volume (persistence). If you want to wipe and refresh the whole storage, run: `docker-compose down -v`
 
-To refresh all the images, from root run: `docker-compose up --force-recreate --build database`
-
-In a separate tab, run `npm start` or `npm run dev`
+To refresh all the images, from root run: `docker-compose up --force-recreate --build`
 
 
 ## Contributing to the API Code
 
 ##### Requirements
 1. [Docker installed](https://docs.docker.com/get-started/)
-1. [Node v12 or nvm installed](https://github.com/nvm-sh/nvm/blob/master/README.md)
+1. [Node v16+ or nvm installed](https://github.com/nvm-sh/nvm/blob/master/README.md)
 1. [Postman](https://www.postman.com/)
 
 ##### Getting started
 1. Open (or create) `/api/config/local.json`. 
-<!-- 2. Add the below code to the file filling in the values for "accountSid" and "authToken" with the relevant dependencies keys). 
-    ```
-    "twilio": {
-      "accountSid": "",
-      "authToken": ""
-      }
-   ``` -->
 3. `cd api` to get into the right folder
 4. Run `npm install` to install the local dependencies
 5. Run `npm run dev` to start the nodemon version of the application (auto-refreshes)
 6. Test the api at the port specified in the launching logs (probably port 3030)
 
 ## The Architecture
-[Architecture]() and [Product]() documents are stored in Confluence.
+- Architecture Diagrams: https://app.mural.co/t/nasa4590/m/nasa4590/1699385860129/36b18cb256133b55459a4dc8f619b97f2717f660?sender=u4ab490edf45746f4d4197588
+- Architecture Documentation: see ./ARCHITECTURE.md
 
 
 
@@ -121,7 +128,7 @@ Hooks are promises, but they are run "sequentially" to ensure that they operate 
 There are several "layers" of testing that are applied to this stack.  Each has a specific purpose.
 
 #### ----- SHOULD BE DONE INSIDE A PIPELINE -----
-1. [x] *API Mock Testing* - Do the API specs meet our simplest contract tests (i.e. blueprints)?
+1. [ ] *API Mock Testing* - Do the API specs meet our simplest contract tests (i.e. blueprints)?
 1. [ ] *API Unit Tests* - Does each function do what we expect with given inputs and outputs, without a DB?
 1. [ ] *API Integration Tests* - With a temporary DB, does the API interact with other models, entities, and DB specific elements as we expect?
 1. [ ] *API Contract Testing* - Does the actual API now meet our simplest contract tests (i.e. blueprints)?
