@@ -1,6 +1,0 @@
-{
-    "timeout": 100000,
-    "reporter": "Dot",
-    "extension": ".test.js",
-    "exit": true
-  }

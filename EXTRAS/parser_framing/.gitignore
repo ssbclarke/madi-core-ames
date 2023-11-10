@@ -1,6 +1,0 @@
-node_modules
-**/tsconfig.tsbuildinfo
-.nyc_output
-trash
-.NEXT_VERSION_LEVEL
-.NEXT_VERSION

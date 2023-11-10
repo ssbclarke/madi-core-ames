@@ -8,11 +8,13 @@ import { configurationValidator } from './configuration.js'
 import { logError } from './hooks/log-error.js'
 import { postgresql } from './postgresql.js'
 
+import { authentication } from './authentication.js'
+
 import { services } from './services/index.js'
 import { channels } from './channels.js'
 
 const app = koa(feathers())
-
+   
 // Load our app configuration (see config/ folder)
 app.configure(configuration(configurationValidator))
 
@@ -34,6 +36,8 @@ app.configure(
 )
 app.configure(channels)
 app.configure(postgresql)
+
+app.configure(authentication)
 
 app.configure(services)
 

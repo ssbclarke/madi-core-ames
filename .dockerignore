@@ -3,3 +3,4 @@ terraform/root-terraform/.terraform
 .git
 api/node_modules
 loadtests/node_modules
+langchain/node_modules
