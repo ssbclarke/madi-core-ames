@@ -51,8 +51,10 @@ The code is stored as described below.
 ##### Requirements
 1. [Docker installed](https://docs.docker.com/get-started/)
 2. An OpenAI API Key
+3. A Google Search API key
+4. A SERP API Key
 
-First you must acquire and set the OpenAI key `export OPENAI_API_KEY="..."`.
+First you must acquire the necessary keys and set them in `plugins/cas_langchain/.env`.  There is an example file stored in the repo.
 
 To start the service, from the root folder, run: `docker-compose up`.
 
