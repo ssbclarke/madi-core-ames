@@ -15,7 +15,7 @@ import {
 import { uploadsPath, uploadsMethods } from './uploads.shared.js'
 
 import multer from 'multer'
-import blobService from 'feathers-blob'
+import BlobService from 'feathers-blob'
 import fs from 'fs-blob-store'
 
 
@@ -33,27 +33,28 @@ export const uploads = (app) => {
   // Register our service on the Feathers application
   app.use(uploadsPath, 
     
-    // multer parses the file named 'uri'.
-    // Without extra params the data is
-    // temporarely kept in memory
-    multipartMiddleware.single('uri'),
+    // // multer parses the file named 'uri'.
+    // // Without extra params the data is
+    // // temporarely kept in memory
+    // multipartMiddleware.single('uri'),
 
-    // another middleware, this time to
-    // transfer the received file to feathers
-    function(req,res,next){
-        req.feathers.file = req.file;
-        next();
-    },
-    blobService({Model: blobStorage}),
+    // // another middleware, this time to
+    // // transfer the received file to feathers
+    // function(req,res,next){
+    //     req.feathers.file = req.file;
+    //     next();
+    // },
+    BlobService({Model: blobStorage}),
     // new UploadsService(getOptions(app)), 
   
     
     {
-    // A list of all methods this service exposes externally
-    methods: uploadsMethods,
-    // You can add additional custom events to be sent to clients here
-    events: []
-  })
+      // A list of all methods this service exposes externally
+      methods: uploadsMethods,
+      // You can add additional custom events to be sent to clients here
+      events: []
+    }
+  )
   // Initialize hooks
   app.service(uploadsPath).hooks({
     around: {

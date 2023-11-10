@@ -1,37 +1,39 @@
 version: "3.8"
 
 services:
+
+
   ## This is the mock API available at port 8080
-  # api_mock:
-  #   image: stoplight/prism:4.2.6
-  #   volumes:
-  #     - "./api/specifications:/tmp"
-  #   ports:
-  #     - "8080:4010"
-  #   command: >
-  #     mock -m -p 4010 --host 0.0.0.0 "/tmp/api-specification.yml" -m
+  api_mock:
+    image: stoplight/prism:4.2.6
+    volumes:
+      - "./api/specifications:/tmp"
+    ports:
+      - "8080:4010"
+    command: >
+      mock -m -p 4010 --host 0.0.0.0 "/tmp/api-specification.yml" -m
 
   ## This is the real API available at port 3030
   ##   - This builds an image for the top level docker-compose
   ##     and may not be the same image as built under the /api folder directly
-  # api:
-  #   build: ./api
-  #   environment:
-  #     - NODE_CONFIG_ENV=mac-docker
-  #     - POSTGRES_PASSWORD=magical_password
-  #     - POSTGRES_USER=unicorn_user
-  #     - POSTGRES_DB=rainbow_database
-  #     - POSTGRES_HOST=database
-  #     - POSTGRES_PORT=5432
-  #     - PUSH_ENDPOINT=http://api:3030/
-  #     - PUBSUB_API_ENDPOINT=pubsub:8085
-  #   ports:
-  #     - "3030:3030"
-  #   networks:
-  #     - madi
-  #   depends_on:
-  #     database:
-  #       condition: service_healthy
+  api:
+    build: ./api
+    environment:
+      - NODE_CONFIG_ENV=mac-docker
+      - POSTGRES_PASSWORD=magical_password
+      - POSTGRES_USER=unicorn_user
+      - POSTGRES_DB=rainbow_database
+      - POSTGRES_HOST=database
+      - POSTGRES_PORT=5432
+      - PUSH_ENDPOINT=http://api:3030/
+      - PUBSUB_API_ENDPOINT=pubsub:8085
+    ports:
+      - "4040:3030"
+    networks:
+      - madi
+    depends_on:
+      database:
+        condition: service_healthy
 
   ## This is the postgres docker DB available at port 35432
   ##   - This only for local usage and has no bearing on CloudSQL
@@ -66,8 +68,10 @@ services:
     volumes:
       - vss-data:/data
 
+
+  # This is directly served 
   langchain:
-    build: ./langchain
+    build: ./plugins/cas_langchain
     networks:
       - madi
     ports:
@@ -80,50 +84,42 @@ services:
       - POSTGRES_DB=rainbow_database
       - REDIS_PORT=6379
       - REDIS_HOST=vss
+      - ENABLE_PRE_BUILD=false
+      - ENABLE_AUTO_RESPONSE=false
+      - USE_PROXY=false
       - PORT=3030
     depends_on:
       database:
         condition: service_healthy
 
 
-  # storage:
-  #   image: fsouza/fake-gcs-server
-  #   ports:
-  #     - "5050:4443"
-  #   command: -scheme http
-  #   # replace the above with this line to make file storage temporary
-  #   # command: -scheme http -backend memory
-  #   networks:
-  #     - madi
-  #   volumes:
-  #     # this make the initial bucket state a local folder.  You cannot add directly.
-  #     # uncomment this line to have docker manage a persistent folder for you.
-  #     - ./dl/uploads:/storage
+  storage:
+    image: fsouza/fake-gcs-server
+    ports:
+      - "5050:4443"
+    command: -scheme http
+    # replace the above with this line to make file storage temporary
+    # command: -scheme http -backend memory
+    networks:
+      - madi
+    volumes:
+      # this make the initial bucket state a local folder.  You cannot add directly.
+      # uncomment this line to have docker manage a persistent folder for you.
+      - ./storage/uploads:/storage
 
   ui:
-    build: ./chatbot-ui-lite
+    build: ./interface
     networks:
       - madi
     ports:
       - 3000:3000 # Redis Insight at localhost:8001
     environment:
+      ## for Docker
       - API_PORT=3030
       - API_HOST=langchain
-
-  # unstructured:
-  #   image: quay.io/unstructured-io/unstructured-api:latest
-  #   networks:
-  #     - madi
-  #   ports:
-  #     - 8000:8000
-
-
-
-  # cache:
-  #   container_name: cache
-  #   image: redis:6
-  #   networks:
-  #     - madi
+      ## For local
+      # - API_PORT=3030
+      # - API_HOST=localhost
 
 networks:
   madi:
@@ -131,4 +127,3 @@ networks:
 volumes:
   database-data:
   vss-data:
-  # redis-data:
