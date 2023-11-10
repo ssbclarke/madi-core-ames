@@ -50,8 +50,11 @@ The code is stored as described below.
 ### Running the Service Locally
 ##### Requirements
 1. [Docker installed](https://docs.docker.com/get-started/)
+2. An OpenAI API Key
 
-To start the service, from the root folder, run: `docker-compose up`
+First you must acquire and set the OpenAI key `export OPENAI_API_KEY="..."`.
+
+To start the service, from the root folder, run: `docker-compose up`.
 
 That will initiate a docker postgres volume (persistence). If you want to wipe and refresh the whole storage, run: `docker-compose down -v`
 
