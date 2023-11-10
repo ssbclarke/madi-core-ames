@@ -95,7 +95,7 @@ Thought:{agent_scratchpad}`
 function getChatHistory(values){
   let recent_chat_messages = values?.chat_history || [];
   recent_chat_messages=values?.chat_history.map(m=>{
-    let type = m._getType();
+    let type = (!!m._getType ? m._getType(): m.role);
     let text = m.text || "";
     return type+": "+text
   }).join("\n")

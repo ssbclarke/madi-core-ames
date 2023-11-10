@@ -1,11 +1,16 @@
 import { Message, OpenAIModel } from "@/types";
 import { createParser, ParsedEvent, ReconnectInterval } from "eventsource-parser";
 
+const API_HOST = process.env.API_HOST || 'localhost'
+const API_PORT = process.env.API_PORT || 3030
+console.log(API_HOST, API_PORT)
 export const MadiStream = async (messages: Message[]) => {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
-  const res = await fetch(`http://${process.env.API_HOST}:${process.env.API_PORT}/v1/chat/completions`, {
+
+  console.log(`http://${API_HOST}:${API_PORT}/v1/chat/completions`)
+  const res = await fetch(`http://${API_HOST}:${API_PORT}/v1/chat/completions`, {
     headers: {
       "Content-Type": "application/json",
     //   Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
@@ -18,7 +23,7 @@ export const MadiStream = async (messages: Message[]) => {
           role: "system",
           content: `You are a helpful, friendly, assistant.`
         },
-        // ...messages
+        ...messages
       ],
       max_tokens: 800,
       temperature: 0.0,

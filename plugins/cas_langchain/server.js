@@ -9,10 +9,10 @@ import { redisClient } from './utils/redis.js'
 import { router } from './router/router.js'
 import * as proxyCache from './proxycache/proxycache.js'
 import { parseBoolean } from './utils/boolean.js';
-import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
 import Convert from 'ansi-to-html';
 import merge from 'deepmerge/index.js'
+import { establishMemory } from './memory/memory.js';
 
 /**
  * @typedef {import("./types.js").Metadata} Metadata 
@@ -24,7 +24,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const debug = Debug(import.meta.url)
 const app = express();
-const convert = new Convert();
+const PORT = process.env.PORT || 3030
 app.use(express.json());
 await redisClient.connect()
 
@@ -44,8 +44,8 @@ let metadata = {
 }
 let i = 0
 let maxIterations = 10
-let enablePreBuild = true
-let enableAutoRespond = true
+let enablePreBuild = parseBoolean(process.env.ENABLE_PRE_BUILD)
+let enableAutoRespond = parseBoolean(process.env.ENABLE_AUTO_RESPOND)
 let inputs = [
     "I'm James. How are you today?",
     "What can you do?",
@@ -75,30 +75,26 @@ if(parseBoolean(process.env.USE_PROXY)){
  * @return {Promise} response -
  */
 export const sendToBackend = async (message, { clientMemory, memId, routerKey, context }) => {
-    debug({ memId, routerKey, context })
+    debug({ memId, routerKey, context, clientMemory })
     if (!clientMemory) throw new Error(JSON.stringify(clientMemory))
     return router(message, { clientMemory, memId, routerKey, context })
 }
 
 
-// var sendAndSleep = function (response, counter) {
-//     if (counter > 10) {
-//         response.end();
-//     } else {
-//         response.write(" ;i=" + counter);
-//         counter++;
-//         setTimeout(function () {
-//             sendAndSleep(response, counter);
-//         }, 1000)
-//     };
-// };
-
 app.use('/images', express.static('images'))
 
+
+
 app.all('/*', async (req, res) => {
-    //   console.log(req)
+    console.log(req.body)
     if (enablePreBuild) {
         message = inputs[i] || req.body.message;
+    }else{
+        if(req.body.messages){
+            metadata.clientMemory = establishMemory(req.body.messages)
+            // metadata.clientMemory = [...req.body.messages]
+            message = req.body.messages.pop().content
+        }
     }
 
     let [aiMessage, newMetadata] = await sendToBackend(message, metadata)
@@ -140,78 +136,4 @@ app.all('/*', async (req, res) => {
     i++;
 });
 
-app.listen(process.env.PORT, () => console.log(`Server started on port ${process.env.PORT}...`));
-
-
-
-
-
-//   res.write(`data: `+JSON.stringify({
-//     "choices": [
-//       {
-//         "delta": {
-//           "role": "assistant"
-//         },
-//         "finish_reason": null,
-//         "index": 0
-//       }
-//     ],
-//     "created": 1677825464,
-//     "id": "chatcmpl-6ptKyqKOGXZT6iQnqiXAH8adNLUzD",
-//     "model": "gpt-3.5-turbo-0301",
-//     "object": "chat.completion.chunk"
-//   })+"\n\n");
-
-// res.write(`data: `+JSON.stringify({
-//     "choices": [
-//       {
-//         "delta": {},
-//         "finish_reason": "stop",
-//         "index": 0
-//       }
-//     ],
-//     "created": 1677825464,
-//     "id": "chatcmpl-6ptKyqKOGXZT6iQnqiXAH8adNLUzD",
-//     "model": "gpt-3.5-turbo-0301",
-//     "object": "chat.completion.chunk"
-//   })+"\n\n")
-
-//   res.write("data: [DONE]\n\n")
-//   res.end();
-
-
-
-
-
-
-// // Start
-// while (i<maxIterations){
-//     // const record = setupRecorder({mode:process.env.FLOW_NOCK_MODE});
-//     // const { completeRecording } = await record(`${i}`.padStart(2,"0")+`_${inputs[i]}`.replace(/[^a-z0-9]/gi, '_').toLowerCase());
-
-//     if(enablePreBuild){
-//         message = inputs[i] || message;
-//     }
-
-//     // if(i>4){
-//     //     console.log('here')
-//     // }
-
-
-//     let [AIresponse, newMetadata] = await sendToBackend(message, metadata)
-//     // completeRecording()
-
-//     /* should only pass the following and forget the rest
-//     {
-//         context: {}
-//         routerKey: "key"
-//         clientMemory: []
-//         memId: ####
-//     }
-//     */
-//     i++;
-//     message = await UI.displayAndCapture(AIresponse, newMetadata, enableAutoRespond?inputs[i]:null)
-//     Object.assign(metadata, newMetadata)
-
-// }
-
+app.listen(PORT, () => console.log(`Server started on port ${PORT}...`));

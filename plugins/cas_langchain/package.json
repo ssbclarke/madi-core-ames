@@ -32,6 +32,7 @@
     "html-to-text": "^9.0.5",
     "input-event": "^1.2.6",
     "inquirer": "^9.2.6",
+    "is-mergeable-object": "^1.1.1",
     "js-tiktoken": "^1.0.6",
     "knex": "^2.4.2",
     "langchain": "^0.0.96",

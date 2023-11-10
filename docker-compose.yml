@@ -70,7 +70,7 @@ services:
 
 
   # This is directly served 
-  cas_langchain:
+  langchain:
     build: ./plugins/cas_langchain
     networks:
       - madi
@@ -84,6 +84,9 @@ services:
       - POSTGRES_DB=rainbow_database
       - REDIS_PORT=6379
       - REDIS_HOST=vss
+      - ENABLE_PRE_BUILD=false
+      - ENABLE_AUTO_RESPONSE=false
+      - USE_PROXY=false
       - PORT=3030
     depends_on:
       database:
@@ -111,8 +114,12 @@ services:
     ports:
       - 3000:3000 # Redis Insight at localhost:8001
     environment:
+      ## for Docker
       - API_PORT=3030
       - API_HOST=langchain
+      ## For local
+      # - API_PORT=3030
+      # - API_HOST=localhost
 
 networks:
   madi:

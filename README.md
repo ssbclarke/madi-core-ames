@@ -7,7 +7,7 @@ ___________
 ## Getting Started
 The service is composed of three major components, a frontend interface, a Node API on a PostgresDB, and a Langchain Pipeline server. 
 
-> Currently, the interface is connected _*directly*_ to the langchain pipeline for demo purposes.
+> Currently, the interface is connected _*directly*_ to the langchain pipeline for demo purposes.  Langchain responses are also hard-coded.  For live responses, disable ENABLE_PRE_BUILD and ENABLE_AUTO_RESPONSE environment variables in the docker-compose.yml
 
 The tool set is as follows:
  - FeathersJS in NodeJS

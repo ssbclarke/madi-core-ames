@@ -9,6 +9,7 @@ import { routerInvIsNotSetTools, routerCommonTools, routerInvIsSetTools } from "
 import { RouterActionAgent } from "./router.agent.js";
 import { RouterPromptTemplate } from './router.prompt.js';
 import { parseBoolean } from '../utils/boolean.js'
+import { BufferMemory } from "langchain/memory"
 
 dotenv.config()
 const debug = Debug(import.meta.url)
@@ -49,12 +50,11 @@ export const RouterExecutor = async (message, metadata) => {
     outputParser: new ZeroShotAgentOutputParser(),
     stop: ["\nObservation"]
   });
-
   const executor = new AgentExecutor({
     agent,
     // @ts-ignore
     tools,
-    memory: establishMemory(metadata.clientMemory),
+    memory: ( metadata.clientMemory instanceof BufferMemory ? metadata.clientMemory : establishMemory(metadata.clientMemory)),
     verbose:parseBoolean(process.env.VERBOSE) && parseBoolean(process.env.DEBUG)
   });
 
