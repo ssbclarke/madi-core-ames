@@ -8,9 +8,6 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-directus
-dist
-dist-ssr
 *.local
 
 # Editor directories and files
@@ -24,4 +21,23 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
-widgets.original.json
+*.env
+
+/interfaces/chatbot-ui/*
+/interfaces/chrome-extension/*
+/interfaces/web/*
+/interfaces/chrome-extension/*
+/plugins/cas_pipeline/*
+/plugins/cas_mural/*
+/plugins/cas_pipeline/*
+/universal-api/*
+
+
+!/interfaces/chatbot-ui/.gitkeep
+!/interfaces/chrome-extension/.gitkeep
+!/interfaces/web/.gitkeep
+!/interfaces/chrome-extension/.gitkeep
+!/plugins/cas_pipeline/.gitkeep
+!/plugins/cas_mural/.gitkeep
+!/plugins/cas_pipeline/.gitkeep
+!/universal-api/.gitkeep

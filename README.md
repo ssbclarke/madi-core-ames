@@ -19,7 +19,6 @@ The tool set is as follows:
 
 
 
-
 ### Folder Structure
 The code is stored as described below.
 ```
@@ -45,6 +44,25 @@ The code is stored as described below.
     └── root-terraform (Project/Network terraform) 
 ```
 
+The code is separated into multiple repositories, each with their own components.  These components are referenced here as one complete polyrepo architecture.  To load everything, you can use the `meta` tool.  
+
+```
+npm install meta-git -g
+```
+Then you can clone all of the necessary repositories with:
+```
+meta git update
+```
+For more information, check out [this link](https://www.npmjs.com/package/meta-git)
+
+To spin up all of the necessary components of the full stack, you can use the docker compose file.
+```
+docker compose up
+```
+or if you want to run individual services
+```
+docker compose up mock api database ui vss cas storage
+```
 
 
 ### Running the Service Locally

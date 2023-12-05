@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "api":"https://github.com/jamesvillarrubia/madi-universal-api.git",
+    "interfaces/madi-web": "https://github.com/jamesvillarrubia/madi-web.git",
+    "interfaces/chatbot-ui": "https://github.com/jamesvillarrubia/chatbot-ui.git",
+    "interfaces/chrome-extension": "https://github.com/jamesvillarrubia/madi-chrome-extension",
+    "interfaces/cli": "https://github.com/jamesvillarrubia/madi-cli",
+    "plugins/cas_pipeline": "https://github.com/jamesvillarrubia/madi-cas-langchain.git",
+    "plugins/cas_mural": "https://github.com/jamesvillarrubia/madi-mural.git",
+    "runner": "https://github.com/jamesvillarrubia/madi-runner.git"
+  }
+}

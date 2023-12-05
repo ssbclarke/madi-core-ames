@@ -1,9 +1,0 @@
-parent_folder_id                : ""
-network_project_id              : ""
-network_name                    : ""
-env                             : "dev"
-long_term_storage_bucket_prefix : "dev"
-environment                     : "develop"
-monitoring_project_id           : ""
-urls                            :
-  - ""
