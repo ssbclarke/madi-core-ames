@@ -4,7 +4,7 @@ services:
 
 
   ## This is the mock API available at port 8080
-  api_mock:
+  mock:
     image: stoplight/prism:4.2.6
     volumes:
       - "./api/specifications:/tmp"
@@ -70,8 +70,8 @@ services:
 
 
   # This is directly served 
-  langchain:
-    build: ./plugins/cas_langchain
+  cas:
+    build: ./plugins/cas_pipeline
     networks:
       - madi
     ports:
@@ -106,20 +106,6 @@ services:
       # this make the initial bucket state a local folder.  You cannot add directly.
       # uncomment this line to have docker manage a persistent folder for you.
       - ./storage/uploads:/storage
-
-  ui:
-    build: ./interface
-    networks:
-      - madi
-    ports:
-      - 3000:3000 # Redis Insight at localhost:8001
-    environment:
-      ## for Docker
-      - API_PORT=3030
-      - API_HOST=langchain
-      ## For local
-      # - API_PORT=3030
-      # - API_HOST=localhost
 
 networks:
   madi:
