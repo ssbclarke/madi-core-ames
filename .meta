@@ -1,12 +1,12 @@
 {
   "projects": {
-    "api":"https://github.com/jamesvillarrubia/madi-universal-api.git",
-    "interfaces/madi-web": "https://github.com/jamesvillarrubia/madi-web.git",
-    "interfaces/chatbot-ui": "https://github.com/jamesvillarrubia/chatbot-ui.git",
-    "interfaces/chrome-extension": "https://github.com/jamesvillarrubia/madi-chrome-extension",
-    "interfaces/cli": "https://github.com/jamesvillarrubia/madi-cli",
-    "plugins/cas_pipeline": "https://github.com/jamesvillarrubia/madi-cas-langchain.git",
-    "plugins/cas_mural": "https://github.com/jamesvillarrubia/madi-mural.git",
-    "runner": "https://github.com/jamesvillarrubia/madi-runner.git"
+    "api": "https://github.com/nasa-madi/madi-api.git",
+    "interfaces/chrome-extension": "https://github.com/nasa-madi/madi-chrome-extension",
+    "interfaces/cli": "https://github.com/nasa-madi/madi-cli",
+    "interfaces/web": "https://github.com/nasa-madi/madi-web",
+    "runner": "https://github.com/nasa-madi/madi-runner.git",
+    "secureLLM": "https://github.com/nasa-madi/madi-secureLLM.git",
+    "terraform": "https://github.com/nasa-madi/madi-terraform.git",
+    "plugins/madi-plg-semantic-scholar": "https://github.com/nasa-madi/madi-plg-semantic-scholar.git"
   }
 }

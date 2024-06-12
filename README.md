@@ -2,7 +2,6 @@
 **DNS**: _xxx.nasa.gov_ <br/>
 **SHORTNAME**: _xxx_
 
-
 ___________
 ## Getting Started
 The service is composed of three major components, a frontend interface, a Node API on a PostgresDB, and a Langchain Pipeline server. 
@@ -12,10 +11,77 @@ The service is composed of three major components, a frontend interface, a Node 
 The tool set is as follows:
  - FeathersJS in NodeJS
  - Docker / CloudRun
- - PostgreSQL / CloudSQL
- - Redis / Vector Storage (temporary, should be deleted)
- - Langchain in NodeJS
+ - PostgreSQL / CloudSQL 
  - Blob Storage in GCS / local folder
+ - Meta ( a repository manager )
+
+### Meta Repo Manager
+This repo contains a `.meta` file which links to all the various repos needed to stand up the full MADI stack and some extras.
+
+First we need to install `meta`.  Run `npm i -g meta` on your machine. 
+
+Then `cd` into the folder for this repo.  
+
+Then run `meta git update` and it should clone all of the repos in the `.meta` file.  
+
+For more information checkout https://github.com/mateodelnorte/meta
+
+
+
+1. install node
+1. Install docker
+1. start docker
+1. npm install all the rright repos
+1. npm run dev (in both api and web)
+1. shutdown
+1. npm run migrate
+1. npm run seed
+1. create a custom local.yml (request openai)
+1. npm run dev (boht again)
+1. test with call
+
+
+
+
+
+
+
+## API
+
+### Updating the secrets in GCP
+
+From the `/api` folder, run the following gcloud command to get the current env secrets.
+```shell
+ENV=develop
+gcloud secrets versions access latest --secret "${ENV}-env-overrides" > ./config/${ENV}.yml;
+```
+
+Update the secrets as necessary and then reupload with
+```shell
+ENV=test
+if gcloud secrets describe "${ENV}-env-overrides" &>/dev/null; then
+    echo "Secret exists, updating..."
+    gcloud secrets versions add "${ENV}-env-overrides" --data-file="./config/${ENV}.yml"
+else
+    echo "Secret does not exist, creating..."
+    gcloud secrets create "${ENV}-env-overrides" --replication-policy="automatic" --data-file="./config/${ENV}.yml"
+fi
+```
+
+The environment options are [ `develop`, `test`, `production` ]
+
+### Updating the variables in Github actions
+
+To update the github environments, run the following:
+
+```shell
+ENV=develop
+PROJECT_ID=xxxxxxx
+gh variable set PROJECT_ID -b"${PROJECT_ID}" -e"${ENV}""
+gh variable set SERVICE -b"api-${PROJECT_ID}" -e"${ENV}"
+```
+
+
 
 
 
@@ -84,6 +150,12 @@ To refresh all the images, from root run: `docker-compose up --force-recreate --
 
 Visit http://localhost:3030 to see the interface.  
 
+
+
+## Connecting to the Bastion Host
+
+1. Login to the console and make sure the bastion host is running. https://console.cloud.google.com/compute/instances
+1. 
 
 
 
@@ -240,3 +312,7 @@ The API Specs are our source of truth about what should and should not be built.
 1. Once those three docker tests pass locally, then you can be 99% sure the tests will pass when committed!
 1. Push to github, wait for green, tag for reviews… etc.
 1. Once accepted, please move or re-import the postman file so the shared version is up-to-date!
+
+
+
+

@@ -22,22 +22,52 @@ node_modules
 *.sw?
 .vercel
 *.env
+.pytest_cache
+.cicd
+.dockerignore
 
+
+# interfaces
 /interfaces/chatbot-ui/*
-/interfaces/chrome-extension/*
-/interfaces/web/*
-/interfaces/chrome-extension/*
-/plugins/cas_pipeline/*
-/plugins/cas_mural/*
-/plugins/cas_pipeline/*
-/universal-api/*
-
-
 !/interfaces/chatbot-ui/.gitkeep
+
+/interfaces/chrome-extension/*
 !/interfaces/chrome-extension/.gitkeep
+
+/interfaces/web/*
 !/interfaces/web/.gitkeep
-!/interfaces/chrome-extension/.gitkeep
+
+# plugins
+/plugins/cas_pipeline/*
 !/plugins/cas_pipeline/.gitkeep
+
+/plugins/cas_mural/*
 !/plugins/cas_mural/.gitkeep
-!/plugins/cas_pipeline/.gitkeep
-!/universal-api/.gitkeep
+
+/plugins/madi-plg-semantic-scholar/*
+!/plugins/madi-plg-semantic-scholar/.gitkeep
+
+/plugins/visualGraph/*
+!/plugins/visualGraph/.gitkeep
+
+# Services
+/api/*
+
+# Testing
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/secureLLM
+/uploads
+/users
+/monitoring
+/runner
+/old_stuff
+
+
+#devops
+/terraform/*
+cloud-sql-proxy
+scratch.md
+
