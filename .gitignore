@@ -37,6 +37,7 @@ node_modules
 /interfaces/web/*
 !/interfaces/web/.gitkeep
 
+
 # plugins
 /plugins/cas_pipeline/*
 !/plugins/cas_pipeline/.gitkeep
@@ -52,22 +53,22 @@ node_modules
 
 # Services
 /api/*
+/secureLLM/*
+/terraform/*
+/runner/*
 
 # Testing
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-/secureLLM
 /uploads
 /users
 /monitoring
-/runner
+
 /old_stuff
 
 
 #devops
-/terraform/*
 cloud-sql-proxy
 scratch.md
-
