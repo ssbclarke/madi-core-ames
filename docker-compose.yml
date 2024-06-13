@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
 
   #-----------------------------
@@ -12,6 +10,10 @@ services:
     extends:
       file: ./api/docker-compose.yml
       service: api
+    profiles:
+      - backend
+      - fullstack
+      - ''
 
   #-----------------------------
   # DATABASE SERVICE
@@ -23,6 +25,10 @@ services:
     extends:
       file: ./api/docker-compose.yml
       service: database
+    profiles:
+      - backend
+      - fullstack
+      - ''
 
   #-----------------------------
   # CLOUD STORAGE MOCK SERVICE
@@ -33,6 +39,10 @@ services:
     extends:
       file: ./storage/docker-compose.yml
       service: storage
+    profiles:
+      - backend
+      - fullstack
+      - ''
 
   #-----------------------------
   # NLM PARSER SERVICE
@@ -42,7 +52,10 @@ services:
     extends:
       file: ./parsers/docker-compose.yml
       service: nlm-ingestor
-
+    profiles:
+      - backend
+      - fullstack
+      - ''
   #-----------------------------
   # WEB UI SERVICE
   #-----------------------------
@@ -53,6 +66,10 @@ services:
     extends:
       file: ./interfaces/web/docker-compose.yml
       service: web
+    profiles:
+      - frontend
+      - fullstack
+      - ''
 
 networks:
   madi:
