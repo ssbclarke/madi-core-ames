@@ -48,6 +48,12 @@ node_modules
 /plugins/madi-plg-semantic-scholar/*
 !/plugins/madi-plg-semantic-scholar/.gitkeep
 
+/plugins/madi-plg-cas-confluence/*
+!/plugins/madi-plg-cas-confluence/.gitkeep
+
+/plugins/madi-plg-cas-scenarios/*
+!/plugins/madi-plg-cas-scenarios/.gitkeep
+
 /plugins/visualGraph/*
 !/plugins/visualGraph/.gitkeep
 
