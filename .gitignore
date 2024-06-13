@@ -30,6 +30,7 @@ node_modules
 # interfaces
 /interfaces/chatbot-ui/*
 /interfaces/chrome-extension/*
+/interfaces/cli/*
 /interfaces/web/*
 
 # plugins
