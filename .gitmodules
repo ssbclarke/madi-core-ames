@@ -1,0 +1,31 @@
+[submodule "api"]
+    path = api
+    url = https://github.com/nasa-madi/madi-api.git
+
+[submodule "interfaces/chrome-extension"]
+    path = interfaces/chrome-extension
+    url = https://github.com/nasa-madi/madi-chrome-extension
+
+[submodule "interfaces/cli"]
+    path = interfaces/cli
+    url = https://github.com/nasa-madi/madi-cli
+
+[submodule "interfaces/web"]
+    path = interfaces/web
+    url = https://github.com/nasa-madi/madi-web
+
+[submodule "runner"]
+    path = runner
+    url = https://github.com/nasa-madi/madi-runner.git
+
+[submodule "secureLLM"]
+    path = secureLLM
+    url = https://github.com/nasa-madi/madi-secureLLM.git
+
+[submodule "terraform"]
+    path = terraform
+    url = https://github.com/nasa-madi/madi-terraform.git
+
+[submodule "plugins/madi-plg-semantic-scholar"]
+    path = plugins/madi-plg-semantic-scholar
+    url = https://github.com/nasa-madi/madi-plg-semantic-scholar.git
