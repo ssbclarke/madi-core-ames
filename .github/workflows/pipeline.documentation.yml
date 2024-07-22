@@ -4,7 +4,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - gh_pages
       - main
     paths:
       - docs/**
@@ -13,7 +12,7 @@ on:
 
 jobs:
   build:
-    if: github.ref == 'refs/heads/gh_pages' || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     name: Build Docusaurus
     runs-on: ubuntu-latest
     steps:
@@ -62,7 +61,7 @@ jobs:
           path: ./docs/generator/build
 
   deploy:
-    if: github.ref == 'refs/heads/gh_pages' || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     name: Deploy to GitHub Pages
     needs: build
 
