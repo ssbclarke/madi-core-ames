@@ -1,50 +1,51 @@
 ---
 sidebar_position: 2
 slug: '/getting-started/simple'
-title: 'Simple'
+title: 'Simple Getting Started'
 ---
 
 # Simple Getting Started
-This documentation is for spinning up a local instance of MADI for direct usage.  It does not enable any local coding.
+
+This documentation provides instructions for setting up a local instance of MADI using Docker. This setup is designed for direct usage and does not include local coding capabilities.
 
 ### 1. Install Docker
 
-For OSX, see [these instructions](https://docs.docker.com/desktop/install/mac-install/)
+First, you need to install Docker on your system.
 
-For Windows, see [these instructions](https://docs.docker.com/desktop/install/windows-install/)
+- **For macOS**: Follow [these instructions](https://docs.docker.com/desktop/install/mac-install/) to install Docker Desktop for macOS.
+- **For Windows**: Follow [these instructions](https://docs.docker.com/desktop/install/windows-install/) to install Docker Desktop for Windows.
 
-To verify that your Docker instance is work, trying running a test container:
-
-```shell
-docker run hell-world
-```
-
-This command downloads a test image and runs it in a container. If Docker is installed correctly, you will see a "Hello from Docker!" message.
-
-For more detailed instructions and troubleshooting, refer to the official Docker documentation: [Docker Documentation](https://docs.docker.com/docker-for-mac/install/)
-
-
-### 2. Pull the latest images
-
-Once you have docker installed, you need to get a copy of the docker compose file with all of the necessary components.
-
-Fetch the file with this command:
-```shell
-curl -o docker-compose-simple.yml https://github.com/nasa-madi/madi-core/blob/main/docker-compose-simple.yml
-```
-
-From the same folder that you downloaded the file above, you can now pull the relevant images.
+To verify that Docker is installed correctly, you can run a test container. Open your terminal and execute:
 
 ```shell
-docker compose pull
+docker run hello-world
 ```
 
+This command downloads a test image and runs it in a container. If Docker is installed correctly, you will see a message saying "Hello from Docker!"
 
-### 3. Add Env Variables
+For more detailed instructions and troubleshooting, refer to the official Docker documentation: [Docker Documentation](https://docs.docker.com/).
 
-In the new `docker-compose.yml` file that you created, locate the following section:
+### 2. Pull the Latest Images
 
-```yml
+After installing Docker, you need to fetch the Docker Compose file that includes all the necessary components for MADI.
+
+Download the Docker Compose file using the following command:
+
+```shell
+curl -o docker-compose-simple.yml https://raw.githubusercontent.com/nasa-madi/madi-core/main/docker-compose-simple.yml
+```
+
+Once the file is downloaded, navigate to the folder containing `docker-compose-simple.yml`, and pull the required Docker images:
+
+```shell
+docker compose -f docker-compose-simple.yml pull
+```
+
+### 3. Add Environment Variables
+
+In the `docker-compose-simple.yml` file that you downloaded, locate the section related to the API service:
+
+```yaml
   api:
     image: nasamadi/madi-api:latest
     environment:
@@ -55,15 +56,14 @@ In the new `docker-compose.yml` file that you created, locate the following sect
       - "3030:3030"
 ```
 
-Replace the `sk-XXXXXXXXXXXXXXXXXXXXXXXX` with your own OpenAI API key and save
+Replace `sk-XXXXXXXXXXXXXXXXXXXXXXXX` with your own OpenAI API key. Ensure that you keep the key secure and do not expose it publicly. Save the changes to the file.
 
 ### 4. Running the Stack
 
-From the terminal, run the following command:
+To start the MADI stack, run the following command in your terminal:
 
 ```shell
 docker compose -f docker-compose-simple.yml -p madi-simple up
 ```
 
-Assuming there are no errors in booting up the various containers, you can now go to `http://localhost:3000` and see your local MADI instance.
-
+If everything is configured correctly, Docker will start up the containers and you should be able to access your local MADI instance by navigating to `http://localhost:3000` in your web browser.

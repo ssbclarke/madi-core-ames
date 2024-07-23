@@ -54,6 +54,8 @@ fi
 # Define the root directories to search for Dockerfiles as a space-separated list
 root_dirs="./api ./storage ./parsers/nlm ./interfaces/web ./storage/gcp-emulator"
 
+# root_dirs="./interfaces/web"
+
 # Convert the space-separated list into a loop
 for root_dir in $root_dirs; do
   # Extract the directory name from the root_dir path to use as the image name
@@ -68,8 +70,8 @@ for root_dir in $root_dirs; do
     # Echo commands for building and pushing Docker images
     echo "Building Docker image ${full_image_name} from ${dockerfile_path}..."
     # Uncomment and modify these commands as needed for your actual build and push process
-    docker build -t "${full_image_name}" -f "${dockerfile_path}" "$(dirname ${dockerfile_path})"
-  
+    docker buildx build --platform linux/amd64,linux/arm64 -t "${full_image_name}" -f "${dockerfile_path}" "$(dirname "${dockerfile_path}")" --push
+
     # Check if build was successful
     if [ $? -ne 0 ]; then
       echo "Failed to build Docker image from ${dockerfile_path}"
@@ -85,6 +87,8 @@ for root_dir in $root_dirs; do
       echo "Failed to push Docker image ${full_image_name}"
       exit 1
     fi
+
+    docker buildx imagetools inspect "${full_image_name}"
 
   done 
 done

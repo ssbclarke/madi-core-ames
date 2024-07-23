@@ -4,7 +4,7 @@ services:
   ##   - This builds an image for the top level docker-compose
   ##     and may not be the same image as built under the /api folder directly
   api:
-    image: nasamadi/madi-api:latest
+    image: "nasamadi/madi-api:latest"
     environment:
       - NODE_ENV=development
       - NODE_CONFIG_ENV=docker
@@ -44,7 +44,7 @@ services:
   #-----------------------------
   # This Sping up an NLMParser service with a bundled Apache Tika server instance
   parser-nlm:      
-    image: nasamadi/madi-parsers-nlm:latest
+    image: "nasamadi/madi-parsers-nlm:latest"
     ports:
       - 5010:5001
     networks:
@@ -56,7 +56,7 @@ services:
   # This mocks out a Google Cloud Storage server so that local testing
   # can be done with a GCS Bucket library.
   storage:
-    image: nasamadi/madi-storage-gcp-emulator:latest
+    image: "nasamadi/madi-storage-gcp-emulator:latest"
     environment:
       - PORT=9023
       - STORAGE_BASE=./api
@@ -80,7 +80,7 @@ services:
   # of the domain for this project. In the cloud, this should be served 
   # by a static proxy.
   interface-web:
-    image: nasamadi/madi-interfaces-web:latest
+    image: "nasamadi/madi-interfaces-web:latest"
     ports:
       - "3000:3000"
     networks:
