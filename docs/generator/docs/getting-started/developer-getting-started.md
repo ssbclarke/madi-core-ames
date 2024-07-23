@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-slug: '/advanced'
+slug: '/getting-started/advanced'
 title: 'Advanced'
 ---
 
