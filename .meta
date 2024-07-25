@@ -7,6 +7,7 @@
     "runner": "https://github.com/nasa-madi/madi-runner.git",
     "secureLLM": "https://github.com/nasa-madi/madi-secureLLM.git",
     "terraform": "https://github.com/nasa-madi/madi-terraform.git",
-    "plugins/madi-plg-semantic-scholar": "https://github.com/nasa-madi/madi-plg-semantic-scholar.git"
+    "plugins/madi-plg-semantic-scholar": "https://github.com/nasa-madi/madi-plg-semantic-scholar.git",
+    "plugins/madi-plg-base-class": "https://github.com/nasa-madi/madi-plg-base-class.git"
   }
 }

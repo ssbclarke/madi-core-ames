@@ -4,15 +4,17 @@ services:
   ##   - This builds an image for the top level docker-compose
   ##     and may not be the same image as built under the /api folder directly
   api:
-    image: "nasamadi/madi-api:latest"
+    build: ../../api
+    # image: "nasamadi/madi-api:latest"
     environment:
       - NODE_ENV=development
-      - NODE_CONFIG_ENV=docker
-      - OPENAI_API_KEY=sk-XXXXXXXXXXXXXXXXXXXXXXXX
+      - NODE_CONFIG_ENV=config
     ports:
       - "3030:3030"
     networks:
       - madi
+    volumes:
+      - ./config.yml:/app/config/config.yml
     depends_on:
       database:
         condition: service_healthy
@@ -27,8 +29,8 @@ services:
       - POSTGRES_USER=unicorn_user
       - POSTGRES_PASSWORD=magical_password
       - POSTGRES_DB=rainbow_database
-    # volumes:
-    #   - database-data:/var/lib/postgresql/data/
+    volumes:
+      - database-data:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
     networks:
@@ -89,5 +91,5 @@ services:
 networks:
   madi:
 
-# volumes:
-#   database-data:
+volumes:
+  database-data:

@@ -26,10 +26,9 @@
 
 
 
+
 # Base name for Docker images
 base_name="nasamadi"
-
-
 
 # Attempt to pull a known private image to check if logged in
 echo "Checking if already logged in to Docker registry as $base_name..."
@@ -52,9 +51,10 @@ fi
 
 
 # Define the root directories to search for Dockerfiles as a space-separated list
-root_dirs="./api ./storage ./parsers/nlm ./interfaces/web ./storage/gcp-emulator"
+root_dirs="./api ./parsers/nlm ./interfaces/web ./storage/gcp-emulator"
 
-# root_dirs="./interfaces/web"
+# root_dirs="./storage/gcp-emulator"
+
 
 # Convert the space-separated list into a loop
 for root_dir in $root_dirs; do
@@ -67,28 +67,28 @@ for root_dir in $root_dirs; do
     # Construct the full image name with the base name and the directory name
     full_image_name="${base_name}/madi-${dir_name}:latest"
     
-    # Echo commands for building and pushing Docker images
+    # Echo commands for building Docker images
     echo "Building Docker image ${full_image_name} from ${dockerfile_path}..."
-    # Uncomment and modify these commands as needed for your actual build and push process
-    docker buildx build --platform linux/amd64,linux/arm64 -t "${full_image_name}" -f "${dockerfile_path}" "$(dirname "${dockerfile_path}")" --push
+    # Build the image with multi-platform support
+    docker buildx build --platform linux/amd64,linux/arm64 -t "${full_image_name}" -f "${dockerfile_path}" "$(dirname "${dockerfile_path}")" --load
 
     # Check if build was successful
     if [ $? -ne 0 ]; then
       echo "Failed to build Docker image from ${dockerfile_path}"
       exit 1
     fi
-    
-    # Push the Docker image
-    echo "Pushing Docker image ${full_image_name}..."
-    docker push "${full_image_name}"
-    
-    # Check if push was successful
-    if [ $? -ne 0 ]; then
-      echo "Failed to push Docker image ${full_image_name}"
+
+    # Inspect the image to ensure it contains the required platforms
+    inspect_output=$(docker buildx imagetools inspect "${full_image_name}")
+
+    if echo "$inspect_output" | grep -q "linux/amd64" && echo "$inspect_output" | grep -q "linux/arm64"; then
+      echo "Image ${full_image_name} contains the required platforms. Proceeding with push..."
+      # Push the image
+      docker buildx build --platform linux/amd64,linux/arm64 -t "${full_image_name}" -f "${dockerfile_path}" "$(dirname "${dockerfile_path}")" --push
+    else
+      echo "Image ${full_image_name} does not contain the required platforms. Skipping push..."
       exit 1
     fi
-
-    docker buildx imagetools inspect "${full_image_name}"
 
   done 
 done

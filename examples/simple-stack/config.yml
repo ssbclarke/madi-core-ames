@@ -1,0 +1,17 @@
+file: simple-stack
+postgresql:
+  debug: false
+  connection:
+    host: database
+  automigrate: true
+  autoseed: true
+openai: 
+  key: sk-XXXXXXXXXXXXXXXXXX
+  stream: true
+storage:
+  bucket: docker-bucket
+  apiEndpoint: http://storage:9023
+  baseUrl: storage:9023
+authentication:
+  superadmin: 
+    - superadmin@example.com

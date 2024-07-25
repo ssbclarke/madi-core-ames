@@ -29,3 +29,7 @@
 [submodule "plugins/madi-plg-semantic-scholar"]
     path = plugins/madi-plg-semantic-scholar
     url = https://github.com/nasa-madi/madi-plg-semantic-scholar.git
+
+[submodule "plugins/madi-plg-base-class"]
+    path = plugins/madi-plg-base-class
+    url = https://github.com/nasa-madi/madi-plg-base-class.git

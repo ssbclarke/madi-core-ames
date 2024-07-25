@@ -67,3 +67,15 @@ docker compose -f docker-compose-simple.yml -p madi-simple up
 ```
 
 If everything is configured correctly, Docker will start up the containers and you should be able to access your local MADI instance by navigating to `http://localhost:3000` in your web browser.
+
+
+### 5. Side-Loading a Plugin
+```yaml
+  api:
+    image: nasamadi/madi-api:latest
+    environment:
+      # other configs
+      - PLUGINS={"default":"casConfluence"}}
+    ports:
+      - "3030:3030"
+```
