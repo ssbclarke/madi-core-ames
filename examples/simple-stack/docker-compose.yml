@@ -4,8 +4,7 @@ services:
   ##   - This builds an image for the top level docker-compose
   ##     and may not be the same image as built under the /api folder directly
   api:
-    build: ../../api
-    # image: "nasamadi/madi-api:latest"
+    image: "nasamadi/madi-api:latest"
     environment:
       - NODE_ENV=development
       - NODE_CONFIG_ENV=config
