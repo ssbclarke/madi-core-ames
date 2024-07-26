@@ -22,8 +22,8 @@ services:
       - ./config.yml:/app/config/local.yml
       
       ###### YOU MUST COPY THIS LINE FOR EVERY PLUGIN YOU INSTALL
-      - ${PWD}/test/contracts/plugin-loader/plugins/devGetTime:/app/plugins/devGetTime 
-      # - ${PWD}/test/contracts/plugin-loader/plugins/PLUGIN_NAME:/app/plugins/PLUGIN_NAME
+      - ./plugins/devGetTime:/app/plugins/devGetTime 
+      # - ./plugins/PLUGIN_NAME:/app/plugins/PLUGIN_NAME
       #########
 
     depends_on:
