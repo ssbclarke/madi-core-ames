@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
-          cache-dependency-path: './docs/generator/pnpm-lock.yaml'
+          cache-dependency-path: './docs/pnpm-lock.yaml'
 
       - name: Get pnpm store directory
         working-directory: ./docs/generator
