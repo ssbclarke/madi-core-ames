@@ -59,7 +59,7 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs/generator/build
+          path: ./docs/build
 
   deploy:
     if: github.ref == 'refs/heads/main'
