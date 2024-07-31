@@ -35,7 +35,7 @@ jobs:
           cache-dependency-path: './docs/pnpm-lock.yaml'
 
       - name: Get pnpm store directory
-        working-directory: ./docs/generator
+        working-directory: ./docs
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
@@ -49,11 +49,11 @@ jobs:
             ${{ runner.os }}-pnpm-store-
   
       - name: Install dependencies
-        working-directory: ./docs/generator
+        working-directory: ./docs
         run: pnpm install
     
       - name: Build website
-        working-directory: ./docs/generator
+        working-directory: ./docs
         run: pnpm run build
 
       - name: Upload Build Artifact
