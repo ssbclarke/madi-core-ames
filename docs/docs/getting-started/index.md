@@ -19,8 +19,11 @@ The key components are:
 If you are not a developer, setting up the entire codebase for MADI is likely overkill.  If you are interested in simply testing the system out locally, you should follow these instructions:
 - [Simple Setup / Docker Only](/getting-started/simple)
 
-If you are a developer or looking to build a plugin for MADI for your organization, you should proceed to to the advanced instructions:
-- [Advanced Setup](/getting-started/advanced)
+If you are a looking to build a plugin for MADI for your organization, you should proceed to to the plugin instructions:
+- [Plugin Setup / Docker + JS](/getting-started/plugin)
+
+If you are a developer looking to contribute to MADI or develop a more advanced plugin for MADI , you should proceed to to the advanced instructions:
+- [Advanced Setup / Docker + Node](/getting-started/advanced)
 
 > NOTE:
 Neither version of MADI currently supports fully local processing.  If your organization does not allowing sharing of data with OpenAI, then you should not be using this setup.  
