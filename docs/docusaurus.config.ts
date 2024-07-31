@@ -39,34 +39,25 @@ const config: Config = {
   themes: ['@docusaurus/theme-mermaid'],
   themeConfig: {
     metadata: [
-      {name: 'theme-color', content: '#317EFB'}, // Example theme color
+      {name: 'theme-color', content: '#317EFB'},
       {name: 'apple-mobile-web-app-capable', content: 'yes'},
       {name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent'},
-      {
-        name: 'apple-mobile-web-app-title',
-        content: 'Your App Title',
-      },
-      {
-        rel: 'apple-touch-icon',
-        sizes: '180x180',
-        href: '/madi-core/img/icons/apple-touch-icon.png',
-      },
-      {
-        rel: 'icon',
-        type: 'image/png',
-        sizes: '32x32',
-        href: '/madi-core/img/icons/favicon-32x32.png',
-      },
-      {
-        rel: 'icon',
-        type: 'image/png',
-        sizes: '16x16',
-        href: '/madi-core/img/icons/favicon-16x16.png',
-      },
-      {
-        rel: 'manifest',
-        href: '/madi-core/img/site.webmanifest',
-      },
+      {name: 'apple-mobile-web-app-title', content: 'MADI'},
+      {rel: 'apple-touch-icon', sizes: '180x180', href: '/madi-core/img/icons/apple-touch-icon.png'},
+      {rel: 'icon', type: 'image/png', sizes: '32x32', href: '/madi-core/img/icons/favicon-32x32.png'},
+      {rel: 'icon', type: 'image/png', sizes: '16x16', href: '/madi-core/img/icons/favicon-16x16.png'},
+      {rel: 'manifest', href: '/madi-core/img/site.webmanifest'},
+      // Open Graph (OG) tags
+      {property: 'og:title', content: 'MADI - Modular AI for Innovation and Design'},
+      {property: 'og:type', content: 'website'},
+      {property: 'og:image', content: '/madi-core/img/og-image@0_5x.png'},
+      {property: 'og:url', content: 'https://nasa-madi.github.io/madi-core/'},
+      {property: 'og:description', content: 'MADI aims to improve visualization and interaction with digital infrastructure data for aerospace applications using AI.'},
+      // Twitter card tags
+      {name: 'twitter:card', content: 'summary_large_image'},
+      {name: 'twitter:title', content: 'MADI - Modular AI for Innovation and Design'},
+      {name: 'twitter:description', content: 'MADI aims to improve visualization and interaction with digital infrastructure data for aerospace applications using AI.'},
+      {name: 'twitter:image', content: '/madi-core/img/og-image@0_5x.png'},
     ],
     navbar: {
       hideOnScroll: true,
