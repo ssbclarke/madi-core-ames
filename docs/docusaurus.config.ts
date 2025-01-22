@@ -39,6 +39,7 @@ const config: Config = {
   themes: ['@docusaurus/theme-mermaid'],
   themeConfig: {
     metadata: [
+      {name:"google-site-verification", content:"qO6zkuIWS2RZpL3h7iPyWf7jAMpFhGd6VLLj9EBrwUs"},
       {name: 'theme-color', content: '#317EFB'},
       {name: 'apple-mobile-web-app-capable', content: 'yes'},
       {name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent'},
