@@ -37,3 +37,6 @@
 [submodule "modelServer"]
     path = madi-modelServer
     url = https://github.com/ssbclarke/madi-modelServer-ames.git
+[submodule "madi-modelServer"]
+	path = madi-modelServer
+	url = https://github.com/ssbclarke/madi-modelServer.git
