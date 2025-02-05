@@ -1,6 +1,7 @@
 {
   "projects": {
-    "api": "https://github.com/nasa-madi/madi-api.git",
+    "api": "https://github.com/ssbclarke/madi-api-ames.git",
+    "madi-modelServer": "https://github.com/ssbclarke/madi-modelServer.git",
     "interfaces/chrome-extension": "https://github.com/nasa-madi/madi-chrome-extension",
     "interfaces/cli": "https://github.com/nasa-madi/madi-cli",
     "interfaces/web": "https://github.com/nasa-madi/madi-web",

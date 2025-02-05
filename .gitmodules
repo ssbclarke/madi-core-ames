@@ -1,6 +1,6 @@
 [submodule "api"]
     path = api
-    url = https://github.com/nasa-madi/madi-api.git
+    url = https://github.com/ssbclarke/madi-api-ames.git
 
 [submodule "interfaces/chrome-extension"]
     path = interfaces/chrome-extension
@@ -33,3 +33,7 @@
 [submodule "plugins/madi-plg-base-class"]
     path = plugins/madi-plg-base-class
     url = https://github.com/nasa-madi/madi-plg-base-class.git
+
+[submodule "modelServer"]
+    path = madi-modelServer
+    url = https://github.com/ssbclarke/madi-modelServer-ames.git

@@ -47,6 +47,7 @@ node_modules
 /secureLLM/*
 /terraform/*
 /runner/*
+/madi-modelServer/*
 
 # Testing
 /test-results/
